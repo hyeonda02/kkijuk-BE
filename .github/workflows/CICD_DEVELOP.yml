@@ -4,6 +4,7 @@ on:
   push:
     branches:
     - develop
+    - example
 
 env:
   DOCKERHUB_REPOSITORY: umc-develop-server
@@ -25,6 +26,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: 'kkijuk'
+          mysql user: 'test'
+          mysql password: 'testPW'
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
@@ -34,9 +42,10 @@ jobs:
 
       - name: Generate application.properties
         run: |
-          touch ./src/main/resources/application.properties
-          echo ${{ secrets.PROPERTIES }} >> ./src/main/resources/application.properties
-          echo commit.hash=${{ steps.slug.outputs.sha7 }} >> ./src/main/resources/application.properties
+          echo commit.hash=${{ steps.slug.outputs.sha7 }} >> ./src/main/resources/application-prod.properties
+          echo ${{ secrets.DATASOURCE_DB_URL }} >> ./src/main/resources/application-prod.properties
+          echo ${{ secrets.DATASOURCE_DB_USERNAME }} >> ./src/main/resources/application-prod.properties
+          echo ${{ secrets.DATASOURCE_DB_PASSWORD }} >> ./src/main/resources/application-prod.properties
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
@@ -105,6 +114,7 @@ jobs:
   #            echo "No images found in repository $DOCKERHUB_REPOSITORY"
   #          fi
   #
+
   CD_Deploy:
     name: CD_Deploy
     needs: CD_Delivery_to_DockerHub
