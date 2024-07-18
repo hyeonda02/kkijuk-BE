@@ -7,7 +7,7 @@ on:
     - mvp/member
     - mvp/career
     - mvp/portfolio
-
+    - example
 
 jobs:
   CI:
@@ -26,6 +26,13 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
+        with:
+          mysql database: 'kkijuk'
+          mysql user: 'test'
+          mysql password: 'testPW'
+
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
 
@@ -35,8 +42,14 @@ jobs:
 
       - name: Generate application.properties
         run: |
+          touch ./src/test/resources/application.properties
           touch ./src/main/resources/application.properties
           echo ${{ secrets.PROPERTIES }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.PROPERTIES }} >> ./src/test/resources/application.properties
+          
+          echo ${{ secrets.DB_PROPERTIES }} >> ./src/main/resources/application.properties
+          echo ${{ secrets.TEST_DB_PROPERTIES }} >> ./src/test/resources/application.properties
+          
           echo commit.hash=${{ steps.slug.outputs.sha7 }} >> ./src/main/resources/application.properties
           
       - name: Build with Gradle Wrapper
