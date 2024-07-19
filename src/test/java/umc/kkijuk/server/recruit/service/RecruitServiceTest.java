@@ -88,7 +88,7 @@ class RecruitServiceTest {
                 () -> assertThat(result.getStartTime()).isEqualTo(LocalDateTime.of(2024, 7, 19, 2, 30)),
                 () -> assertThat(result.getEndTime().isEqual(LocalDateTime.of(2024, 7, 30, 2, 30))),
                 () -> assertThat(result.getApplyDate()).isNull(),
-                () -> assertThat(result.getTags()).isNull(),
+                () -> assertThat(result.getTags().size()).isZero(),
                 () -> assertThat(result.getLink()).isNull()
         );
     }

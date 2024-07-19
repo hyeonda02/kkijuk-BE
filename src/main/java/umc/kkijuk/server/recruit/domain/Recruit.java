@@ -5,6 +5,7 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Builder
@@ -28,7 +29,7 @@ public class Recruit {
                 .startTime(recruitCreateDto.getStartTime())
                 .endTime(recruitCreateDto.getEndTime())
                 .applyDate(recruitCreateDto.getApplyDate())
-                .tags(recruitCreateDto.getTags())
+                .tags(recruitCreateDto.getTags() != null ? recruitCreateDto.getTags() : new ArrayList<>())
                 .link(recruitCreateDto.getLink())
                 .isActive(true)
                 .build();
@@ -42,7 +43,7 @@ public class Recruit {
                 .startTime(recruitUpdate.getStartTime())
                 .endTime(recruitUpdate.getEndTime())
                 .applyDate(recruitUpdate.getApplyDate())
-                .tags(recruitUpdate.getTags())
+                .tags(recruitUpdate.getTags() != null ? recruitUpdate.getTags() : new ArrayList<>())
                 .link(recruitUpdate.getLink())
                 .isActive(this.isActive)
                 .build();
