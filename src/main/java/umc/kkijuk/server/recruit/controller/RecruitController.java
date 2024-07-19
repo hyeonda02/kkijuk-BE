@@ -47,4 +47,12 @@ public class RecruitController {
                 .ok()
                 .body(recruitService.updateStatus(recruitId, recruitStatusUpdate).getId());
     }
+
+    @DeleteMapping("/{recruitId}")
+    public ResponseEntity<Long> delete(@PathVariable long recruitId) {
+        LoginUser loginUser = LoginUser.get();
+        return ResponseEntity
+                .ok()
+                .body(recruitService.disable(recruitId).getId());
+    }
 }

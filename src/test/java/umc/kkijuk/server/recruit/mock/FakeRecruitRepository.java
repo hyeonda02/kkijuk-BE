@@ -1,5 +1,6 @@
 package umc.kkijuk.server.recruit.mock;
 
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
@@ -30,6 +31,7 @@ public class FakeRecruitRepository implements RecruitRepository {
                     .applyDate(recruit.getApplyDate())
                     .tags(recruit.getTags())
                     .link(recruit.getLink())
+                    .isActive(recruit.getIsActive())
                     .build();
             data.add(newRecruit);
             return newRecruit;
@@ -38,5 +40,21 @@ public class FakeRecruitRepository implements RecruitRepository {
             data.add(recruit);
             return recruit;
         }
+    }
+
+    @Override
+    public Recruit getById(long id) {
+        return findByIdAndIsActive(id, true)
+                .orElseThrow(() -> new ResourceNotFoundException("recruit", id)
+        );
+    }
+
+    @Override
+    public Optional<Recruit> findByIdAndIsActive(long id, Boolean isActive) {
+        return data.stream()
+                .filter(item ->
+                        item.getId().equals(id) &&
+                        item.getIsActive() != null &&
+                        item.getIsActive()).findAny();
     }
 }

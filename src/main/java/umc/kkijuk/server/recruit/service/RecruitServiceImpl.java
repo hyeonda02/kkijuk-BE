@@ -23,7 +23,8 @@ public class RecruitServiceImpl implements RecruitService {
 
     @Override
     public Recruit getById(long id) {
-        return recruitRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Recruit", id));
+        return recruitRepository.findByIdAndIsActive(id, true)
+                .orElseThrow(() -> new ResourceNotFoundException("Recruit", id));
     }
 
     @Override
@@ -46,6 +47,14 @@ public class RecruitServiceImpl implements RecruitService {
     public Recruit updateStatus(long recruitId, RecruitStatusUpdate recruitStatusUpdate) {
         Recruit recruit = getById(recruitId);
         recruit = recruit.updateStatus(recruitStatusUpdate);
+        return recruitRepository.save(recruit);
+    }
+
+    @Override
+    @Transactional
+    public Recruit disable(long recruitId) {
+        Recruit recruit = getById(recruitId);
+        recruit = recruit.disable();
         return recruitRepository.save(recruit);
     }
 }

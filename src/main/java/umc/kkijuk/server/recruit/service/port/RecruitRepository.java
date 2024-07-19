@@ -7,4 +7,6 @@ import java.util.Optional;
 public interface RecruitRepository {
     Optional<Recruit> findById(Long id);
     Recruit save(Recruit recruit);
+    Recruit getById(long id);
+    Optional<Recruit> findByIdAndIsActive(long id, Boolean isActive);
 }

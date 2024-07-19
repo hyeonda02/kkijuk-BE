@@ -1,6 +1,5 @@
 package umc.kkijuk.server.recruit.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
@@ -35,6 +34,7 @@ class RecruitServiceTest {
                 .applyDate(LocalDate.of(2024, 7, 19))
                 .tags(new ArrayList<>(Arrays.asList("코딩 테스트", "인턴", "대외 활동")))
                 .link("test-link")
+                .isActive(true)
                 .build();
 
         recruitRepository.save(recruit);
@@ -162,6 +162,7 @@ class RecruitServiceTest {
 
         //when
         Recruit result = recruitService.updateStatus(1L, recruitStatusUpdate);
+
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(1L),
                 () -> assertThat(result.getTitle()).isEqualTo("test-title"),
@@ -173,5 +174,39 @@ class RecruitServiceTest {
                 () -> assertEquals(result.getTags(), Arrays.asList("코딩 테스트", "인턴", "대외 활동")),
                 () -> assertThat(result.getLink()).isEqualTo("test-link")
         );
+    }
+
+    @Test
+    void 기존_recruit_비활성화() {
+        //given
+        //when
+        Recruit result = recruitService.disable(1L);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getIsActive()).isFalse(),
+                () -> assertThat(result.getDisabledTime()).isNotNull(),
+                () -> assertThat(result.getDisabledTime()).isBefore(LocalDateTime.now())
+        );
+    }
+
+    @Test
+    void 없는_유저는_비활성화_할수_없다() {
+        //given
+        //when
+        //then
+        assertThatThrownBy(
+                () -> recruitService.disable(1234L)).isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void 비활성화된_유저는_getById로_찾을수_없다() {
+        //given
+        recruitService.disable(1L);
+
+        //when
+        //then
+        assertThatThrownBy(
+                () -> recruitService.getById(1L)).isInstanceOf(ResourceNotFoundException.class);
     }
 }

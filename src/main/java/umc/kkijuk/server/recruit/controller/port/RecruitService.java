@@ -15,4 +15,6 @@ public interface RecruitService {
     Recruit getById(long id);
 
     Recruit updateStatus(long recruitId, RecruitStatusUpdate recruitStatusUpdate);
+
+    Recruit disable(long recruitId);
 }

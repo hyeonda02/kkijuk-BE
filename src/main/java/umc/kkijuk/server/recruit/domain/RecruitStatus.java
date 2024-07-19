@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.stream.Stream;
 
 public enum RecruitStatus {
-    INVALID, UNAPPLIED, PLANNED, APPLYING, EJECTED, ACCEPTED;
+    INVALID, UNAPPLIED, PLANNED, APPLYING, REJECTED, ACCEPTED;
 
     @JsonCreator
     public static RecruitStatus parsing(String value) {

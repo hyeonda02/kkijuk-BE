@@ -18,6 +18,8 @@ public class Recruit {
     private final LocalDate applyDate;
     private final List<String> tags;
     private final String link;
+    private final Boolean isActive;
+    private final LocalDateTime disabledTime;
 
     public static Recruit from(RecruitCreateDto recruitCreateDto) {
         return Recruit.builder()
@@ -28,12 +30,13 @@ public class Recruit {
                 .applyDate(recruitCreateDto.getApplyDate())
                 .tags(recruitCreateDto.getTags())
                 .link(recruitCreateDto.getLink())
+                .isActive(true)
                 .build();
     }
 
     public Recruit update(RecruitUpdate recruitUpdate) {
         return Recruit.builder()
-                .id(id)
+                .id(this.id)
                 .title(recruitUpdate.getTitle())
                 .status(recruitUpdate.getStatus())
                 .startTime(recruitUpdate.getStartTime())
@@ -41,6 +44,7 @@ public class Recruit {
                 .applyDate(recruitUpdate.getApplyDate())
                 .tags(recruitUpdate.getTags())
                 .link(recruitUpdate.getLink())
+                .isActive(this.isActive)
                 .build();
     }
 
@@ -54,6 +58,22 @@ public class Recruit {
                 .applyDate(this.getApplyDate())
                 .tags(this.getTags())
                 .link(this.getLink())
+                .isActive(this.isActive)
+                .build();
+    }
+
+    public Recruit disable() {
+        return Recruit.builder()
+                .id(this.id)
+                .title(this.getTitle())
+                .status(this.getStatus())
+                .startTime(this.getStartTime())
+                .endTime(this.getEndTime())
+                .applyDate(this.getApplyDate())
+                .tags(this.getTags())
+                .link(this.getLink())
+                .isActive(false)
+                .disabledTime(LocalDateTime.now())
                 .build();
     }
 }
