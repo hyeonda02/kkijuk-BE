@@ -8,6 +8,7 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitCreateDto;
+import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
 import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
@@ -40,5 +41,11 @@ public class RecruitServiceImpl implements RecruitService {
         return recruitRepository.save(recruit);
     }
 
-
+    @Override
+    @Transactional
+    public Recruit updateStatus(long recruitId, RecruitStatusUpdate recruitStatusUpdate) {
+        Recruit recruit = getById(recruitId);
+        recruit = recruit.updateStatus(recruitStatusUpdate);
+        return recruitRepository.save(recruit);
+    }
 }

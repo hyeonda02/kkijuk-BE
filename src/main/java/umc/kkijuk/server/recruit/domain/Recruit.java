@@ -43,4 +43,17 @@ public class Recruit {
                 .link(recruitUpdate.getLink())
                 .build();
     }
+
+    public Recruit updateStatus(RecruitStatusUpdate recruitStatusUpdate) {
+        return Recruit.builder()
+                .id(this.id)
+                .title(this.getTitle())
+                .status(recruitStatusUpdate.getStatus())
+                .startTime(this.getStartTime())
+                .endTime(this.getEndTime())
+                .applyDate(this.getApplyDate())
+                .tags(this.getTags())
+                .link(this.getLink())
+                .build();
+    }
 }

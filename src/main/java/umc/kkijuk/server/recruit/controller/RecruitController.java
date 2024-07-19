@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
+import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
 import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 import umc.kkijuk.server.recruit.controller.response.RecruitResponse;
 import umc.kkijuk.server.recruit.domain.Recruit;
@@ -30,11 +31,20 @@ public class RecruitController {
     }
 
     @PutMapping("/{recruitId}")
-    public ResponseEntity<Long> modify(@RequestBody @Valid RecruitUpdate recruitUpdate,
-                                    @PathVariable Long recruitId) {
+    public ResponseEntity<Long> update(@RequestBody @Valid RecruitUpdate recruitUpdate,
+                                       @PathVariable long recruitId) {
         LoginUser loginUser = LoginUser.get();
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(recruitService.update(recruitId, recruitUpdate).getId());
+    }
+
+    @PatchMapping("/{recruitId}")
+    public ResponseEntity<Long> updateState(@RequestBody @Valid RecruitStatusUpdate recruitStatusUpdate,
+                                            @PathVariable long recruitId) {
+        LoginUser loginUser = LoginUser.get();
+        return ResponseEntity
+                .ok()
+                .body(recruitService.updateStatus(recruitId, recruitStatusUpdate).getId());
     }
 }

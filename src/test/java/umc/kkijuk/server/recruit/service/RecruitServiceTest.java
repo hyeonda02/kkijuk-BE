@@ -5,10 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
-import umc.kkijuk.server.recruit.domain.Recruit;
-import umc.kkijuk.server.recruit.domain.RecruitCreateDto;
-import umc.kkijuk.server.recruit.domain.RecruitStatus;
-import umc.kkijuk.server.recruit.domain.RecruitUpdate;
+import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.mock.FakeRecruitRepository;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
@@ -141,7 +138,40 @@ class RecruitServiceTest {
 
         //when
         //then
-        Assertions.assertThatThrownBy(
+        assertThatThrownBy(
                 () -> recruitService.update(2L, recruitUpdate)).isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void status만_수정시_없는_리소스로의_요청은_에러() {
+        //given
+        RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
+                .status(RecruitStatus.ACCEPTED).build();
+
+        //when
+        //then
+        assertThatThrownBy(
+                () -> recruitService.updateStatus(2L, recruitStatusUpdate)).isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void 기존_recruit_status_수정() {
+        //given
+        RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
+                .status(RecruitStatus.ACCEPTED).build();
+
+        //when
+        Recruit result = recruitService.updateStatus(1L, recruitStatusUpdate);
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(1L),
+                () -> assertThat(result.getTitle()).isEqualTo("test-title"),
+                () -> assertThat(result.getStatus()).isEqualTo(RecruitStatus.ACCEPTED),
+                () -> assertThat(result.getStartTime()).isEqualTo(LocalDateTime.of(2024, 7, 19, 2, 30)),
+                () -> assertThat(result.getEndTime().isEqual(LocalDateTime.of(2024, 7, 31, 17, 30))),
+                () -> assertThat(result.getApplyDate().isEqual(LocalDate.of(2024, 7, 19))),
+                () -> assertThat(result.getTags().size()).isEqualTo(3),
+                () -> assertEquals(result.getTags(), Arrays.asList("코딩 테스트", "인턴", "대외 활동")),
+                () -> assertThat(result.getLink()).isEqualTo("test-link")
+        );
     }
 }
