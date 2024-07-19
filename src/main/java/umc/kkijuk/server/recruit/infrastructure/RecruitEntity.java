@@ -36,6 +36,8 @@ public class RecruitEntity {
     private List<String> tags;
 
     private String link;
+    private Boolean isActive;
+    private LocalDateTime disabledTime;
 
     public static RecruitEntity from(Recruit recruit) {
         RecruitEntity recruitEntity = new RecruitEntity();
@@ -47,6 +49,8 @@ public class RecruitEntity {
         recruitEntity.applyDate = recruit.getApplyDate();
         recruitEntity.tags = recruit.getTags();
         recruitEntity.link= recruit.getLink();
+        recruitEntity.isActive = recruit.getIsActive();
+        recruitEntity.disabledTime = recruit.getDisabledTime();
         return recruitEntity;
     }
 
@@ -60,6 +64,8 @@ public class RecruitEntity {
                 .applyDate(applyDate)
                 .tags(tags)
                 .link(link)
+                .isActive(isActive)
+                .disabledTime(disabledTime)
                 .build();
     }
 }

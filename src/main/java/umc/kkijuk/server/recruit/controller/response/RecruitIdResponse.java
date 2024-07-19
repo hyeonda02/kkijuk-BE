@@ -6,10 +6,10 @@ import umc.kkijuk.server.recruit.domain.Recruit;
 
 @Getter
 @Builder
-public class RecruitResponse {
+public class RecruitIdResponse {
     private final Long id;
-    public static RecruitResponse from(Recruit recruit) {
-        return RecruitResponse.builder()
+    public static RecruitIdResponse from(Recruit recruit) {
+        return RecruitIdResponse.builder()
                 .id(recruit.getId())
                 .build();
     }
