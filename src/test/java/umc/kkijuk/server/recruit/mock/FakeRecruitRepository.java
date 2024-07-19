@@ -21,7 +21,7 @@ public class FakeRecruitRepository implements RecruitRepository {
     @Override
     public Recruit save(Recruit recruit) {
         if (recruit.getId() == null || recruit.getId() == 0){
-            return Recruit.builder()
+            Recruit newRecruit = Recruit.builder()
                     .id(authGeneratedID.incrementAndGet())
                     .title(recruit.getTitle())
                     .status(recruit.getStatus())
@@ -31,6 +31,8 @@ public class FakeRecruitRepository implements RecruitRepository {
                     .tags(recruit.getTags())
                     .link(recruit.getLink())
                     .build();
+            data.add(newRecruit);
+            return newRecruit;
         } else {
             data.removeIf(item -> Objects.equals(item.getId(), recruit.getId()));
             data.add(recruit);

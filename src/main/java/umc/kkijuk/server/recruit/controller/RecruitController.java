@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
+import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 import umc.kkijuk.server.recruit.controller.response.RecruitResponse;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitCreateDto;
@@ -26,5 +27,14 @@ public class RecruitController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(RecruitResponse.from(recruit));
+    }
+
+    @PutMapping("/{recruitId}")
+    public ResponseEntity<Long> modify(@RequestBody @Valid RecruitUpdate recruitUpdate,
+                                    @PathVariable Long recruitId) {
+        LoginUser loginUser = LoginUser.get();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(recruitService.update(recruitId, recruitUpdate).getId());
     }
 }

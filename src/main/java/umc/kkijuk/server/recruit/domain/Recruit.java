@@ -30,4 +30,17 @@ public class Recruit {
                 .link(recruitCreateDto.getLink())
                 .build();
     }
+
+    public Recruit update(RecruitUpdate recruitUpdate) {
+        return Recruit.builder()
+                .id(id)
+                .title(recruitUpdate.getTitle())
+                .status(recruitUpdate.getStatus())
+                .startTime(recruitUpdate.getStartTime())
+                .endTime(recruitUpdate.getEndTime())
+                .applyDate(recruitUpdate.getApplyDate())
+                .tags(recruitUpdate.getTags())
+                .link(recruitUpdate.getLink())
+                .build();
+    }
 }
