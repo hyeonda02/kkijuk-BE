@@ -27,4 +27,5 @@ public class RecruitController {
                 .status(HttpStatus.CREATED)
                 .body(RecruitResponse.from(recruit));
     }
+
 }
