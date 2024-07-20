@@ -2,6 +2,8 @@ package umc.kkijuk.server.recruit.service.port;
 
 import umc.kkijuk.server.recruit.domain.Recruit;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 public interface RecruitRepository {
@@ -9,4 +11,6 @@ public interface RecruitRepository {
     Recruit save(Recruit recruit);
     Recruit getById(long id);
     Optional<Recruit> findByIdAndIsActive(long id, Boolean isActive);
+
+    List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, Boolean isActive);
 }

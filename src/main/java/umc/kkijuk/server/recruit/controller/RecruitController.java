@@ -9,10 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.controller.response.RecruitInfoResponse;
+import umc.kkijuk.server.recruit.controller.response.RecruitListByEndTimeResponse;
 import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.controller.response.RecruitIdResponse;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 @Tag(name = "recruit", description = "모집 공고 API")
 @RestController
@@ -66,5 +69,13 @@ public class RecruitController {
         return ResponseEntity
                 .ok()
                 .body(RecruitInfoResponse.from(recruit, new ArrayList<>()));
+    }
+
+    @GetMapping
+    public ResponseEntity<RecruitListByEndTimeResponse> getRecruitListByEndTime(LocalDate date) {
+        List<Recruit> recruits = recruitService.findAllByEndTime(date);
+        return ResponseEntity
+                .ok()
+                .body(RecruitListByEndTimeResponse.from(recruits));
     }
 }

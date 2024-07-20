@@ -1,5 +1,6 @@
 package umc.kkijuk.server.recruit.service;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,7 +43,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 새로운_recruit_만들기() {
+    void create_새로운_recruit_만들기() {
         //given
         RecruitCreateDto recruitCreateDto = RecruitCreateDto.builder()
                 .title("dto-title")
@@ -69,7 +71,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 새로운_recruit_만들기_nullable() {
+    void create_새로운_recruit_만들기_nullable() {
         //given
         RecruitCreateDto recruitCreateDto = RecruitCreateDto.builder()
                 .title("dto-title")
@@ -94,7 +96,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 기존_recruit_수정() {
+    void update_기존_recruit_수정() {
         //given
         RecruitUpdate recruitUpdate = RecruitUpdate.builder()
                 .title("update-title")
@@ -124,7 +126,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 수정시_없는_리소스로의_요청은_에러() {
+    void update_수정시_없는_리소스로의_요청은_에러() {
         //given
         RecruitUpdate recruitUpdate = RecruitUpdate.builder()
                 .title("update-title")
@@ -143,7 +145,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void status만_수정시_없는_리소스로의_요청은_에러() {
+    void updateStatus_status만_수정시_없는_리소스로의_요청은_에러() {
         //given
         RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
                 .status(RecruitStatus.ACCEPTED).build();
@@ -155,7 +157,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 기존_recruit_status_수정() {
+    void updateStatus_기존_recruit_status_수정() {
         //given
         RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
                 .status(RecruitStatus.ACCEPTED).build();
@@ -177,7 +179,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 기존_recruit_비활성화() {
+    void disable_기존_recruit_비활성화() {
         //given
         //when
         Recruit result = recruitService.disable(1L);
@@ -191,7 +193,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 없는_유저는_비활성화_할수_없다() {
+    void disable_없는_유저는_비활성화_할수_없다() {
         //given
         //when
         //then
@@ -200,7 +202,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void 비활성화된_유저는_getById로_찾을수_없다() {
+    void disable_비활성화된_유저는_getById로_찾을수_없다() {
         //given
         recruitService.disable(1L);
 
@@ -208,5 +210,61 @@ class RecruitServiceTest {
         //then
         assertThatThrownBy(
                 () -> recruitService.getById(1L)).isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void getByEndTime_마감시간이_date인_모든_active공고를_불러온다() {
+        //given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
+        int times = 10;
+        for (int i = 0; i < times; i++){
+            recruitService.create(RecruitCreateDto.builder()
+                .endTime(dateTime)
+                .build());
+        }
+
+        //when
+        List<Recruit> result = recruitService.findAllByEndTime(dateTime.toLocalDate());
+
+        //then
+        assertThat(result.size()).isEqualTo(times);
+    }
+
+    @Test
+    void getByEndTime_마감시간이_date인_inactive공고는_제외한다() {
+        //given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
+        int times = 10;
+        for (int i = 0; i < times; i++){
+            Recruit recruit = recruitService.create(RecruitCreateDto.builder()
+                    .endTime(dateTime)
+                    .build());
+            recruitService.disable(recruit.getId());
+        }
+
+        //when
+        List<Recruit> result = recruitService.findAllByEndTime(dateTime.toLocalDate());
+
+        //then
+        assertThat(result.size()).isZero();
+    }
+
+    @Test
+    void getByEndTime_active_inactive공고() {
+        //given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
+        int times = 10;
+        for (int i = 0; i < times; i++){
+            Recruit recruit = recruitService.create(RecruitCreateDto.builder()
+                    .endTime(dateTime)
+                    .build());
+            if (i % 2 == 0)
+                recruitService.disable(recruit.getId());
+        }
+        //when
+        List<Recruit> result = recruitService.findAllByEndTime(dateTime.toLocalDate());
+
+        //then
+        assertThat(result.size()).isEqualTo(times / 2);
     }
 }

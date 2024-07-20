@@ -4,6 +4,7 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -56,5 +57,14 @@ public class FakeRecruitRepository implements RecruitRepository {
                         item.getId().equals(id) &&
                         item.getIsActive() != null &&
                         item.getIsActive()).findAny();
+    }
+
+    @Override
+    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, Boolean isActive) {
+        return data.stream()
+                .filter(item ->
+                        endTime.equals(item.getEndTime().toLocalDate()) &&
+                        item.getIsActive() != null &&
+                        item.getIsActive()).toList();
     }
 }

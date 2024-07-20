@@ -12,7 +12,8 @@ import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
 import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
-import java.util.Optional;
+import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @Builder
@@ -56,5 +57,11 @@ public class RecruitServiceImpl implements RecruitService {
         Recruit recruit = getById(recruitId);
         recruit = recruit.disable();
         return recruitRepository.save(recruit);
+    }
+
+    @Override
+    @Transactional
+    public List<Recruit> findAllByEndTime(LocalDate date) {
+        return recruitRepository.findAllByEndDateAndIsActive(date, true);
     }
 }
