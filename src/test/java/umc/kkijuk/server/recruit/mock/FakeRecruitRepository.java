@@ -32,7 +32,7 @@ public class FakeRecruitRepository implements RecruitRepository {
                     .applyDate(recruit.getApplyDate())
                     .tags(recruit.getTags())
                     .link(recruit.getLink())
-                    .isActive(recruit.getIsActive())
+                    .active(recruit.isActive())
                     .build();
             data.add(newRecruit);
             return newRecruit;
@@ -51,20 +51,18 @@ public class FakeRecruitRepository implements RecruitRepository {
     }
 
     @Override
-    public Optional<Recruit> findByIdAndIsActive(long id, Boolean isActive) {
+    public Optional<Recruit> findByIdAndIsActive(long id, boolean active) {
         return data.stream()
                 .filter(item ->
                         item.getId().equals(id) &&
-                        item.getIsActive() != null &&
-                        item.getIsActive()).findAny();
+                        item.isActive() == active).findAny();
     }
 
     @Override
-    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, Boolean isActive) {
+    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, boolean active) {
         return data.stream()
                 .filter(item ->
                         endTime.equals(item.getEndTime().toLocalDate()) &&
-                        item.getIsActive() != null &&
-                        item.getIsActive()).toList();
+                        item.isActive() == active).toList();
     }
 }

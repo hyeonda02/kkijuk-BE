@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RecruitJpaRepository extends JpaRepository<RecruitEntity, Long> {
-    Optional<RecruitEntity> findByIdAndIsActive(long id, Boolean isActive);
+    Optional<RecruitEntity> findByIdAndActive(long id, boolean active);
 
     @Query(value = "SELECT * FROM recruit as e WHERE DATE(e.end_time) = :endTime AND e.is_active = :isActive", nativeQuery = true)
-    List<RecruitEntity> findAllByEndDateAndIsActive(@Param("endTime") LocalDate endTime, @Param("isActive") Boolean isActive);
+    List<RecruitEntity> findAllByEndDateAndActive(@Param("endTime") LocalDate endTime, @Param("isActive") boolean isActive);
 }

@@ -33,13 +33,13 @@ public class RecruitRepositoryImpl implements RecruitRepository {
     }
 
     @Override
-    public Optional<Recruit> findByIdAndIsActive(long id, Boolean isActive) {
-        return recruitJpaRepository.findByIdAndIsActive(id, isActive).map(RecruitEntity::toModel);
+    public Optional<Recruit> findByIdAndIsActive(long id, boolean active) {
+        return recruitJpaRepository.findByIdAndActive(id, active).map(RecruitEntity::toModel);
     }
 
     @Override
-    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, Boolean isActive) {
-        return recruitJpaRepository.findAllByEndDateAndIsActive(endTime, isActive)
+    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, boolean active) {
+        return recruitJpaRepository.findAllByEndDateAndActive(endTime, active)
                 .stream().map(RecruitEntity::toModel).toList();
     }
 }

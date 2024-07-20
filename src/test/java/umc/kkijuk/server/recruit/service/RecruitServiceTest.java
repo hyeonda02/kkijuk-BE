@@ -36,7 +36,7 @@ class RecruitServiceTest {
                 .applyDate(LocalDate.of(2024, 7, 19))
                 .tags(new ArrayList<>(Arrays.asList("코딩 테스트", "인턴", "대외 활동")))
                 .link("test-link")
-                .isActive(true)
+                .active(true)
                 .build();
 
         recruitRepository.save(recruit);
@@ -186,7 +186,7 @@ class RecruitServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(result.getIsActive()).isFalse(),
+                () -> assertThat(result.isActive()).isFalse(),
                 () -> assertThat(result.getDisabledTime()).isNotNull(),
                 () -> assertThat(result.getDisabledTime()).isBefore(LocalDateTime.now())
         );

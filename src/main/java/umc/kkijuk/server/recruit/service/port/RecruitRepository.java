@@ -10,7 +10,7 @@ public interface RecruitRepository {
     Optional<Recruit> findById(Long id);
     Recruit save(Recruit recruit);
     Recruit getById(long id);
-    Optional<Recruit> findByIdAndIsActive(long id, Boolean isActive);
+    Optional<Recruit> findByIdAndIsActive(long id, boolean active);
 
-    List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, Boolean isActive);
+    List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, boolean active);
 }
