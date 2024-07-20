@@ -213,7 +213,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void getByEndTime_마감시간이_date인_모든_active공고를_불러온다() {
+    void findAllByEndTime_마감시간이_date인_모든_active공고를_불러온다() {
         //given
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
@@ -231,7 +231,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void getByEndTime_마감시간이_date인_inactive공고는_제외한다() {
+    void findAllByEndTime_마감시간이_date인_inactive공고는_제외한다() {
         //given
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
@@ -250,7 +250,7 @@ class RecruitServiceTest {
     }
 
     @Test
-    void getByEndTime_active_inactive공고() {
+    void findAllByEndTime_active_inactive공고() {
         //given
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
@@ -266,5 +266,27 @@ class RecruitServiceTest {
 
         //then
         assertThat(result.size()).isEqualTo(times / 2);
+    }
+
+    @Test
+    void findAllByEndTimeAfter_마감이_안지난_active공고를_불러온다() {
+        //given
+        //when
+        List<Recruit> result = recruitService.findAllByEndTimeAfter(LocalDateTime.of(2024, 1, 1, 1, 1));
+
+        //then
+        assertThat(result.size()).isOne();
+    }
+
+    @Test
+    void findAllByEndTimeAfter_inactive공고는_제외한다() {
+        //given
+        recruitService.disable(1L);
+
+        //when
+        List<Recruit> result = recruitService.findAllByEndTimeAfter(LocalDateTime.of(2024, 1, 1, 1, 1));
+
+        //then
+        assertThat(result.size()).isZero();
     }
 }

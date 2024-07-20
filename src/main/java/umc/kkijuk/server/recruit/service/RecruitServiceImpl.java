@@ -13,6 +13,7 @@ import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -63,5 +64,11 @@ public class RecruitServiceImpl implements RecruitService {
     @Transactional
     public List<Recruit> findAllByEndTime(LocalDate date) {
         return recruitRepository.findAllByEndDateAndIsActive(date, true);
+    }
+
+    @Override
+    @Transactional
+    public List<Recruit> findAllByEndTimeAfter(LocalDateTime endTime) {
+        return recruitRepository.findAllByEndTimeAfterAndIsActive(endTime, true);
     }
 }

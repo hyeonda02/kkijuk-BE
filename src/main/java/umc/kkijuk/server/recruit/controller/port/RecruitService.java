@@ -6,6 +6,7 @@ import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
 import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecruitService {
@@ -20,4 +21,6 @@ public interface RecruitService {
     Recruit disable(long recruitId);
 
     List<Recruit> findAllByEndTime(LocalDate date);
+
+    List<Recruit> findAllByEndTimeAfter(LocalDateTime endTime);
 }

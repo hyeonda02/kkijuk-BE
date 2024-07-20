@@ -5,6 +5,7 @@ import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -61,8 +62,14 @@ public class FakeRecruitRepository implements RecruitRepository {
     @Override
     public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, boolean active) {
         return data.stream()
-                .filter(item ->
-                        endTime.equals(item.getEndTime().toLocalDate()) &&
+                .filter(item -> endTime.equals(item.getEndTime().toLocalDate()) &&
                         item.isActive() == active).toList();
+    }
+
+    @Override
+    public List<Recruit> findAllByEndTimeAfterAndIsActive(LocalDateTime endTime, boolean active) {
+        return data.stream()
+                .filter(item -> item.getEndTime().isAfter(endTime) &&
+                                item.isActive() == active).toList();
     }
 }

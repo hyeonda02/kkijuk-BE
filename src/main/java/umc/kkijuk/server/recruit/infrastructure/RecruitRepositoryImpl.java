@@ -42,4 +42,10 @@ public class RecruitRepositoryImpl implements RecruitRepository {
         return recruitJpaRepository.findAllByEndDateAndActive(endTime, active)
                 .stream().map(RecruitEntity::toModel).toList();
     }
+
+    @Override
+    public List<Recruit> findAllByEndTimeAfterAndIsActive(LocalDateTime endTime, boolean active) {
+        return recruitJpaRepository.findAllByEndTimeAfterAndActive(endTime,active)
+                .stream().map(RecruitEntity::toModel).toList();
+    }
 }
