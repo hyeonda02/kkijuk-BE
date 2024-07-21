@@ -38,7 +38,6 @@ public class CareerController {
     @Parameters({
             @Parameter(name="careerId",description = "활동 아이디, path variable 입니다.")
     })
-    // * CareerID 있는지 검증 해야함
     public CareerResponse<Object> delete(@PathVariable Long careerId){
         LoginUser loginUser = LoginUser.get();
         careerService.deleteCareer(careerId);

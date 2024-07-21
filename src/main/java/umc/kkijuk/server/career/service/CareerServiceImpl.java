@@ -3,6 +3,8 @@ package umc.kkijuk.server.career.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.career.controller.exception.CareerNotFoundException;
+import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.converter.CareerConverter;
@@ -10,6 +12,7 @@ import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +32,16 @@ public class CareerServiceImpl implements CareerService {
     @Override
     @Transactional
     public void deleteCareer(Long careerId) {
-        careerRepository.delete(careerRepository.findById(careerId).get());
+        Optional<Career> career = careerRepository.findById(careerId);
+        if (career.isEmpty()) {
+            throw new CareerNotFoundException(CareerResponseMessage.CAREER_NOT_FOUND.toString());
+        }
+        careerRepository.delete(career.get());
+    }
+
+    @Override
+    public Optional<Career> findCareer(Long value) {
+        return careerRepository.findById(value);
     }
 
     private int parsingYear(CareerRequestDto.CareerDto request){
