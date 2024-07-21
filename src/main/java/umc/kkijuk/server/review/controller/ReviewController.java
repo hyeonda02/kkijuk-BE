@@ -45,7 +45,7 @@ public class ReviewController {
             description = "주어진 지원 공고 후기를 수정합니다")
     @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
     @Parameter(name = "reviewId", description = "지원 공고 후기 ID", example = "1")
-    @PostMapping("/review/{reviewId}")
+    @PutMapping("/review/{reviewId}")
     public ResponseEntity<ReviewIdResponse> update(
             @PathVariable Long recruitId,
             @PathVariable Long reviewId,
@@ -57,5 +57,23 @@ public class ReviewController {
         return ResponseEntity
                 .ok()
                 .body(ReviewIdResponse.from(review));
+    }
+
+    @Operation(
+            summary = "지원 공고 후기 삭제",
+            description = "주어진 지원 공고 후기를 삭제합니다")
+    @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
+    @Parameter(name = "reviewId", description = "지원 공고 후기 ID", example = "1")
+    @DeleteMapping("/review/{reviewId}")
+    public ResponseEntity<Void> delete(
+            @PathVariable Long recruitId,
+            @PathVariable Long reviewId
+    ) {
+        Recruit recruit = recruitService.getById(recruitId);
+        reviewService.delete(recruit, reviewId);
+
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

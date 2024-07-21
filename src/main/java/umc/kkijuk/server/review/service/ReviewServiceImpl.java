@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.common.domian.exception.ReviewRecruitNotMatchException;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
@@ -32,11 +33,21 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public Review update(Recruit recruit, Long reviewId, ReviewUpdate reviewUpdate) {
         Review review = getById(reviewId);
-        if (!review.getId().equals(recruit.getId())) {
-            // 잘못된 요청 처리 나중에 작성
+        if (!review.getRecruitId().equals(recruit.getId())) {
+            throw new ReviewRecruitNotMatchException(reviewId, review.getRecruitId(), review.getId());
         }
 
         review = review.update(reviewUpdate);
         return reviewRepository.save(review);
+    }
+
+    @Override
+    public void delete(Recruit recruit, Long reviewId) {
+        Review review = getById(reviewId);
+        if (!review.getRecruitId().equals(recruit.getId())) {
+            throw new ReviewRecruitNotMatchException(reviewId, review.getRecruitId(), review.getId());
+        }
+
+        reviewRepository.delete(review);
     }
 }

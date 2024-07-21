@@ -45,4 +45,9 @@ public class FakeReviewRepository implements ReviewRepository {
         return findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("review", id));
     }
+
+    @Override
+    public void delete(Review review) {
+        data.remove(review);
+    }
 }

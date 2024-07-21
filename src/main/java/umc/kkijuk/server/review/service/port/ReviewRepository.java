@@ -10,4 +10,6 @@ public interface ReviewRepository {
     Optional<Review> findById(Long id);
 
     Review getById(Long id);
+
+    void delete(Review review);
 }

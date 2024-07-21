@@ -1,8 +1,9 @@
 package umc.kkijuk.server.review.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.common.domian.exception.ReviewRecruitNotMatchException;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
@@ -14,6 +15,7 @@ import umc.kkijuk.server.review.service.port.ReviewRepository;
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ReviewServiceTest {
@@ -127,5 +129,54 @@ class ReviewServiceTest {
                 () -> assertThat(result.getContent()).isNull(),
                 () -> assertThat(result.getDate()).isEqualTo(LocalDate.of(2024, 7, 30))
         );
+    }
+
+    @Test
+    void delete_존재하던_review_제거() {
+        //given
+        ReviewCreate reviewCreate = ReviewCreate.builder()
+                .title("new-title")
+                .content("new-content")
+                .date(LocalDate.of(2024, 7, 21))
+                .build();
+
+        Recruit recruit = Recruit.builder().id(3L).build();
+        Review review = reviewService.create(recruit, reviewCreate);
+
+        //when
+        reviewService.delete(recruit, review.getId());
+
+        //then
+        assertThatThrownBy(
+            () -> reviewService.getById(review.getId())).isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void delete_존재하지않은_review에대한_제거요청() {
+        //given
+        Recruit recruit = Recruit.builder().id(3L).build();
+
+        //when
+        //then
+        assertThatThrownBy(
+                () -> reviewService.delete(recruit, 3333L)).isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void delete_review의_공고ID가_요청한_공고ID와_다른경우() {
+        //given
+        ReviewCreate reviewCreate = ReviewCreate.builder()
+                .title("new-title")
+                .content("new-content")
+                .date(LocalDate.of(2024, 7, 21))
+                .build();
+        Recruit recruit_1 = Recruit.builder().id(3L).build();
+        Recruit recruit_2 = Recruit.builder().id(4L).build();
+        Review review = reviewService.create(recruit_1, reviewCreate);
+
+        //when
+        //then
+        assertThatThrownBy(
+                () -> reviewService.delete(recruit_2, review.getId())).isInstanceOf(ReviewRecruitNotMatchException.class);
     }
 }
