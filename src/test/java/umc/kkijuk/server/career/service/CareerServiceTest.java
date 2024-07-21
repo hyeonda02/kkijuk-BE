@@ -77,8 +77,8 @@ public class CareerServiceTest {
         //then
         assertAll(
                 () -> assertThat(career.getId()).isEqualTo(1L),
-                () -> assertThat(career.getName()).isEqualTo("career_dto_name"),
-                () -> assertThat(career.getAlias()).isEqualTo("career_dto_alias"),
+                () -> assertThat(career.getName()).isEqualTo("test"),
+                () -> assertThat(career.getAlias()).isEqualTo("alias"),
                 () -> assertThat(career.getCurrent()).isEqualTo(false),
                 () -> assertThat(career.getStartdate()).isEqualTo(LocalDate.of(2024, 4, 10)),
                 () -> assertThat(career.getEnddate()).isEqualTo(LocalDate.of(2024, 7, 20)),
