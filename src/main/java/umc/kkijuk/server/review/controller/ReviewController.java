@@ -13,6 +13,7 @@ import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.controller.response.ReviewIdResponse;
 import umc.kkijuk.server.review.domain.Review;
 import umc.kkijuk.server.review.domain.ReviewCreate;
+import umc.kkijuk.server.review.domain.ReviewUpdate;
 
 @Tag(name = "review", description = "모집 공고 후기 API")
 @RestController
@@ -33,6 +34,25 @@ public class ReviewController {
     ) {
         Recruit recruit = recruitService.getById(recruitId);
         Review review = reviewService.create(recruit, reviewCreate);
+
+        return ResponseEntity
+                .ok()
+                .body(ReviewIdResponse.from(review));
+    }
+
+    @Operation(
+            summary = "지원 공고 후기 수정",
+            description = "주어진 지원 공고 후기를 수정합니다")
+    @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
+    @Parameter(name = "reviewId", description = "지원 공고 후기 ID", example = "1")
+    @PostMapping("/review/{reviewId}")
+    public ResponseEntity<ReviewIdResponse> update(
+            @PathVariable Long recruitId,
+            @PathVariable Long reviewId,
+            @RequestBody @Valid ReviewUpdate reviewUpdate
+    ) {
+        Recruit recruit = recruitService.getById(recruitId);
+        Review review = reviewService.update(recruit, reviewId, reviewUpdate);
 
         return ResponseEntity
                 .ok()

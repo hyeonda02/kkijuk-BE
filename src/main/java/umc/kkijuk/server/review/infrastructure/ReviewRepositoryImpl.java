@@ -26,6 +26,6 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     @Override
     public Review getById(Long id) {
         return findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("recruit", id));
+                .orElseThrow(() -> new ResourceNotFoundException("review", id));
     }
 }

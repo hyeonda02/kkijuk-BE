@@ -23,4 +23,14 @@ public class Review {
                 .date(reviewCreate.getDate())
                 .build();
     }
+
+    public Review update(ReviewUpdate reviewUpdate) {
+        return Review.builder()
+                .id(this.id)
+                .recruitId(this.recruitId)
+                .title(reviewUpdate.getTitle())
+                .content(reviewUpdate.getContent())
+                .date(reviewUpdate.getDate())
+                .build();
+    }
 }
