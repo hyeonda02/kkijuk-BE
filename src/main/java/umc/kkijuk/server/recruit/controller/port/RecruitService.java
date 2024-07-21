@@ -5,7 +5,9 @@ import umc.kkijuk.server.recruit.domain.RecruitCreateDto;
 import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
 import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 
-import javax.net.ssl.SSLSession;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public interface RecruitService {
     Recruit create(RecruitCreateDto recruitCreateDto);
@@ -17,4 +19,8 @@ public interface RecruitService {
     Recruit updateStatus(long recruitId, RecruitStatusUpdate recruitStatusUpdate);
 
     Recruit disable(long recruitId);
+
+    List<Recruit> findAllByEndTime(LocalDate date);
+
+    List<Recruit> findAllByEndTimeAfter(LocalDateTime endTime);
 }

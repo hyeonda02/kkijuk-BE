@@ -19,7 +19,7 @@ public class Recruit {
     private final LocalDate applyDate;
     private final List<String> tags;
     private final String link;
-    private final Boolean isActive;
+    private final boolean active;
     private final LocalDateTime disabledTime;
 
     public static Recruit from(RecruitCreateDto recruitCreateDto) {
@@ -31,7 +31,7 @@ public class Recruit {
                 .applyDate(recruitCreateDto.getApplyDate())
                 .tags(recruitCreateDto.getTags() != null ? recruitCreateDto.getTags() : new ArrayList<>())
                 .link(recruitCreateDto.getLink())
-                .isActive(true)
+                .active(true)
                 .build();
     }
 
@@ -45,7 +45,7 @@ public class Recruit {
                 .applyDate(recruitUpdate.getApplyDate())
                 .tags(recruitUpdate.getTags() != null ? recruitUpdate.getTags() : new ArrayList<>())
                 .link(recruitUpdate.getLink())
-                .isActive(this.isActive)
+                .active(this.active)
                 .build();
     }
 
@@ -59,7 +59,7 @@ public class Recruit {
                 .applyDate(this.getApplyDate())
                 .tags(this.getTags())
                 .link(this.getLink())
-                .isActive(this.isActive)
+                .active(this.active)
                 .build();
     }
 
@@ -73,7 +73,7 @@ public class Recruit {
                 .applyDate(this.getApplyDate())
                 .tags(this.getTags())
                 .link(this.getLink())
-                .isActive(false)
+                .active(false)
                 .disabledTime(LocalDateTime.now())
                 .build();
     }

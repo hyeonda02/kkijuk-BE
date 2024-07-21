@@ -4,6 +4,8 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +33,7 @@ public class FakeRecruitRepository implements RecruitRepository {
                     .applyDate(recruit.getApplyDate())
                     .tags(recruit.getTags())
                     .link(recruit.getLink())
-                    .isActive(recruit.getIsActive())
+                    .active(recruit.isActive())
                     .build();
             data.add(newRecruit);
             return newRecruit;
@@ -50,11 +52,24 @@ public class FakeRecruitRepository implements RecruitRepository {
     }
 
     @Override
-    public Optional<Recruit> findByIdAndIsActive(long id, Boolean isActive) {
+    public Optional<Recruit> findByIdAndIsActive(long id, boolean active) {
         return data.stream()
                 .filter(item ->
                         item.getId().equals(id) &&
-                        item.getIsActive() != null &&
-                        item.getIsActive()).findAny();
+                        item.isActive() == active).findAny();
+    }
+
+    @Override
+    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, boolean active) {
+        return data.stream()
+                .filter(item -> endTime.equals(item.getEndTime().toLocalDate()) &&
+                        item.isActive() == active).toList();
+    }
+
+    @Override
+    public List<Recruit> findAllByEndTimeAfterAndIsActive(LocalDateTime endTime, boolean active) {
+        return data.stream()
+                .filter(item -> item.getEndTime().isAfter(endTime) &&
+                                item.isActive() == active).toList();
     }
 }
