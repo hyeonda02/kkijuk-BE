@@ -28,6 +28,10 @@ public class CareerRequestDto {
         @Schema(description = "활동 별칭", example = "동아리", type="string")
         String alias;
 
+        @Size(max = 50)
+        @Schema(description = "활동 내역", example = "활동 내역 최대 50자까지 입력 가능(선택사항입니다.)",type = "string")
+        String summary;
+
         @NotNull(message = "활동 여부는 필수 선택 항목입니다.")
         @Schema(description = "활동 여부", example = "false", type = "boolean")
         Boolean isCurrent;

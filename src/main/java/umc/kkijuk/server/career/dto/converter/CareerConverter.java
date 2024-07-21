@@ -10,6 +10,7 @@ public class CareerConverter {
         return Career.builder()
                 .name(request.getCareerName())
                 .alias(request.getAlias())
+                .summary(request.getSummary())
                 .startdate(request.getStartDate())
                 .current(request.getIsCurrent())
                 .enddate(request.getEndDate())

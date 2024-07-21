@@ -25,6 +25,9 @@ public class Career extends BaseEntity {
     @Column(name="career_current")
     private Boolean current;
 
+    @Column(name="career_summary",length = 50)
+    private String summary;
+
     @Column(name="career_year")
     private int year;
 
