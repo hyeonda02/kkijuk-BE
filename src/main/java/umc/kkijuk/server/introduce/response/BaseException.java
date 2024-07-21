@@ -1,4 +1,4 @@
-package umc.kkijuk.server.introduce.error;
+package umc.kkijuk.server.introduce.response;
 
 import lombok.Getter;
 import lombok.Setter;

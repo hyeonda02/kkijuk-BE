@@ -1,4 +1,4 @@
-package umc.kkijuk.server.introduce.error;
+package umc.kkijuk.server.introduce.response;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

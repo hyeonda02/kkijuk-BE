@@ -1,5 +1,4 @@
-package umc.kkijuk.server.introduce.error;
-import umc.kkijuk.server.introduce.error.BaseException;
+package umc.kkijuk.server.introduce.response;
 import lombok.Getter;
 
 @Getter
