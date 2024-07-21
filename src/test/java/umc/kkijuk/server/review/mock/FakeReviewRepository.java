@@ -50,4 +50,11 @@ public class FakeReviewRepository implements ReviewRepository {
     public void delete(Review review) {
         data.remove(review);
     }
+
+    @Override
+    public List<Review> findAllByRecruitId(Long id) {
+        return data.stream()
+                .filter(review -> review.getRecruitId().equals(id))
+                .toList();
+    }
 }

@@ -13,6 +13,7 @@ import umc.kkijuk.server.review.mock.FakeReviewRepository;
 import umc.kkijuk.server.review.service.port.ReviewRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -178,5 +179,24 @@ class ReviewServiceTest {
         //then
         assertThatThrownBy(
                 () -> reviewService.delete(recruit_2, review.getId())).isInstanceOf(ReviewRecruitNotMatchException.class);
+    }
+
+    @Test
+    void findAllByRecruitId_공고의_모든_review찾기() {
+        //given
+        Recruit recruit = Recruit.builder().id(3333L).build();
+        ReviewCreate reviewCreate = ReviewCreate.builder()
+                .title("new-title")
+                .content("new-content")
+                .date(LocalDate.of(2024, 7, 21))
+                .build();
+        for (int i = 0; i < 10; i++)
+            reviewService.create(recruit, reviewCreate);
+
+        //when
+        List<Review> reviews = reviewService.findAllByRecruitId(recruit.getId());
+
+        //then
+        assertThat(reviews.size()).isEqualTo(10);
     }
 }

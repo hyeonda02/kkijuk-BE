@@ -6,6 +6,7 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.review.domain.Review;
 import umc.kkijuk.server.review.service.port.ReviewRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -32,5 +33,10 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     @Override
     public void delete(Review review) {
         reviewJpaRepository.delete(ReviewEntity.from(review));
+    }
+
+    @Override
+    public List<Review> findAllByRecruitId(Long id) {
+        return reviewJpaRepository.findAllByRecruitId(id).stream().map(ReviewEntity::toModel).toList();
     }
 }

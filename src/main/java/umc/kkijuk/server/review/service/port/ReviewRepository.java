@@ -2,6 +2,7 @@ package umc.kkijuk.server.review.service.port;
 
 import umc.kkijuk.server.review.domain.Review;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ReviewRepository {
@@ -12,4 +13,6 @@ public interface ReviewRepository {
     Review getById(Long id);
 
     void delete(Review review);
+
+    List<Review> findAllByRecruitId(Long id);
 }

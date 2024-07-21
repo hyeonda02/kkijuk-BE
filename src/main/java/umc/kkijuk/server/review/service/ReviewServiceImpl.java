@@ -12,11 +12,18 @@ import umc.kkijuk.server.review.domain.ReviewCreate;
 import umc.kkijuk.server.review.domain.ReviewUpdate;
 import umc.kkijuk.server.review.service.port.ReviewRepository;
 
+import java.util.List;
+
 @Service
 @Builder
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
+
+    @Override
+    public List<Review> findAllByRecruitId(Long recruitId) {
+        return reviewRepository.findAllByRecruitId(recruitId);
+    }
 
     public Review getById(Long id) {
         return reviewRepository.getById(id);
@@ -34,7 +41,7 @@ public class ReviewServiceImpl implements ReviewService {
     public Review update(Recruit recruit, Long reviewId, ReviewUpdate reviewUpdate) {
         Review review = getById(reviewId);
         if (!review.getRecruitId().equals(recruit.getId())) {
-            throw new ReviewRecruitNotMatchException(reviewId, review.getRecruitId(), review.getId());
+            throw new ReviewRecruitNotMatchException(recruit.getId(), reviewId);
         }
 
         review = review.update(reviewUpdate);
@@ -45,7 +52,7 @@ public class ReviewServiceImpl implements ReviewService {
     public void delete(Recruit recruit, Long reviewId) {
         Review review = getById(reviewId);
         if (!review.getRecruitId().equals(recruit.getId())) {
-            throw new ReviewRecruitNotMatchException(reviewId, review.getRecruitId(), review.getId());
+            throw new ReviewRecruitNotMatchException(recruit.getId(), reviewId);
         }
 
         reviewRepository.delete(review);

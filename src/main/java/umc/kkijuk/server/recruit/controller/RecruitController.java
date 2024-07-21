@@ -16,10 +16,11 @@ import umc.kkijuk.server.recruit.controller.response.RecruitListByEndDateRespons
 import umc.kkijuk.server.recruit.controller.response.RecruitListByEndTimeAfterResponse;
 import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.controller.response.RecruitIdResponse;
+import umc.kkijuk.server.review.controller.port.ReviewService;
+import umc.kkijuk.server.review.domain.Review;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "recruit", description = "모집 공고 API")
@@ -28,6 +29,7 @@ import java.util.List;
 @RequestMapping("/recruit")
 public class RecruitController {
     private final RecruitService recruitService;
+    private final ReviewService reviewService;
 
     @Operation(
             summary = "지원 공고 생성",
@@ -79,7 +81,6 @@ public class RecruitController {
                 .body(recruitService.disable(recruitId).getId());
     }
 
-    // review 만든 후 테스트 코드 작성
     @Operation(
             summary = "지원 공고 상세",
             description = "지원 공고 ID에 해당하는 공고의 상세 정보를 요청합니다.")
@@ -88,11 +89,11 @@ public class RecruitController {
     public ResponseEntity<RecruitInfoResponse> getRecruitInfo(@PathVariable long recruitId) {
         LoginUser loginUser = LoginUser.get();
         Recruit recruit = recruitService.getById(recruitId);
-//        List<Review> reviews = reviewService.getByRecruitId(recruitId);
+        List<Review> reviews = reviewService.findAllByRecruitId(recruitId);
 
         return ResponseEntity
                 .ok()
-                .body(RecruitInfoResponse.from(recruit, new ArrayList<>()));
+                .body(RecruitInfoResponse.from(recruit, reviews));
     }
     @Operation(
         summary = "지원 공고 목록 (특정 날짜 이후)",
