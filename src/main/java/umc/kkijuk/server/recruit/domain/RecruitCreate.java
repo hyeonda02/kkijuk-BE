@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class RecruitCreateDto {
+public class RecruitCreate {
     @NotBlank(message = "공고 제목은 필수 입력 항목입니다.")
     @Schema(description = "공고 제목", example = "[00] 공고제목", type = "string")
     private String title;

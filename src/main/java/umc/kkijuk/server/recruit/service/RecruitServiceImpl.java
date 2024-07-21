@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.Recruit;
-import umc.kkijuk.server.recruit.domain.RecruitCreateDto;
+import umc.kkijuk.server.recruit.domain.RecruitCreate;
 import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
 import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
@@ -31,8 +31,8 @@ public class RecruitServiceImpl implements RecruitService {
 
     @Override
     @Transactional
-    public Recruit create(RecruitCreateDto recruitCreateDto) {
-        Recruit recruit = Recruit.from(recruitCreateDto);
+    public Recruit create(RecruitCreate recruitCreate) {
+        Recruit recruit = Recruit.from(recruitCreate);
         return recruitRepository.save(recruit);
     }
 

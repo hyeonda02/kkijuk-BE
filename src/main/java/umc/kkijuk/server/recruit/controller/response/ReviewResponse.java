@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
-import umc.kkijuk.server.recruit.domain.Review;
+import umc.kkijuk.server.review.domain.Review;
 
 import java.time.LocalDate;
 
