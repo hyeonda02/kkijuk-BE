@@ -1,6 +1,5 @@
 package umc.kkijuk.server.recruit.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
@@ -45,7 +44,7 @@ class RecruitServiceTest {
     @Test
     void create_새로운_recruit_만들기() {
         //given
-        RecruitCreateDto recruitCreateDto = RecruitCreateDto.builder()
+        RecruitCreate recruitCreate = RecruitCreate.builder()
                 .title("dto-title")
                 .status(RecruitStatus.PLANNED)
                 .startTime(LocalDateTime.of(2024, 7, 19, 2, 30))
@@ -55,7 +54,7 @@ class RecruitServiceTest {
                 .link("https://www.dto-title.com")
                 .build();
         //when
-        Recruit result = recruitService.create(recruitCreateDto);
+        Recruit result = recruitService.create(recruitCreate);
 
         //then
         assertAll(
@@ -73,14 +72,14 @@ class RecruitServiceTest {
     @Test
     void create_새로운_recruit_만들기_nullable() {
         //given
-        RecruitCreateDto recruitCreateDto = RecruitCreateDto.builder()
+        RecruitCreate recruitCreate = RecruitCreate.builder()
                 .title("dto-title")
                 .status(RecruitStatus.PLANNED)
                 .startTime(LocalDateTime.of(2024, 7, 19, 2, 30))
                 .endTime(LocalDateTime.of(2024, 7, 30, 2, 30))
                 .build();
         //when
-        Recruit result = recruitService.create(recruitCreateDto);
+        Recruit result = recruitService.create(recruitCreate);
 
         //then
         assertAll(
@@ -218,7 +217,7 @@ class RecruitServiceTest {
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
         for (int i = 0; i < times; i++){
-            recruitService.create(RecruitCreateDto.builder()
+            recruitService.create(RecruitCreate.builder()
                 .endTime(dateTime)
                 .build());
         }
@@ -236,7 +235,7 @@ class RecruitServiceTest {
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
         for (int i = 0; i < times; i++){
-            Recruit recruit = recruitService.create(RecruitCreateDto.builder()
+            Recruit recruit = recruitService.create(RecruitCreate.builder()
                     .endTime(dateTime)
                     .build());
             recruitService.disable(recruit.getId());
@@ -255,7 +254,7 @@ class RecruitServiceTest {
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
         for (int i = 0; i < times; i++){
-            Recruit recruit = recruitService.create(RecruitCreateDto.builder()
+            Recruit recruit = recruitService.create(RecruitCreate.builder()
                     .endTime(dateTime)
                     .build());
             if (i % 2 == 0)

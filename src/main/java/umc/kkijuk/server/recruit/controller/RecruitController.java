@@ -33,9 +33,9 @@ public class RecruitController {
             summary = "지원 공고 생성",
             description = "주어진 정보를 바탕으로 지원 공고 데이터를 생성합니다.")
     @PostMapping
-    public ResponseEntity<RecruitIdResponse> create(@RequestBody @Valid RecruitCreateDto recruitCreateDto) {
+    public ResponseEntity<RecruitIdResponse> create(@RequestBody @Valid RecruitCreate recruitCreate) {
         LoginUser loginUser = LoginUser.get();
-        Recruit recruit = recruitService.create(recruitCreateDto);
+        Recruit recruit = recruitService.create(recruitCreate);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(RecruitIdResponse.from(recruit));
@@ -120,4 +120,10 @@ public class RecruitController {
                 .ok()
                 .body(RecruitListByEndTimeAfterResponse.from(recruits));
     }
+
+    // 멤버 추가시 추가
+//    @GetMapping("/list/valid")
+//    public ResponseEntity<ValidRecruitListResponse> findValidRecruit() {
+//
+//    }
 }

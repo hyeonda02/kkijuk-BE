@@ -1,7 +1,7 @@
 package umc.kkijuk.server.recruit.controller.port;
 
 import umc.kkijuk.server.recruit.domain.Recruit;
-import umc.kkijuk.server.recruit.domain.RecruitCreateDto;
+import umc.kkijuk.server.recruit.domain.RecruitCreate;
 import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
 import umc.kkijuk.server.recruit.domain.RecruitUpdate;
 
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecruitService {
-    Recruit create(RecruitCreateDto recruitCreateDto);
+    Recruit create(RecruitCreate recruitCreate);
 
     Recruit update(Long recruitId, RecruitUpdate recruitUpdate);
 
