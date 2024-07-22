@@ -14,19 +14,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import umc.kkijuk.server.career.controller.CareerController;
 import umc.kkijuk.server.career.controller.exception.CareerExceptionControllerAdvice;
+import umc.kkijuk.server.career.controller.exception.CareerNotFoundException;
 import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
+import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
@@ -37,7 +40,10 @@ public class CareerServiceTest {
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
+    private CareerRepository careerRepository;
+    @Autowired
     private CareerExceptionControllerAdvice careerExceptionControllerAdvice;
+    private Career career;
 
 
     @BeforeEach
@@ -59,10 +65,20 @@ public class CareerServiceTest {
         categoryRepository.save(category2);
         categoryRepository.save(category3);
         categoryRepository.save(category4);
+
+        career = Career.builder().id(1L).name("tet1")
+                .alias("alias2")
+                .summary("summary")
+                .current(false)
+                .startdate(LocalDate.of(2024, 4, 10))
+                .enddate(LocalDate.of(2024, 7, 20))
+                .category(category1)
+                .build();
+        careerRepository.save(career);
     }
 
     @Test
-    void 새로운_career_만들기() {
+    void create_새로운_career_만들기() {
         //given
         CareerRequestDto.CareerDto careerCreateDto = CareerRequestDto.CareerDto.builder()
                 .careerName("test")
@@ -76,7 +92,7 @@ public class CareerServiceTest {
         Career career = careerService.createCareer(careerCreateDto);
         //then
         assertAll(
-                () -> assertThat(career.getId()).isEqualTo(1L),
+                () -> assertThat(career.getId()).isEqualTo(2L),
                 () -> assertThat(career.getName()).isEqualTo("test"),
                 () -> assertThat(career.getAlias()).isEqualTo("alias"),
                 () -> assertThat(career.getCurrent()).isEqualTo(false),
@@ -86,6 +102,23 @@ public class CareerServiceTest {
                 () -> assertThat(career.getCategory().getId()).isEqualTo(1L),
                 () -> assertThat(career.getCategory().getName()).isEqualTo("동아리")
         );
+    }
+    @Test
+    void delete_기존_career_삭제(){
+        //given
+        careerService.deleteCareer(career.getId());
+        //when
+        //then
+        Optional<Career> deletedCareer = careerRepository.findById(career.getId());
+        assertThat(deletedCareer).isEmpty();
+
+    }
+    @Test
+    void delete_삭제시_없는_careerId_요청은_에러() {
+        //given
+        //when
+        //then
+        assertThrows(CareerNotFoundException.class, () -> careerService.deleteCareer(999L));
     }
     @Test
     void CareerExceptionControllerAdvice가_올바른_예외_응답을_반환하는지_검증() {

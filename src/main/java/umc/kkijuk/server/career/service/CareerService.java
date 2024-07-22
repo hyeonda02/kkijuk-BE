@@ -9,4 +9,5 @@ public interface CareerService {
     Career createCareer(CareerRequestDto.CareerDto request);
     void deleteCareer(Long careerId);
     Optional<Career> findCareer(Long value);
+    Career updateCareer(Long careerId, CareerRequestDto.UpdateCareerDto request);
 }

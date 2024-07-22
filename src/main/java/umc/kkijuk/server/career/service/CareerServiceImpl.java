@@ -1,6 +1,9 @@
 package umc.kkijuk.server.career.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.career.controller.exception.CareerNotFoundException;
@@ -11,8 +14,11 @@ import umc.kkijuk.server.career.dto.converter.CareerConverter;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 
+import java.beans.PropertyDescriptor;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -32,16 +38,23 @@ public class CareerServiceImpl implements CareerService {
     @Override
     @Transactional
     public void deleteCareer(Long careerId) {
-        Optional<Career> career = careerRepository.findById(careerId);
-        if (career.isEmpty()) {
-            throw new CareerNotFoundException(CareerResponseMessage.CAREER_NOT_FOUND.toString());
-        }
+        Optional<Career> career = findCareer(careerId);
         careerRepository.delete(career.get());
     }
+    @Override
+    public Career updateCareer(Long careerId, CareerRequestDto.UpdateCareerDto request) {
+        Career career = findCareer(careerId).get();
+        if(request.getCategory()!=0){
+            career.setCategory(categoryRepository.findById(Long.valueOf(request.getCategory())).get());
+        }
+        return careerRepository.save(career);
+    }
+
 
     @Override
-    public Optional<Career> findCareer(Long value) {
-        return careerRepository.findById(value);
+    public Optional<Career> findCareer(Long careerId) {
+        return Optional.ofNullable(careerRepository.findById(careerId).orElseThrow(
+                () -> new CareerNotFoundException(CareerResponseMessage.CAREER_NOT_FOUND.toString())));
     }
 
     private int parsingYear(CareerRequestDto.CareerDto request){

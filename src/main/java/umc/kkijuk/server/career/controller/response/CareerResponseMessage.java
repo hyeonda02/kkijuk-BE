@@ -10,7 +10,13 @@ public class CareerResponseMessage {
     public static final String CAREER_PERIOD_FAIL = "시작 날짜는 종료 날짜보다 앞에 있어야 합니다.";
     public static final String CATEGORY_NOT_FOUND = "존재하는 카테고리 Id가 아닙니다.";
     public static final String CAREER_DELETE_SUCCESS = "활동 삭제가 정상적으로 이루어졌습니다.";
-    public static final String CAREER_DELETE_FAIL = "활동 삭제를 실패했습니다.";
+
+
+
+
+
+
+
 
 
 }

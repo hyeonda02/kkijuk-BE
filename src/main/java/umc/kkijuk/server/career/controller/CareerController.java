@@ -2,7 +2,6 @@ package umc.kkijuk.server.career.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,15 +32,34 @@ public class CareerController {
                 CareerConverter.tocareerResultDto(career));
     }
 
+
     @DeleteMapping("/{careerId}")
     @Operation(summary = "활동 삭제 API", description = "내 커리어 - 활동을 삭제하는 API")
-    @Parameters({
-            @Parameter(name="careerId",description = "활동 아이디, path variable 입니다.")
-    })
+    @Parameter(name="careerId", description = "활동 Id, path variable 입니다.",example = "1")
     public CareerResponse<Object> delete(@PathVariable Long careerId){
         LoginUser loginUser = LoginUser.get();
         careerService.deleteCareer(careerId);
         return CareerResponse.success(CareerStatusCode.OK,
                 CareerResponseMessage.CAREER_DELETE_SUCCESS,null);
     }
+
+    @PatchMapping("/{careerId}")
+    @Operation(summary = "활동 수정 API", description = "내 커리어 - 활동을 수정하는 API")
+    @Parameter(name="careerId", description = "활동 Id, path variable 입니다.",example = "1")
+    public CareerResponse<Object> update(@RequestBody @Valid CareerRequestDto.UpdateCareerDto request,
+                                         @PathVariable Long careerId) {
+        LoginUser loginUser = LoginUser.get();
+        Career updateCareer = careerService.updateCareer(careerId, request);
+        return null;
+    }
 }
+
+
+
+
+
+
+
+
+
+
