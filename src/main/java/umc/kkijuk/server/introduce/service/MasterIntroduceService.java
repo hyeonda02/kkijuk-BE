@@ -8,7 +8,7 @@ import umc.kkijuk.server.introduce.domain.MasterIntroduce;
 import umc.kkijuk.server.introduce.domain.MasterIntroduceRepository;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
-import umc.kkijuk.server.introduce.response.BaseException;
+import umc.kkijuk.server.introduce.error.BaseException;
 
 import java.util.List;
 
