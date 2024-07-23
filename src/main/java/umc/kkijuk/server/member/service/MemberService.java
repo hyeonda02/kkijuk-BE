@@ -19,7 +19,7 @@ public class MemberService {
     }
 
 
-    //아직 인터페이스 구현 x, 추후에 구현 후 MemberService -> MemberServiceImpl로 수정 예정
+    //아직 인터페이스 구현 x, 추후에 구현 후 MemberService -> MemberServiceImpl로 수정 예정.
     public Long join(Member member) {
         memberJpaRepository.save(member);
         return member.getId();
