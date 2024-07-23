@@ -49,10 +49,10 @@ public class CareerResponse<T> {
                 errors.put(error.getObjectName(),error.getDefaultMessage());
             }
         }
-        return new CareerResponse<>(CareerStatusCode.FAIL,CareerResponseMessage.CAREER_CREATE_FAIL,errors);
+        return new CareerResponse<>(HttpStatus.BAD_REQUEST.value(), CareerResponseMessage.CAREER_CREATE_FAIL,errors);
     }
     public static CareerResponse<?> createError(String message){
-        return new CareerResponse<>(CareerStatusCode.FAIL, message, null);
+        return new CareerResponse<>(HttpStatus.BAD_REQUEST.value(), message, null);
     }
 
 

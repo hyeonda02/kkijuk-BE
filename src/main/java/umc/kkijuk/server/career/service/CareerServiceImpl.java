@@ -3,8 +3,8 @@ package umc.kkijuk.server.career.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.kkijuk.server.career.controller.exception.CareerNotFoundException;
 import umc.kkijuk.server.career.controller.exception.CareerValidationException;
+import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
@@ -12,7 +12,10 @@ import umc.kkijuk.server.career.dto.converter.CareerConverter;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +42,7 @@ public class CareerServiceImpl implements CareerService {
         Optional<Career> career = findCareer(careerId);
         careerRepository.delete(career.get());
     }
+
     @Override
     @Transactional
     public Career updateCareer(Long careerId, CareerRequestDto.UpdateCareerDto request) {
@@ -66,15 +70,27 @@ public class CareerServiceImpl implements CareerService {
         return careerRepository.save(career);
     }
 
+    @Override
+    public List<? extends CareerGroupedByResponse> getCareerGroupedBy(String status) {
+        List<Career> careers = careerRepository.findAll();
+        Map<String,List<Career>> groupedCareers;
+
+        if(status.equalsIgnoreCase("category")){
+            groupedCareers = careers.stream().collect(Collectors.groupingBy(value -> value.getCategory().getName()));
+            return CareerConverter.toCareerGroupedByCategoryDto(groupedCareers);
+        } else if (status.equalsIgnoreCase("year")) {
+            groupedCareers = careers.stream().collect(Collectors.groupingBy(value -> String.valueOf(value.getYear())));
+            return CareerConverter.toCareerGroupedByYearDto(groupedCareers);
+        } else {
+            throw new IllegalArgumentException(CareerResponseMessage.CAREER_FINDALL_FAIL);
+        }
+    }
 
     @Override
     public Optional<Career> findCareer(Long careerId) {
         return Optional.ofNullable(careerRepository.findById(careerId).orElseThrow(
-                () -> new CareerNotFoundException(CareerResponseMessage.CAREER_NOT_FOUND.toString())));
+                () -> new CareerValidationException(CareerResponseMessage.CAREER_NOT_FOUND.toString(),"careerId")));
     }
-
-
-
 
 
 

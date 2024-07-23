@@ -24,11 +24,6 @@ public class CareerExceptionControllerAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CareerResponse.createError(CareerResponseMessage.CAREER_FOTMAT_INVALID));
     }
 
-    @ExceptionHandler(CareerNotFoundException.class)
-    public ResponseEntity<CareerResponse<?>> handleCareerNotFoundException(CareerNotFoundException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CareerResponse.createError(e.getMessage()));
-    }
-
     @ExceptionHandler(CareerValidationException.class)
     public ResponseEntity<CareerResponse<?>> handleCareerValidationException(CareerValidationException e){
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CareerResponse.createError(e.getMessage()));

@@ -10,9 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.career.controller.exception.CareerExceptionControllerAdvice;
-import umc.kkijuk.server.career.controller.exception.CareerNotFoundException;
 import umc.kkijuk.server.career.controller.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
@@ -177,7 +175,7 @@ public class CareerServiceTest {
                 .build();
         //when
         //then
-        assertThrows(CareerNotFoundException.class, () -> careerService.updateCareer(999L,updateCareerDto));
+        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(999L,updateCareerDto));
     }
     @Test
     void update_수정시_날짜_형식이_잘못된_경우_에러() {
@@ -230,7 +228,7 @@ public class CareerServiceTest {
         //given
         //when
         //then
-        assertThrows(CareerNotFoundException.class, () -> careerService.deleteCareer(999L));
+        assertThrows(CareerValidationException.class, () -> careerService.deleteCareer(999L));
     }
     @Test
     void CareerExceptionControllerAdvice가_올바른_예외_응답을_반환하는지_검증() {

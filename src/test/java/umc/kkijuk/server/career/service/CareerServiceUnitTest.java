@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import umc.kkijuk.server.career.controller.exception.CareerNotFoundException;
+import umc.kkijuk.server.career.controller.exception.CareerValidationException;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
@@ -66,12 +66,12 @@ public class CareerServiceUnitTest {
         when(careerRepository.findById(anyLong())).thenReturn(Optional.empty());
         //when
         //then
-        assertThrows(CareerNotFoundException.class, ()->{
+        assertThrows(CareerValidationException.class, ()->{
             careerService.deleteCareer(1L);});
         verify(careerRepository,never()).delete(any(Career.class));
     }
     @Test
-    void update_존재하지_않는_career_수정시_에러() {
+    void update_존재하지_않는_careerId_수정시_에러() {
         // given
         CareerRequestDto.UpdateCareerDto updateCareerDto = CareerRequestDto.UpdateCareerDto.builder()
                 .careerName("update test")
@@ -85,7 +85,7 @@ public class CareerServiceUnitTest {
 
         // when
         // then
-        assertThrows(CareerNotFoundException.class, () -> careerService.updateCareer(999L, updateCareerDto));
+        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(999L, updateCareerDto));
         verify(careerRepository, never()).save(any(Career.class));
     }
 
