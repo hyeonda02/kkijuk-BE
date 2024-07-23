@@ -2,6 +2,7 @@ package umc.kkijuk.server.career.controller.response;
 
 public class CareerResponseMessage {
     public static final String CAREER_CREATE_SUCCESS = "활동 추가가 정상적으로 이루어졌습니다.";
+    public static final String CAREER_UPDATE_SUCCESS = "활동 수정이 정상적으로 이루어졌습니다.";
     public static final String CAREER_NOT_FOUND ="존재하는 활동 Id가 아닙니다.";
 
     public static final String CAREER_CREATE_FAIL = "활동 추가를 실패했습니다.";

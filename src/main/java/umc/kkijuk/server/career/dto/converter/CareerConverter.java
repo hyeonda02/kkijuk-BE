@@ -12,6 +12,7 @@ public class CareerConverter {
                 .alias(request.getAlias())
                 .summary(request.getSummary())
                 .startdate(request.getStartDate())
+                .enddate(request.getEndDate())
                 .current(request.getIsCurrent())
                 .enddate(request.getEndDate())
                 .build();
@@ -21,4 +22,16 @@ public class CareerConverter {
                 .careerId(career.getId())
                 .build();
     }
+    public static CareerResponseDto.UpdateCareerResultDto toUpdateCareerResultDto(Career career) {
+        return CareerResponseDto.UpdateCareerResultDto.builder()
+                .careerName(career.getName())
+                .alias(career.getAlias())
+                .summary(career.getSummary())
+                .isCurrent(career.getCurrent())
+                .startDate(career.getStartdate())
+                .endDate(career.getEnddate())
+                .category(Math.toIntExact(career.getCategory().getId()))
+                .build();
+    }
+
 }

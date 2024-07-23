@@ -56,24 +56,27 @@ public class CareerRequestDto {
     @Builder
     public static class UpdateCareerDto{
         @Size(max = 20)
-        @Schema(description = "활동명", example = "IT 서비스 개발 동아리", type="string")
+        @Schema(description = "수정된 활동명", example = "IT 서비스 개발 동아리", type="string")
         String careerName;
+
+
         @Size(max = 20)
-        @Schema(description = "활동 별칭", example = "동아리", type="string")
+        @Schema(description = "수정된 활동 별칭", example = "동아리", type="string")
         String alias;
         @Size(max = 50)
-        @Schema(description = "활동 내역", example = "활동 내역 최대 50자까지 입력 가능(선택사항입니다.)",type = "string")
+        @Schema(description = "수정된 활동 내역", example = "활동 내역 최대 50자까지 입력 가능(선택사항입니다.)",type = "string")
         String summary;
-        @Schema(description = "활동 여부", example = "false", type = "boolean")
+        @Schema(description = "수정된 활동 여부", example = "false", type = "boolean")
         Boolean isCurrent;
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-        @Schema(description = "활동 시작 날짜", example = "2024-04-14", type="string")
+        @Schema(description = "수정된 활동 시작 날짜", example = "2024-04-14", type="string")
         LocalDate startDate;
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-        @Schema(description = "활동 종료 날짜", example = "2024-07-20", type = "string")
+        @Schema(description = "수정된 활동 종료 날짜", example = "2024-07-20", type = "string")
         LocalDate endDate;
-        @Schema(description = "활동 카테고리", example = "1", type = "int")
-        int category;
+        @ValidCategory
+        @Schema(description = "수정된 활동 카테고리", example = "1", type = "int")
+        Integer category;
     }
 
 }

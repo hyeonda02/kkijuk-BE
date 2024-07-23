@@ -50,7 +50,9 @@ public class CareerController {
                                          @PathVariable Long careerId) {
         LoginUser loginUser = LoginUser.get();
         Career updateCareer = careerService.updateCareer(careerId, request);
-        return null;
+        return CareerResponse.success(CareerStatusCode.OK,
+                CareerResponseMessage.CAREER_UPDATE_SUCCESS,
+                CareerConverter.toUpdateCareerResultDto(updateCareer));
     }
 }
 

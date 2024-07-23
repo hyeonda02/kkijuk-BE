@@ -2,7 +2,6 @@ package umc.kkijuk.server.career.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;

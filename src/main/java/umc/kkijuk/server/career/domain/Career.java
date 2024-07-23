@@ -41,6 +41,30 @@ public class Career extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public void setCurrent(Boolean current) {
+        this.current = current;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    public void setStartdate(LocalDate startdate) {
+        this.startdate = startdate;
+    }
+
+    public void setEnddate(LocalDate enddate) {
+        this.enddate = enddate;
+    }
+
     public void setCategory(Category category) {
         this.category = category;
     }

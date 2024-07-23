@@ -2,7 +2,6 @@ package umc.kkijuk.server.career.controller.exception;
 
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -26,7 +25,12 @@ public class CareerExceptionControllerAdvice {
     }
 
     @ExceptionHandler(CareerNotFoundException.class)
-    public ResponseEntity<CareerResponse<?>> handleCareerNotFoundException(CareerNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CareerResponse.createError(exception.getMessage()));
+    public ResponseEntity<CareerResponse<?>> handleCareerNotFoundException(CareerNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CareerResponse.createError(e.getMessage()));
+    }
+
+    @ExceptionHandler(CareerValidationException.class)
+    public ResponseEntity<CareerResponse<?>> handleCareerValidationException(CareerValidationException e){
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CareerResponse.createError(e.getMessage()));
     }
 }
