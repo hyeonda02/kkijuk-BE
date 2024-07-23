@@ -16,6 +16,8 @@ import umc.kkijuk.server.career.dto.converter.CareerConverter;
 import umc.kkijuk.server.career.service.CareerService;
 import umc.kkijuk.server.common.LoginUser;
 
+import java.util.List;
+
 @Tag(name="career",description = "내커리어 관련 API")
 @RestController
 @RequiredArgsConstructor
@@ -31,8 +33,6 @@ public class CareerController {
                 CareerResponseMessage.CAREER_CREATE_SUCCESS,
                 CareerConverter.tocareerResultDto(career));
     }
-
-
     @DeleteMapping("/{careerId}")
     @Operation(summary = "활동 삭제 API", description = "내 커리어 - 활동을 삭제하는 API")
     @Parameter(name="careerId", description = "활동 Id, path variable 입니다.",example = "1")
@@ -54,6 +54,19 @@ public class CareerController {
                 CareerResponseMessage.CAREER_UPDATE_SUCCESS,
                 CareerConverter.toUpdateCareerResultDto(updateCareer));
     }
+
+//    @GetMapping("")
+//    @Operation(
+//            summary = "활동 조회 API - 카테고리 기준(cateogry), 연도 기준(year) ",
+//            description = "내 커리어 - 활동을 카테고리 별로 조회하는 API. query 값으로  category 나 year 값을 주세요. " )
+//    public CareerResponse<Object> read(@RequestParam(name="status") String value){
+//
+//        List<CareerDto> careeList = careerService.getCareersGroupBy(value);
+//        return null;
+//    }
+
+
+
 }
 
 
