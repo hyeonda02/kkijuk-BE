@@ -2,8 +2,7 @@ package umc.kkijuk.server.member.domain;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import umc.kkijuk.server.member.converter.StringListConverter;
 
 import java.time.LocalDate;
@@ -11,7 +10,10 @@ import java.util.List;
 import java.util.ArrayList;
 
 @Entity
+@Builder
 @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Member {
 
     @Id @GeneratedValue
@@ -42,7 +44,6 @@ public class Member {
     @NotNull
     @Enumerated(EnumType.STRING)
     private State userState;
-
 
     public Member(String email, String name, String phoneNumber, LocalDate birthDate, String password, Boolean marketingAgree, State userState) {
         this.email = email;
