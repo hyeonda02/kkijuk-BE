@@ -74,7 +74,7 @@ class MasterIntroduceControllerTest {
                 .content(content)
                 .build());
 
-        Long id = masterIntroduce.getId(); // Retrieve the ID of the saved entity
+        Long id = masterIntroduce.getId();
 
         String expectedOneLiner = "one-liner2";
         String expectedSubTitle = "sub-title2";
