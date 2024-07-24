@@ -68,6 +68,7 @@ public class CareerServiceImpl implements CareerService {
             career.setCategory(categoryRepository.findById(Long.valueOf(request.getCategory())).get());
         }
         return careerRepository.save(career);
+
     }
 
     @Override

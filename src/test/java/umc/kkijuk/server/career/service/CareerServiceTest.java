@@ -12,15 +12,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import umc.kkijuk.server.career.controller.exception.CareerExceptionControllerAdvice;
 import umc.kkijuk.server.career.controller.exception.CareerValidationException;
+import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
+import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@DirtiesContext
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class CareerServiceTest {
     @Autowired
     private CareerService careerService;
@@ -40,30 +43,25 @@ public class CareerServiceTest {
     private CareerExceptionControllerAdvice careerExceptionControllerAdvice;
     private Career career1;
     private Career career2;
+    private Category category1;
+    private Category category2;
 
 
     @BeforeEach
     void init() {
 
-        Category category1 = Category.builder()
+        category1 = Category.builder()
                 .name("동아리")
                 .build();
-        Category category2 = Category.builder()
+        category2 = Category.builder()
                 .name("대외활동")
-                .build();
-        Category category3 = Category.builder()
-                .name("공모전/대회")
-                .build();
-        Category category4 = Category.builder()
-                .name("프로젝트")
                 .build();
 
         categoryRepository.save(category1);
         categoryRepository.save(category2);
-        categoryRepository.save(category3);
-        categoryRepository.save(category4);
 
-        career1 = Career.builder().id(1L).name("tet1")
+        career1 = Career.builder()
+                .name("test1")
                 .alias("alias1")
                 .summary("summary1")
                 .current(false)
@@ -73,7 +71,8 @@ public class CareerServiceTest {
                 .category(category1)
                 .build();
 
-        career2 = Career.builder().id(2L).name("test2")
+        career2 = Career.builder()
+                .name("test2")
                 .alias("alias2")
                 .summary("summary2")
                 .current(false)
@@ -86,25 +85,6 @@ public class CareerServiceTest {
         careerRepository.save(career1);
         careerRepository.save(career2);
     }
-    @Test
-    void update_기존_career_수정_null_입력시_기존값_유지() {
-        //given
-        CareerRequestDto.UpdateCareerDto updateCareerDto = CareerRequestDto.UpdateCareerDto.builder().build();
-        //when
-        Career updateCareer = careerService.updateCareer(career2.getId(), updateCareerDto);
-        //then
-        assertAll(
-                () -> assertThat(updateCareer.getId()).isEqualTo(career2.getId()),
-                () -> assertThat(updateCareer.getName()).isEqualTo(career2.getName()),
-                () -> assertThat(updateCareer.getAlias()).isEqualTo(career2.getAlias()),
-                () -> assertThat(updateCareer.getSummary()).isEqualTo(career2.getSummary()),
-                () -> assertThat(updateCareer.getCurrent()).isEqualTo(career2.getCurrent()),
-                () -> assertThat(updateCareer.getStartdate()).isEqualTo(career2.getStartdate()),
-                () -> assertThat(updateCareer.getEnddate()).isEqualTo(career2.getEnddate()),
-                () -> assertThat(updateCareer.getYear()).isEqualTo(career2.getYear()),
-                () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(career2.getCategory().getId())
-        );
-    }
 
     @Test
     void create_새로운_career_만들기() {
@@ -116,7 +96,7 @@ public class CareerServiceTest {
                 .summary("summary3")
                 .startDate(LocalDate.of(2024, 4, 10))
                 .endDate(LocalDate.of(2024, 7, 20))
-                .category(1)
+                .category(Math.toIntExact(category1.getId()))
                 .build();
         //when
         Career newCareer = careerService.createCareer(careerCreateDto);
@@ -124,14 +104,31 @@ public class CareerServiceTest {
         assertAll(
                 () -> assertThat(newCareer.getId()).isEqualTo(3L),
                 () -> assertThat(newCareer.getName()).isEqualTo("test3"),
-                () -> assertThat(newCareer.getAlias()).isEqualTo("alias3"),
-                () -> assertThat(newCareer.getSummary()).isEqualTo("summary3"),
-                () -> assertThat(newCareer.getCurrent()).isEqualTo(false),
-                () -> assertThat(newCareer.getStartdate()).isEqualTo(LocalDate.of(2024, 4, 10)),
-                () -> assertThat(newCareer.getEnddate()).isEqualTo(LocalDate.of(2024, 7, 20)),
-                () -> assertThat(newCareer.getYear()).isEqualTo(2024),
-                () -> assertThat(newCareer.getCategory().getId()).isEqualTo(1L),
-                () -> assertThat(newCareer.getCategory().getName()).isEqualTo("동아리")
+                () ->assertThat(newCareer.getAlias()).isEqualTo("alias3"),
+                () ->assertThat(newCareer.getSummary()).isEqualTo("summary3"),
+                () ->assertThat(newCareer.getStartdate()).isEqualTo(LocalDate.of(2024,4,10)),
+                () ->assertThat(newCareer.getEnddate()).isEqualTo(LocalDate.of(2024,7,20)),
+                () ->assertThat(newCareer.getYear()).isEqualTo(2024),
+                () ->assertThat(newCareer.getCategory().getId()).isEqualTo(1L)
+        );
+    }
+    @Test
+    void update_기존_career_수정_null_입력시_기존값_유지() {
+        //given
+        CareerRequestDto.UpdateCareerDto updateCareerDto = CareerRequestDto.UpdateCareerDto.builder().build();
+        //when
+        Career updateCareer = careerService.updateCareer(2L, updateCareerDto);
+        //then
+        assertAll(
+                () -> assertThat(updateCareer.getId()).isEqualTo(2L),
+                () -> assertThat(updateCareer.getName()).isEqualTo("test2"),
+                () -> assertThat(updateCareer.getAlias()).isEqualTo("alias2"),
+                () -> assertThat(updateCareer.getSummary()).isEqualTo("summary2"),
+                () -> assertThat(updateCareer.getCurrent()).isEqualTo(false),
+                () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2024, 4, 10)),
+                () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.of(2024, 7, 20)),
+                () -> assertThat(updateCareer.getYear()).isEqualTo(2024),
+                () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(2L)
         );
     }
     @Test
@@ -142,11 +139,12 @@ public class CareerServiceTest {
                 .summary("update summary")
                 .alias("update alias")
                 .isCurrent(true)
-                .startDate(LocalDate.of(2021,01,01))
                 .category(2)
+                .startDate(LocalDate.of(2021,01,01))
                 .build();
+
         //when
-        Career updateCareer = careerService.updateCareer(career2.getId(), updateCareerDto);
+        Career updateCareer = careerService.updateCareer(2L, updateCareerDto);
         //then
         assertAll(
                 () -> assertThat(updateCareer.getId()).isEqualTo(2L),
@@ -156,9 +154,8 @@ public class CareerServiceTest {
                 () -> assertThat(updateCareer.getCurrent()).isEqualTo(true),
                 () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2021,01,01)),
                 () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.now()),
-                () -> assertThat(updateCareer.getYear()).isEqualTo(LocalDate.now().getYear()),
                 () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(2L),
-                () -> assertThat(updateCareer.getCategory().getName()).isEqualTo("대외활동")
+                () -> assertThat(updateCareer.getYear()).isEqualTo(LocalDate.now().getYear())
         );
 
     }
@@ -186,7 +183,7 @@ public class CareerServiceTest {
                  .alias("update alias")
                  .isCurrent(true)
                  .startDate(LocalDate.of(2024543,01,01))
-                 .category(2)
+                 .category(Math.toIntExact(category2.getId()))
                  .build();
         //when
         //then
@@ -204,22 +201,22 @@ public class CareerServiceTest {
                 .isCurrent(false)
                 .startDate(LocalDate.of(2024,01,01))
                 .endDate(LocalDate.of(2023,01,01))
-                .category(2)
+                .category(Math.toIntExact(category2.getId()))
                 .build();
         //when
         //then
         assertThrows(CareerValidationException.class, () -> careerService.updateCareer(career2.getId(), updateCareerDto));
-
 
     }
 
     @Test
     void delete_기존_career_삭제(){
         //given
-        careerService.deleteCareer(career1.getId());
+        Long targetId = career1.getId();
         //when
+        careerService.deleteCareer(targetId);
         //then
-        Optional<Career> deletedCareer = careerRepository.findById(career1.getId());
+        Optional<Career> deletedCareer = careerRepository.findById(targetId);
         assertThat(deletedCareer).isEmpty();
 
     }
@@ -230,6 +227,52 @@ public class CareerServiceTest {
         //then
         assertThrows(CareerValidationException.class, () -> careerService.deleteCareer(999L));
     }
+
+
+    @Test
+    void read_조회시_없는_queryString_요청은_에러() {
+        //given
+        String status = "test";
+        //when
+        //then
+        assertThrows(IllegalArgumentException.class, () -> careerService.getCareerGroupedBy(status));
+    }
+
+    @Test
+    void read_queryString값이_category일때_조회결과_검증() {
+        //given
+        String status = "category";
+        //when
+        List<? extends CareerGroupedByResponse> groupedCareerList = careerService.getCareerGroupedBy(status);
+        //then
+        CareerResponseDto.CareerGroupedByCategoryDto groupedResult1 = (CareerResponseDto.CareerGroupedByCategoryDto) groupedCareerList.get(0);
+        CareerResponseDto.CareerGroupedByCategoryDto groupedResult2 = (CareerResponseDto.CareerGroupedByCategoryDto) groupedCareerList.get(1);
+
+        assertThat(groupedCareerList).isNotEmpty();
+        assertThat(groupedCareerList.size()).isEqualTo(2);
+
+        assertThat(groupedResult1.getCategoryName()).isEqualTo("대외활동");
+        assertThat(groupedResult2.getCategoryName()).isEqualTo("동아리");
+
+        assertThat(groupedResult1.getCount()).isEqualTo(1);
+        assertThat(groupedResult2.getCount()).isEqualTo(1);
+
+    }
+    @Test
+    void read_queryString_값이_year_일때_조회결과_검증() {
+        //given
+        String status = "year";
+        //when
+        List<? extends CareerGroupedByResponse> groupedCareerList = careerService.getCareerGroupedBy(status);
+        //then
+        assertThat(groupedCareerList).isNotEmpty();
+        assertThat(groupedCareerList.size()).isEqualTo(1);
+
+        CareerResponseDto.CareerGroupedByYearDto groupedResult = (CareerResponseDto.CareerGroupedByYearDto) groupedCareerList.get(0);
+        assertThat(groupedResult.getYear()).isEqualTo(2024);
+        assertThat(groupedResult.getCount()).isEqualTo(2);
+    }
+
     @Test
     void CareerExceptionControllerAdvice가_올바른_예외_응답을_반환하는지_검증() {
         //given

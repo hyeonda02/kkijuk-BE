@@ -10,9 +10,14 @@ import umc.kkijuk.server.career.controller.exception.CareerValidationException;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
+import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.*;
@@ -23,7 +28,8 @@ public class CareerServiceUnitTest {
     private CareerRepository careerRepository;
     @InjectMocks
     private CareerServiceImpl careerService;
-    private Career career;
+    private Career career1;
+    private Career career2;
     private Category category1;
     private Category category2;
     @BeforeEach
@@ -38,7 +44,7 @@ public class CareerServiceUnitTest {
                 .name("대외활동")
                 .build();
 
-        career = Career.builder()
+        career1 = Career.builder()
                 .id(1L)
                 .name("test")
                 .alias("alias")
@@ -47,17 +53,41 @@ public class CareerServiceUnitTest {
                 .category(category1)
                 .startdate(LocalDate.of(2024, 4, 10))
                 .enddate(LocalDate.of(2024, 7, 20))
+                .year(2024)
+                .build();
+
+        career2 = Career.builder()
+                .id(2L)
+                .name("test2")
+                .alias("alias2")
+                .summary("summary2")
+                .current(false)
+                .category(category2)
+                .startdate(LocalDate.of(2024, 4, 10))
+                .enddate(LocalDate.of(2024, 7, 20))
+                .year(2024)
                 .build();
     }
-
+    @Test
+    void read_getCareerGroupedBy_Category_성공() {
+        //given
+        List<Career> careerList = Arrays.asList(career1, career2);
+        when(careerRepository.findAll()).thenReturn(careerList);
+        //when
+        List<? extends CareerResponseDto.CareerGroupedByCategoryDto> result = (List<? extends CareerResponseDto.CareerGroupedByCategoryDto>) careerService.getCareerGroupedBy("category");
+        //then
+        assertThat(result).isNotEmpty();
+        assertThat(result.size()).isEqualTo(2);
+        verify(careerRepository, times(1)).findAll();
+    }
     @Test
     void delete_기존_career_삭제() {
         //given
-        when(careerRepository.findById(anyLong())).thenReturn(Optional.of(career));
+        when(careerRepository.findById(anyLong())).thenReturn(Optional.of(career1));
         //when
         careerService.deleteCareer(1L);
         //then
-        verify(careerRepository,times(1)).delete(career);
+        verify(careerRepository,times(1)).delete(career1);
     }
 
     @Test
