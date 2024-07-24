@@ -109,7 +109,7 @@ public class CareerServiceTest {
     @Test
     void create_새로운_career_만들기() {
         //given
-        CareerRequestDto.CareerDto careerCreateDto = CareerRequestDto.CareerDto.builder()
+        CareerRequestDto.CreateCareerDto careerCreateDto = CareerRequestDto.CreateCareerDto.builder()
                 .careerName("test3")
                 .alias("alias3")
                 .isCurrent(false)

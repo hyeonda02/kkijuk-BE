@@ -29,12 +29,12 @@ public class CareerController {
 
     @PostMapping("")
     @Operation(summary = "활동 추가 API", description = "내 커리어 - 활동을 추가하는 API")
-    public CareerResponse<CareerResponseDto.CareerResultDto> create(@RequestBody @Valid CareerRequestDto.CareerDto request){
+    public CareerResponse<CareerResponseDto.CareerResultDto> create(@RequestBody @Valid CareerRequestDto.CreateCareerDto request){
         LoginUser loginUser = LoginUser.get();
         Career career = careerService.createCareer(request);
         return CareerResponse.success(HttpStatus.CREATED,
                 CareerResponseMessage.CAREER_CREATE_SUCCESS,
-                CareerConverter.tocareerResultDto(career));
+                CareerConverter.toCareerResultDto(career));
     }
 
     @DeleteMapping("/{careerId}")
@@ -64,11 +64,9 @@ public class CareerController {
             summary = "활동 조회 API - category(카테고리 기준) , year(연도 기준) ",
             description = "내 커리어 - 활동을 카테고리 별로 조회하는 API입니다. query 값으로  category 나 year 값을 주세요. " )
     public CareerResponse<List<? extends CareerGroupedByResponse>> read(@RequestParam(name="status") String value){
-        List<? extends CareerGroupedByResponse> groupedCareers = careerService.getCareerGroupedBy(value);
-        if (!groupedCareers.isEmpty()) {
-            return CareerResponse.success(HttpStatus.OK, "success", groupedCareers);
-        }
-        return CareerResponse.success(HttpStatus.OK, "success", groupedCareers);
+        return CareerResponse.success(HttpStatus.OK,
+                CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                careerService.getCareerGroupedBy(value));
     }
 
 

@@ -9,13 +9,13 @@ import umc.kkijuk.server.career.dto.CareerRequestDto;
 
 @Component
 @RequiredArgsConstructor
-public class PeriodValidator implements ConstraintValidator<ValidPeriod, CareerRequestDto.CareerDto> {
+public class PeriodValidator implements ConstraintValidator<ValidPeriod, CareerRequestDto.CreateCareerDto> {
     @Override
     public void initialize(ValidPeriod constraintAnnotation) {
         ConstraintValidator.super.initialize(constraintAnnotation);
     }
     @Override
-    public boolean isValid(CareerRequestDto.CareerDto request, ConstraintValidatorContext context) {
+    public boolean isValid(CareerRequestDto.CreateCareerDto request, ConstraintValidatorContext context) {
         if(request.getIsCurrent() == false){
             if(request.getEndDate()==null){
                 context.disableDefaultConstraintViolation();

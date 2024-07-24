@@ -26,7 +26,7 @@ public class CareerServiceImpl implements CareerService {
 
     @Override
     @Transactional
-    public Career createCareer(CareerRequestDto.CareerDto request) {
+    public Career createCareer(CareerRequestDto.CreateCareerDto request) {
         Career career = CareerConverter.toCareer(request);
         if(career.getCurrent()){
             career.setEnddate(LocalDate.now());
@@ -89,8 +89,10 @@ public class CareerServiceImpl implements CareerService {
     @Override
     public Optional<Career> findCareer(Long careerId) {
         return Optional.ofNullable(careerRepository.findById(careerId).orElseThrow(
-                () -> new CareerValidationException(CareerResponseMessage.CAREER_NOT_FOUND.toString(),"careerId")));
+                () -> new CareerValidationException(CareerResponseMessage.CAREER_NOT_FOUND.toString())));
     }
+
+
 
 
 
@@ -119,18 +121,18 @@ public class CareerServiceImpl implements CareerService {
             if (existingEndDate != null) {
                 career.setEnddate(existingEndDate);
             }else{
-                throw new CareerValidationException(CareerResponseMessage.CAREER_ENDDATE, "endDate");
+                throw new CareerValidationException(CareerResponseMessage.CAREER_ENDDATE);
             }
         }
     }
 
     private void validatedPeriod(Career career) {
         if(career.getEnddate().isBefore(career.getStartdate())){
-            throw new CareerValidationException(CareerResponseMessage.CAREER_PERIOD_FAIL, "endDate");
+            throw new CareerValidationException(CareerResponseMessage.CAREER_PERIOD_FAIL);
         }
     }
 
-    private int parsingYear(CareerRequestDto.CareerDto request){
+    private int parsingYear(CareerRequestDto.CreateCareerDto request){
         if(!request.getIsCurrent()){
             return request.getEndDate().getYear();
         }

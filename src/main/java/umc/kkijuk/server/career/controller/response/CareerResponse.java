@@ -30,12 +30,6 @@ public class CareerResponse<T> {
         this.message = message;
         this.data = data;
     }
-    public static <T> CareerResponse<T> success(int status, String message, T data){
-        return new CareerResponse<>(status,message,data);
-    }
-    public static <T> CareerResponse<T> Success(int status, String message){
-        return new CareerResponse<>(status, message, null);
-    }
     public static <T> CareerResponse<T> success(HttpStatus status, String message, T data){
         return new CareerResponse<>(status.value(),message,data);
     }

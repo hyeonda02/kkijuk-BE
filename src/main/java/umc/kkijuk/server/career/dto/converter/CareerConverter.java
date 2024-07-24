@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class CareerConverter {
 
-    public static Career toCareer(CareerRequestDto.CareerDto request){
+    public static Career toCareer(CareerRequestDto.CreateCareerDto request){
         return Career.builder()
                 .name(request.getCareerName())
                 .alias(request.getAlias())
@@ -21,7 +21,7 @@ public class CareerConverter {
                 .enddate(request.getEndDate())
                 .build();
     }
-    public static CareerResponseDto.CareerResultDto tocareerResultDto(Career career){
+    public static CareerResponseDto.CareerResultDto toCareerResultDto(Career career){
         return CareerResponseDto.CareerResultDto.builder()
                 .careerId(career.getId())
                 .build();
@@ -36,7 +36,7 @@ public class CareerConverter {
                 .startDate(career.getStartdate())
                 .endDate(career.getEnddate())
                 .year(career.getYear())
-                .categoryId(career.getCategory().getId())
+                .categoryId(Math.toIntExact(career.getCategory().getId()))
                 .categoryName(career.getCategory().getName())
                 .build();
     }
@@ -44,7 +44,7 @@ public class CareerConverter {
     public static List<CareerResponseDto.CareerGroupedByCategoryDto> toCareerGroupedByCategoryDto( Map<String, List<Career>> groupedCareers ) {
         return groupedCareers.entrySet().stream()
                 .map(entry -> CareerResponseDto.CareerGroupedByCategoryDto.builder()
-                        .category(entry.getKey())
+                        .categoryName(entry.getKey())
                         .count(entry.getValue().size())
                         .careers(entry.getValue().stream()
                                 .map(career -> CareerResponseDto.CareerDto.builder()
@@ -56,7 +56,7 @@ public class CareerConverter {
                                         .startDate(career.getStartdate())
                                         .endDate(career.getEnddate())
                                         .isCurrent(career.getCurrent())
-                                        .categoryId(career.getCategory().getId())
+                                        .categoryId(Math.toIntExact(career.getCategory().getId()))
                                         .categoryName(career.getCategory().getName())
                                         .build())
                                 .collect(Collectors.toList()))
@@ -79,7 +79,7 @@ public class CareerConverter {
                                         .startDate(career.getStartdate())
                                         .endDate(career.getEnddate())
                                         .isCurrent(career.getCurrent())
-                                        .categoryId(career.getCategory().getId())
+                                        .categoryId(Math.toIntExact(career.getCategory().getId()))
                                         .categoryName(career.getCategory().getName())
                                         .build())
                                 .collect(Collectors.toList()))

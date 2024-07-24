@@ -29,7 +29,7 @@ public class PeriodValidatorTest {
     @DisplayName("유효한 기간을 가진 활동일 경우 유효성 검사(PeriodValidator) 성공")
     void 활동_시작날짜가_활동종료날짜보다_앞에_있을_경우_유효성_검사(){
         //given
-        CareerRequestDto.CareerDto careerDto = CareerRequestDto.CareerDto.builder()
+        CareerRequestDto.CreateCareerDto careerDto = CareerRequestDto.CreateCareerDto.builder()
                 .careerName("test")
                 .alias("alias")
                 .isCurrent(false)
@@ -51,7 +51,7 @@ public class PeriodValidatorTest {
     @DisplayName("현재 진행중인 활동이 아닌데 활동 종료 날짜를 입력하지 않은 경우 유효성 검사(PeriodValidator) 실패")
     void 종료날짜가_null일때_유효성_검사_실패() {
         //given
-        CareerRequestDto.CareerDto careerDto = CareerRequestDto.CareerDto.builder()
+        CareerRequestDto.CreateCareerDto careerDto = CareerRequestDto.CreateCareerDto.builder()
                 .careerName("test")
                 .alias("alias")
                 .isCurrent(false)
@@ -76,7 +76,7 @@ public class PeriodValidatorTest {
     @DisplayName("유효하지 않은 기간을 가진 활동에 대해 유효성 검사(PeriodValidator)  실패")
     void 활동_시작날짜가_활동_종료날짜보다_나중일_경우_유효성_검사(){
         //given
-        CareerRequestDto.CareerDto careerDto = CareerRequestDto.CareerDto.builder()
+        CareerRequestDto.CreateCareerDto careerDto = CareerRequestDto.CreateCareerDto.builder()
                 .careerName("test")
                 .alias("alias")
                 .isCurrent(false)

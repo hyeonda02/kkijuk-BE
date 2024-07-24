@@ -35,7 +35,7 @@ public class CareerResponseDto {
         LocalDate endDate;
         int year;
         String categoryName;
-        Long categoryId;
+        int categoryId;
     }
 
     @Getter
@@ -44,8 +44,8 @@ public class CareerResponseDto {
     @AllArgsConstructor
     public static class CareerGroupedByCategoryDto extends CareerGroupedByResponse {
         @Schema(description = "카테고리명",example = "동아리",type = "String")
-        private String category;
-        @Schema(description = "카테고리 내 활동 개수",example = "2",type="int")
+        private String categoryName;
+        @Schema(description = "카테고리 내 활동 개수 (카테고리가 동아리인 활동의 개수)",example = "2",type="int")
         private int count;
         @Schema(description = "해당 카테고리 내 활동 목록")
         private List<CareerDto> careers;
@@ -59,7 +59,7 @@ public class CareerResponseDto {
     public static class CareerGroupedByYearDto extends CareerGroupedByResponse{
         @Schema(description = "연도", example = "2024", type = "int")
         private int year;
-        @Schema(description = "연도 내 활동 개수", example = "2", type = "int")
+        @Schema(description = "연도 내 활동 개수 (2024년에 진행된 활동읠 개수)", example = "2", type = "int")
         private int count;
         @Schema(description = "해당 연도 내 활동 목록")
         private List<CareerDto> careers;

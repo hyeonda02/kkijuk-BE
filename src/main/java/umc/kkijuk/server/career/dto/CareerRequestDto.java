@@ -16,7 +16,7 @@ public class CareerRequestDto {
     @Getter
     @Builder
     @ValidPeriod
-    public static class CareerDto{
+    public static class CreateCareerDto{
 
         @NotBlank(message = "활동명은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
         @Size(max = 20)
@@ -29,7 +29,7 @@ public class CareerRequestDto {
         String alias;
 
         @Size(max = 50)
-        @Schema(description = "활동 내역", example = "활동 내역 최대 50자까지 입력 가능(선택사항입니다.)",type = "string")
+        @Schema(description = "활동 내역", example = "주요 활동 내용을 요약하여 작성해주세요. 최대 50자 까지 입력 가능 선택사항입니다.", type = "string")
         String summary;
 
         @NotNull(message = "활동 여부는 필수 선택 항목입니다.")
@@ -49,7 +49,7 @@ public class CareerRequestDto {
         @ValidCategory
         @NotNull(message = "활동 카테고리는 필수 선택 항목입니다.")
         @Schema(description = "활동 카테고리", example = "1", type = "int")
-        int category;
+        Integer category;
     }
 
     @Getter
@@ -58,8 +58,6 @@ public class CareerRequestDto {
         @Size(max = 20)
         @Schema(description = "수정된 활동명", example = "IT 서비스 개발 동아리", type="string")
         String careerName;
-
-
         @Size(max = 20)
         @Schema(description = "수정된 활동 별칭", example = "동아리", type="string")
         String alias;
