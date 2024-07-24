@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import umc.kkijuk.server.career.controller.exception.CareerValidationException;
+import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;

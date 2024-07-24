@@ -3,7 +3,7 @@ package umc.kkijuk.server.career.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.kkijuk.server.career.controller.exception.CareerValidationException;
+import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
