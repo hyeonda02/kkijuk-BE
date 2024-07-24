@@ -6,10 +6,15 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
+import java.util.List;
 
 
 @Tag(name = "member", description = "회원 관리 API")
@@ -45,6 +50,32 @@ public class MemberController {
         }
     }
 
+    /**
+    일단 RequestParam 사용, 나중에 jwt토큰으로 사용자 정보 식별할 수 있도록 변경
+     */
+    @Operation(
+            summary = "내 정보 조회",
+            description = "마이페이지에서 내 정보들을 가져옵니다.")
+    @GetMapping("/myPage/info")
+    public ResponseEntity<MemberInfoResponse> getInfo() {
+        try {
+            Long loginUser = LoginUser.get().getId();
+            Member member = memberService.getMemberInfo(loginUser);
+            MemberInfoResponse response = new MemberInfoResponse(
+                    member.getEmail(),
+                    member.getName(),
+                    member.getPhoneNumber(),
+                    member.getBirthDate()
+            );
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
+
+
     @Data
     static class CreateMemberResponse {
         private Long id;
@@ -59,4 +90,34 @@ public class MemberController {
             this.message = message;
         }
     }
+
+    @Data
+    static class MemberInfoResponse {
+        private String email;
+        private String name;
+        private String phoneNumber;
+        private LocalDate birthDate;
+
+        public MemberInfoResponse(String email, String name, String phoneNumber, LocalDate birthDate) {
+            this.email = email;
+            this.name = name;
+            this.phoneNumber = phoneNumber;
+            this.birthDate = birthDate;
+        }
+    }
+
+    @Data
+    static class MemberFieldResponse{
+        private List<String> field;
+
+        public MemberFieldResponse(List<String> field) {
+            this.field = field;
+        }
+    }
 }
+
+
+
+
+
+

@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
-import umc.kkijuk.server.recruit.domain.Recruit;
-import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 
 @Service
 @Transactional(readOnly = true)
@@ -25,5 +23,12 @@ public class MemberService {
         memberJpaRepository.save(member);
         return member.getId();
     }
+
+    public Member getMemberInfo(Long memberId) {
+        return memberJpaRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+    }
+
+
 
 }
