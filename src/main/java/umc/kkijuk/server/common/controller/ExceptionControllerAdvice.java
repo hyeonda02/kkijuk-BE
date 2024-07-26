@@ -28,7 +28,7 @@ public class ExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidTagNameException.class)
-    public ErrorResponse DuplicateTagNameException(InvalidTagNameException exception) {
+    public ErrorResponse InvalidTagNameException(InvalidTagNameException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }

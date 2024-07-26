@@ -15,11 +15,8 @@ public class TagRequestDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class CreateTagDto{
-        @NotBlank(message = "해시태그 이름은 필수 입력 사항입니다.")
         @Size(max = 30)
-        @Schema(description = "해시태그 이름", example = "역량 키워드", type="string")
+        @Schema(description = "태그 이름", example = "역량 키워드", type="string")
         String tagName;
-
-
     }
 }

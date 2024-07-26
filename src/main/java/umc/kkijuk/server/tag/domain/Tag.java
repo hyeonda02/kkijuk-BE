@@ -1,6 +1,7 @@
 package umc.kkijuk.server.tag.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 @Entity
@@ -10,9 +11,10 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="hashtag_id")
+    @Column(name="tag_id")
     private Long id;
-    @Column(name="hashtag_name", length = 30) //일단 length 30 ( 최대 길이 여쭤보고 변경해야 함. )
+    @NotNull
+    @Column(name="tag_name", length = 30)
     private String name;
 
 }
