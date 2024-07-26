@@ -95,6 +95,7 @@ public class RecruitController {
                 .ok()
                 .body(RecruitInfoResponse.from(recruit, reviews));
     }
+
     @Operation(
         summary = "지원 공고 목록 (특정 날짜 이후)",
         description = "주어진 날짜에 마감 종료되는 지원 공고들의 목록을 요청합니다.")
