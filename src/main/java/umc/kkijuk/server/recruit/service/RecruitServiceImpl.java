@@ -8,10 +8,7 @@ import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
-import umc.kkijuk.server.recruit.domain.Recruit;
-import umc.kkijuk.server.recruit.domain.RecruitCreate;
-import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
-import umc.kkijuk.server.recruit.domain.RecruitUpdate;
+import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
@@ -84,5 +81,19 @@ public class RecruitServiceImpl implements RecruitService {
     @Transactional
     public List<Recruit> findAllByEndTimeAfter(Member requestMember, LocalDateTime endTime) {
         return recruitRepository.findAllActiveRecruitByMemberIdAndEndTimeAfter(requestMember.getId(), endTime);
+    }
+
+    @Override
+    public List<ValidRecruitDto> findAllValidRecruitByMemberId(Long memberId, LocalDateTime endTime) {
+        List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberId(memberId);
+        return recruits.stream()
+                .filter(item -> !isUnappliedOrPlanned(item) || item.getEndTime().isAfter(endTime))
+                .map(ValidRecruitDto::from)
+                .toList();
+    }
+
+    private boolean isUnappliedOrPlanned(Recruit recruit) {
+        return recruit.getStatus().equals(RecruitStatus.UNAPPLIED) ||
+                recruit.getStatus().equals(RecruitStatus.PLANNED);
     }
 }

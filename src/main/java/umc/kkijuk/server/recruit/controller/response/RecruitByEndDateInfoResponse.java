@@ -9,14 +9,14 @@ import java.util.List;
 
 @Getter
 @Builder
-public class RecruitListResponse {
+public class RecruitByEndDateInfoResponse {
     private final Long recruitId;
     private final String title;
     private final RecruitStatus status;
     private final List<String> tag;
 
-    public static RecruitListResponse from(Recruit recruit) {
-        return RecruitListResponse.builder()
+    public static RecruitByEndDateInfoResponse from(Recruit recruit) {
+        return RecruitByEndDateInfoResponse.builder()
                 .recruitId(recruit.getId())
                 .title(recruit.getTitle())
                 .status(recruit.getStatus())

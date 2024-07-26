@@ -60,4 +60,10 @@ public class RecruitRepositoryImpl implements RecruitRepository {
         return recruitJpaRepository.findAllByMemberIdAndEndTimeAfterAndActive(memberId, endTime, true)
                 .stream().map(RecruitEntity::toModel).toList();
     }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberId(Long memberId) {
+        return recruitJpaRepository.findAllByMemberIdAndActive(memberId, true)
+                .stream().map(RecruitEntity::toModel).toList();
+    }
 }

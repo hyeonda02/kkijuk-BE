@@ -12,11 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
-import umc.kkijuk.server.recruit.controller.response.RecruitInfoResponse;
-import umc.kkijuk.server.recruit.controller.response.RecruitListByEndDateResponse;
-import umc.kkijuk.server.recruit.controller.response.RecruitListByEndTimeAfterResponse;
+import umc.kkijuk.server.recruit.controller.response.*;
 import umc.kkijuk.server.recruit.domain.*;
-import umc.kkijuk.server.recruit.controller.response.RecruitIdResponse;
 import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
 
@@ -133,9 +130,17 @@ public class RecruitController {
                 .body(RecruitListByEndTimeAfterResponse.from(recruits));
     }
 
-    // 멤버 추가시 추가
-//    @GetMapping("/list/valid")
-//    public ResponseEntity<ValidRecruitListResponse> findValidRecruit() {
-//
-//    }
+//     멤버 추가시 추가
+    @GetMapping("/list/valid")
+    public ResponseEntity<ValidRecruitListResponse> findValidRecruit(
+            @Parameter(name = "time", description = "이 시간 이후에 유효한 공고 목록 요청", example = "2024-07-20 10:30")
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+            @RequestParam LocalDateTime time
+    ) {
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMemberId(requestMember.getId(), time);
+        return ResponseEntity
+                .ok()
+                .body(ValidRecruitListResponse.from(ValidRecruitDtoList));
+    }
 }

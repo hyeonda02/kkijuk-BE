@@ -2,10 +2,7 @@ package umc.kkijuk.server.recruit.controller.port;
 
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.Member;
-import umc.kkijuk.server.recruit.domain.Recruit;
-import umc.kkijuk.server.recruit.domain.RecruitCreate;
-import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
-import umc.kkijuk.server.recruit.domain.RecruitUpdate;
+import umc.kkijuk.server.recruit.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,4 +23,6 @@ public interface RecruitService {
     List<Recruit> findAllByEndTime(Member member, LocalDate date);
 
     List<Recruit> findAllByEndTimeAfter(Member member, LocalDateTime endTime);
+
+    List<ValidRecruitDto> findAllValidRecruitByMemberId(Long memberId, LocalDateTime endTime);
 }

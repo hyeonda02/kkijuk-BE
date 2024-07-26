@@ -91,4 +91,12 @@ public class FakeRecruitRepository implements RecruitRepository {
                         item.getMemberId().equals(memberId))
                 .toList();
     }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberId(Long memberId) {
+        return data.stream()
+                .filter(item -> item.getMemberId().equals(memberId) &&
+                        item.isActive())
+                .toList();
+    }
 }
