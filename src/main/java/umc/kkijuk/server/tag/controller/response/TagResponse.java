@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-import umc.kkijuk.server.career.controller.response.CareerResponse;
 
 @Builder
 @Getter

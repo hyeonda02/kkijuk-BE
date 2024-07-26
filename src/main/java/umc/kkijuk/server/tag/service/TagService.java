@@ -7,6 +7,6 @@ import umc.kkijuk.server.tag.dto.TagResponseDto;
 
 public interface TagService {
     Tag createTag(TagRequestDto.CreateTagDto request);
-    TagResponseDto.ResultTagDtoList  findAllTags();
+    TagResponseDto.ResultTagDtoList findAllTags();
     void delete(Long tagId);
 }
