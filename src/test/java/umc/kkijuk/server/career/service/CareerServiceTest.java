@@ -10,8 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import umc.kkijuk.server.career.controller.exception.CareerExceptionControllerAdvice;
-import umc.kkijuk.server.career.controller.exception.CareerValidationException;
+import umc.kkijuk.server.common.controller.CareerExceptionControllerAdvice;
+import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
@@ -21,6 +21,7 @@ import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -172,7 +173,7 @@ public class CareerServiceTest {
                 .build();
         //when
         //then
-        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(999L,updateCareerDto));
+        assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(999L,updateCareerDto));
     }
     @Test
     void update_수정시_날짜_형식이_잘못된_경우_에러() {
@@ -225,7 +226,7 @@ public class CareerServiceTest {
         //given
         //when
         //then
-        assertThrows(CareerValidationException.class, () -> careerService.deleteCareer(999L));
+        assertThrows(ResourceNotFoundException.class, () -> careerService.deleteCareer(999L));
     }
 
 
