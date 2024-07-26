@@ -7,6 +7,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.review.controller.port.ReviewService;
@@ -23,6 +25,10 @@ public class ReviewController {
     private final ReviewService reviewService;
     private final RecruitService recruitService;
 
+    private final Member requestMember = Member.builder()
+            .id(LoginUser.get().getId())
+            .build();
+
     @Operation(
             summary = "지원 공고 후기 추가",
             description = "주어진 지원 공고에 후기를 생성합니다")
@@ -32,8 +38,9 @@ public class ReviewController {
             @PathVariable Long recruitId,
             @RequestBody @Valid ReviewCreate reviewCreate
     ) {
+        //        Member requestMember = memberService.findOne(LoginUser.get().getId());
         Recruit recruit = recruitService.getById(recruitId);
-        Review review = reviewService.create(recruit, reviewCreate);
+        Review review = reviewService.create(requestMember, recruit, reviewCreate);
 
         return ResponseEntity
                 .ok()
@@ -52,7 +59,7 @@ public class ReviewController {
             @RequestBody @Valid ReviewUpdate reviewUpdate
     ) {
         Recruit recruit = recruitService.getById(recruitId);
-        Review review = reviewService.update(recruit, reviewId, reviewUpdate);
+        Review review = reviewService.update(requestMember, recruit, reviewId, reviewUpdate);
 
         return ResponseEntity
                 .ok()
@@ -70,7 +77,7 @@ public class ReviewController {
             @PathVariable Long reviewId
     ) {
         Recruit recruit = recruitService.getById(recruitId);
-        reviewService.delete(recruit, reviewId);
+        reviewService.delete(requestMember, recruit, reviewId);
 
         return ResponseEntity
                 .noContent()

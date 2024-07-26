@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.common.domian.exception.ReviewRecruitMismatchException;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
@@ -22,16 +24,36 @@ import static org.junit.jupiter.api.Assertions.*;
 class ReviewServiceTest {
 
     private ReviewService reviewService;
+    private Member requestMember;
+    private final Long testMemberId = 3333L;
+    private Recruit recruit;
+    private final Long testRecruitId = 4444L;
 
     @BeforeEach
     void Init() {
+        requestMember = Member.builder()
+                .id(testMemberId)
+                .email("test-email@test.com")
+                .name("test-name")
+                .phoneNumber("test-test-test")
+                .birthDate(LocalDate.of(2024, 7, 25))
+                .password("test-password")
+                .marketingAgree(true)
+                .userState(State.ACTIVATE)
+                .build();
+
+        recruit = Recruit.builder()
+                .id(testRecruitId)
+                .memberId(testMemberId)
+                .build();
+
         ReviewRepository reviewRepository = new FakeReviewRepository();
         reviewService = ReviewServiceImpl.builder()
                 .reviewRepository(reviewRepository)
                 .build();
 
         Review review = Review.builder()
-                .recruitId(3L)
+                .recruitId(testRecruitId)
                 .title("test-title")
                 .content("test-content")
                 .date(LocalDate.of(2024, 7, 21))
@@ -49,10 +71,8 @@ class ReviewServiceTest {
                 .date(LocalDate.of(2024, 7, 21))
                 .build();
 
-        Recruit recruit = Recruit.builder().id(3L).build();
-
         //when
-        Review result = reviewService.create(recruit, reviewCreate);
+        Review result = reviewService.create(requestMember, recruit, reviewCreate);
 
         //then
         assertAll(
@@ -71,10 +91,8 @@ class ReviewServiceTest {
                 .date(LocalDate.of(2024, 7, 21))
                 .build();
 
-        Recruit recruit = Recruit.builder().id(3L).build();
-
         //when
-        Review result = reviewService.create(recruit, reviewCreate);
+        Review result = reviewService.create(requestMember, recruit, reviewCreate);
 
         //then
         assertAll(
@@ -88,7 +106,6 @@ class ReviewServiceTest {
     @Test
     void update_존재하던_review_수정() {
         //given
-        Recruit recruit = Recruit.builder().id(3L).build();
         Long reviewId = 1L;
         ReviewUpdate reviewUpdate = ReviewUpdate.builder()
                 .title("changed-title")
@@ -97,12 +114,12 @@ class ReviewServiceTest {
                 .build();
 
         //when
-        Review result = reviewService.update(recruit, reviewId, reviewUpdate);
+        Review result = reviewService.update(requestMember, recruit, reviewId, reviewUpdate);
 
         //then
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
-                () -> assertThat(result.getRecruitId()).isEqualTo(3L),
+                () -> assertThat(result.getRecruitId()).isEqualTo(testRecruitId),
                 () -> assertThat(result.getTitle()).isEqualTo("changed-title"),
                 () -> assertThat(result.getContent()).isEqualTo("changed-content"),
                 () -> assertThat(result.getDate()).isEqualTo(LocalDate.of(2024, 7, 30))
@@ -112,7 +129,6 @@ class ReviewServiceTest {
     @Test
     void update_존재하던_review_수정_content_이미존재했지만_null로변경() {
         //given
-        Recruit recruit = Recruit.builder().id(3L).build();
         Long reviewId = 1L;
         ReviewUpdate reviewUpdate = ReviewUpdate.builder()
                 .title("changed-title")
@@ -120,12 +136,12 @@ class ReviewServiceTest {
                 .build();
 
         //when
-        Review result = reviewService.update(recruit, reviewId, reviewUpdate);
+        Review result = reviewService.update(requestMember, recruit, reviewId, reviewUpdate);
 
         //then
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
-                () -> assertThat(result.getRecruitId()).isEqualTo(3L),
+                () -> assertThat(result.getRecruitId()).isEqualTo(testRecruitId),
                 () -> assertThat(result.getTitle()).isEqualTo("changed-title"),
                 () -> assertThat(result.getContent()).isNull(),
                 () -> assertThat(result.getDate()).isEqualTo(LocalDate.of(2024, 7, 30))
@@ -141,11 +157,10 @@ class ReviewServiceTest {
                 .date(LocalDate.of(2024, 7, 21))
                 .build();
 
-        Recruit recruit = Recruit.builder().id(3L).build();
-        Review review = reviewService.create(recruit, reviewCreate);
+        Review review = reviewService.create(requestMember, recruit, reviewCreate);
 
         //when
-        reviewService.delete(recruit, review.getId());
+        reviewService.delete(requestMember, recruit, review.getId());
 
         //then
         assertThatThrownBy(
@@ -155,12 +170,10 @@ class ReviewServiceTest {
     @Test
     void delete_존재하지않은_review에대한_제거요청() {
         //given
-        Recruit recruit = Recruit.builder().id(3L).build();
-
         //when
         //then
         assertThatThrownBy(
-                () -> reviewService.delete(recruit, 3333L)).isInstanceOf(ResourceNotFoundException.class);
+                () -> reviewService.delete(requestMember, recruit, testMemberId)).isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -171,32 +184,31 @@ class ReviewServiceTest {
                 .content("new-content")
                 .date(LocalDate.of(2024, 7, 21))
                 .build();
-        Recruit recruit_1 = Recruit.builder().id(3L).build();
-        Recruit recruit_2 = Recruit.builder().id(4L).build();
-        Review review = reviewService.create(recruit_1, reviewCreate);
+        Recruit anotherRecruit = Recruit.builder().id(5555L).memberId(testMemberId).build();
+        Review review = reviewService.create(requestMember, recruit, reviewCreate);
 
         //when
         //then
         assertThatThrownBy(
-                () -> reviewService.delete(recruit_2, review.getId())).isInstanceOf(ReviewRecruitMismatchException.class);
+                () -> reviewService.delete(requestMember, anotherRecruit, review.getId())).isInstanceOf(ReviewRecruitMismatchException.class);
     }
 
     @Test
     void findAllByRecruitId_공고의_모든_review찾기() {
         //given
-        Recruit recruit = Recruit.builder().id(3333L).build();
         ReviewCreate reviewCreate = ReviewCreate.builder()
                 .title("new-title")
                 .content("new-content")
                 .date(LocalDate.of(2024, 7, 21))
                 .build();
+
         for (int i = 0; i < 10; i++)
-            reviewService.create(recruit, reviewCreate);
+            reviewService.create(requestMember, recruit, reviewCreate);
 
         //when
         List<Review> reviews = reviewService.findAllByRecruitId(recruit.getId());
 
         //then
-        assertThat(reviews.size()).isEqualTo(10);
+        assertThat(reviews.size()).isEqualTo(11);
     }
 }
