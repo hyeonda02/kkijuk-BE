@@ -12,6 +12,8 @@ import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
@@ -96,7 +98,7 @@ public class CareerServiceUnitTest {
         when(careerRepository.findById(anyLong())).thenReturn(Optional.empty());
         //when
         //then
-        assertThrows(CareerValidationException.class, ()->{
+        assertThrows(ResourceNotFoundException.class, ()->{
             careerService.deleteCareer(1L);});
         verify(careerRepository,never()).delete(any(Career.class));
     }
@@ -115,7 +117,7 @@ public class CareerServiceUnitTest {
 
         // when
         // then
-        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(999L, updateCareerDto));
+        assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(999L, updateCareerDto));
         verify(careerRepository, never()).save(any(Career.class));
     }
 
