@@ -41,14 +41,17 @@ public class Member {
     private List<String> field;
 
     @NotNull
-    private Boolean marketingAgree;
+    @Enumerated(EnumType.STRING)
+    private MarketingAgree marketingAgree;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private State userState;
 
+    private LocalDate deleteDate;
 
-    public Member( String email, String name, String phoneNumber, LocalDate birthDate, String password, Boolean marketingAgree, State userState) {
+
+    public Member( String email, String name, String phoneNumber, LocalDate birthDate, String password, MarketingAgree marketingAgree, State userState) {
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -62,13 +65,11 @@ public class Member {
         this.field = field;
     }
 
-    public void changeMemberInfo(String phoneNumber, LocalDate birthDate, Boolean marketingAgree){
+    public void changeMemberInfo(String phoneNumber, LocalDate birthDate, MarketingAgree marketingAgree){
         this.phoneNumber = phoneNumber;
         this.birthDate = birthDate;
         this.marketingAgree = marketingAgree;
     }
 
-    public void changeMemberPassword(String password){
-        this.password = password;
-    }
+
 }

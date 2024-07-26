@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.MemberFieldDto;
+import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
 
 import java.util.List;
@@ -39,11 +40,19 @@ public class MemberService {
     }
 
     @Transactional
-    public List<String> updateField(MemberFieldDto memberFieldDto){
-        Member member = memberJpaRepository.findById(memberFieldDto.getId())
+    public List<String> updateMemberField(Long id,MemberFieldDto memberFieldDto){
+        Member member = memberJpaRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         member.changeFieldInfo(memberFieldDto.getField());
         return member.getField();
+    }
+
+    @Transactional
+    public Long updateMemberInfo(Long id,MemberInfoChangeDto memberInfoChangeDto){
+        Member member = memberJpaRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
+        return member.getId();
     }
 
 

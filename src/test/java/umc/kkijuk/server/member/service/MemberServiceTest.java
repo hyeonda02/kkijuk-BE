@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
@@ -35,7 +36,7 @@ public class MemberServiceTest {
     @Test
     public void 유저정보db저장및조회() throws Exception {
         // given
-        Member member1 = new Member("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.now(), "passwordTest", Boolean.TRUE, State.ACTIVATE);
+        Member member1 = new Member("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.now(), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
 
         // when
         Long savedId = memberService.join(member1);

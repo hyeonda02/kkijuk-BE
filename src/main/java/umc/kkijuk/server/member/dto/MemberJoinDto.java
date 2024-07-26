@@ -3,6 +3,7 @@ package umc.kkijuk.server.member.dto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 
@@ -18,7 +19,7 @@ public class MemberJoinDto {
     private LocalDate birthDate;
     private String password;
     private String passwordConfirm;
-    private Boolean marketingAgree;
+    private MarketingAgree marketingAgree;
     private State userState;
 
 //    @Builder
@@ -35,7 +36,7 @@ public class MemberJoinDto {
 
     @Builder
     public MemberJoinDto(String email, String name, String phoneNumber, LocalDate birthDate,
-                         String password, String passwordConfirm, Boolean marketingAgree, State userState) {
+                         String password, String passwordConfirm, MarketingAgree marketingAgree, State userState) {
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
