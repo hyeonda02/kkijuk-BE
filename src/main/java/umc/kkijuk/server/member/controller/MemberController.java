@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.Data;
@@ -57,10 +58,11 @@ public class MemberController {
             summary = "내 정보 조회",
             description = "마이페이지에서 내 정보들을 가져옵니다.")
     @GetMapping("/myPage/info")
-    public ResponseEntity<MemberInfoResponse> getInfo() {
+    public ResponseEntity<MemberInfoResponse> getInfo(@RequestParam("memberId") Long memberId) {
         try {
-            Long loginUser = LoginUser.get().getId();
-            Member member = memberService.getMemberInfo(loginUser);
+//            Long loginUser = LoginUser.get().getId();
+//            Member member = memberService.getMemberInfo(loginUser);
+            Member member = memberService.getMemberInfo(memberId);
             MemberInfoResponse response = new MemberInfoResponse(
                     member.getEmail(),
                     member.getName(),
@@ -73,6 +75,36 @@ public class MemberController {
         }
     }
 
+    @Operation(
+            summary = "관심분야 조회",
+            description = "마이페이지에서 관심분야를 조회합니다.")
+    @GetMapping("/myPage/field")
+    public ResponseEntity<MemberFieldResponse> getField(@RequestParam("memberId") Long memberId) {
+        try {
+//            Long loginUser = LoginUser.get().getId();
+//            Member member = memberService.getMemberInfo(loginUser);
+            List<String> memberField = memberService.getMemberField(memberId);
+            return ResponseEntity.ok().body(new MemberFieldResponse(memberField));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @Operation(
+            summary = "관심분야 수정",
+            description = "마이페이지에서 관심분야를 수정합니다.")
+    @PostMapping("/myPage/field")
+    public ResponseEntity<MemberFieldResponse> postField(@RequestBody @Valid MemberFieldDto memberFieldDto) {
+        try {
+//            Long loginUserId = LoginUser.get().getId();
+//            Member updatedMember = memberService.updateMemberField(loginUserId, memberFieldUpdateDto);
+            List<String> updatedMember = memberService.updateField(memberFieldDto);
+            MemberFieldResponse response = new MemberFieldResponse(updatedMember);
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 
 

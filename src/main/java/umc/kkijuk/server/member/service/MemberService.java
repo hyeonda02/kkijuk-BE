@@ -4,7 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
+
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,6 +32,19 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("Member not found"));
     }
 
+    public List<String> getMemberField(Long memberId){
+        Member member = memberJpaRepository.findById(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        return member.getField();
+    }
+
+    @Transactional
+    public List<String> updateField(MemberFieldDto memberFieldDto){
+        Member member = memberJpaRepository.findById(memberFieldDto.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        member.changeFieldInfo(memberFieldDto.getField());
+        return member.getField();
+    }
 
 
 }
