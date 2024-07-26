@@ -2,7 +2,10 @@ package umc.kkijuk.server.recruit.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.mock.FakeRecruitRepository;
@@ -19,15 +22,31 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RecruitServiceTest {
     private RecruitService recruitService;
+    private Member requestMember;
+
+    private final Long testMemberId = 3333L;
 
     @BeforeEach
     void init() {
+        requestMember = Member.builder()
+                .id(testMemberId)
+                .email("test-email@test.com")
+                .name("test-name")
+                .phoneNumber("test-test-test")
+                .birthDate(LocalDate.of(2024, 7, 25))
+                .password("test-password")
+                .marketingAgree(true)
+                .userState(State.ACTIVATE)
+                .build();
+
+
         RecruitRepository recruitRepository = new FakeRecruitRepository();
         this.recruitService = RecruitServiceImpl.builder()
                 .recruitRepository(recruitRepository)
                 .build();
 
         Recruit recruit = Recruit.builder()
+                .memberId(testMemberId)
                 .title("test-title")
                 .status(RecruitStatus.PLANNED)
                 .startTime(LocalDateTime.of(2024, 7, 19, 2, 30))
@@ -37,6 +56,7 @@ class RecruitServiceTest {
                 .link("test-link")
                 .active(true)
                 .build();
+
 
         recruitRepository.save(recruit);
     }
@@ -53,12 +73,14 @@ class RecruitServiceTest {
                 .tags(new ArrayList<>(Arrays.asList("tag1", "tag2", "tag3")))
                 .link("https://www.dto-title.com")
                 .build();
+
         //when
-        Recruit result = recruitService.create(recruitCreate);
+        Recruit result = recruitService.create(requestMember, recruitCreate);
 
         //then
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(2L),
+                () -> assertThat(result.getMemberId()).isEqualTo(testMemberId),
                 () -> assertThat(result.getTitle()).isEqualTo("dto-title"),
                 () -> assertThat(result.getStatus()).isEqualTo(RecruitStatus.PLANNED),
                 () -> assertThat(result.getStartTime()).isEqualTo(LocalDateTime.of(2024, 7, 19, 2, 30)),
@@ -78,8 +100,9 @@ class RecruitServiceTest {
                 .startTime(LocalDateTime.of(2024, 7, 19, 2, 30))
                 .endTime(LocalDateTime.of(2024, 7, 30, 2, 30))
                 .build();
+
         //when
-        Recruit result = recruitService.create(recruitCreate);
+        Recruit result = recruitService.create(requestMember, recruitCreate);
 
         //then
         assertAll(
@@ -108,7 +131,7 @@ class RecruitServiceTest {
                 .build();
 
         //when
-        Recruit updatedRecruit = recruitService.update(1L, recruitUpdate);
+        Recruit updatedRecruit = recruitService.update(requestMember, 1L, recruitUpdate);
 
         //then
         assertAll(
@@ -140,7 +163,49 @@ class RecruitServiceTest {
         //when
         //then
         assertThatThrownBy(
-                () -> recruitService.update(2L, recruitUpdate)).isInstanceOf(ResourceNotFoundException.class);
+                () -> recruitService.update(requestMember, 44444L, recruitUpdate))
+                .isInstanceOf(ResourceNotFoundException.class);
+    }
+
+    @Test
+    void update_다른_사용자가_수정요청시_에러() {
+        //given
+        RecruitUpdate recruitUpdate = RecruitUpdate.builder()
+                .title("update-title")
+                .status(RecruitStatus.INVALID)
+                .startTime(LocalDateTime.of(2024, 9, 18, 1, 30))
+                .endTime(LocalDateTime.of(2024, 10, 4, 3, 30))
+                .applyDate(LocalDate.of(2024, 8, 19))
+                .tags(new ArrayList<>(Arrays.asList("updatedTag1", "updatedTag2")))
+                .link("https://www.update-title.com")
+                .build();
+
+        Member anotherMember = Member.builder()
+                .id(2222L)
+                .build();
+
+        //when
+        //then
+        assertThatThrownBy(
+                () -> recruitService.update(anotherMember, 1L, recruitUpdate))
+                .isInstanceOf(RecruitOwnerMismatchException.class);
+    }
+
+    @Test
+    void updateStatus_다른_사용자가_수정요청시_에러() {
+        //given
+        RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
+                .status(RecruitStatus.ACCEPTED).build();
+
+        Member anotherMember = Member.builder()
+                .id(2222L)
+                .build();
+
+        //when
+        //then
+        assertThatThrownBy(
+                () -> recruitService.updateStatus(anotherMember, 1L, recruitStatusUpdate))
+                .isInstanceOf(RecruitOwnerMismatchException.class);
     }
 
     @Test
@@ -152,7 +217,7 @@ class RecruitServiceTest {
         //when
         //then
         assertThatThrownBy(
-                () -> recruitService.updateStatus(2L, recruitStatusUpdate)).isInstanceOf(ResourceNotFoundException.class);
+                () -> recruitService.updateStatus(requestMember, 2L, recruitStatusUpdate)).isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
@@ -162,7 +227,7 @@ class RecruitServiceTest {
                 .status(RecruitStatus.ACCEPTED).build();
 
         //when
-        Recruit result = recruitService.updateStatus(1L, recruitStatusUpdate);
+        Recruit result = recruitService.updateStatus(requestMember, 1L, recruitStatusUpdate);
 
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(1L),
@@ -181,7 +246,7 @@ class RecruitServiceTest {
     void disable_기존_recruit_비활성화() {
         //given
         //when
-        Recruit result = recruitService.disable(1L);
+        Recruit result = recruitService.disable(requestMember, 1L);
 
         //then
         assertAll(
@@ -197,33 +262,48 @@ class RecruitServiceTest {
         //when
         //then
         assertThatThrownBy(
-                () -> recruitService.disable(1234L)).isInstanceOf(ResourceNotFoundException.class);
+                () -> recruitService.disable(requestMember, 1234L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
     @Test
     void disable_비활성화된_유저는_getById로_찾을수_없다() {
         //given
-        recruitService.disable(1L);
+        recruitService.disable(requestMember, 1L);
 
         //when
         //then
         assertThatThrownBy(
-                () -> recruitService.getById(1L)).isInstanceOf(ResourceNotFoundException.class);
+                () -> recruitService.getById(1L))
+                .isInstanceOf(ResourceNotFoundException.class);
     }
 
+    @Test
+    void disable_다른_사용자가_요청할수_없다() {
+        //given
+        Member anotherMember = Member.builder()
+                .id(2222L)
+                .build();
+
+        //when
+        //then
+        assertThatThrownBy(
+                () -> recruitService.disable(anotherMember, 1L))
+                .isInstanceOf(RecruitOwnerMismatchException.class);
+    }
     @Test
     void findAllByEndTime_마감시간이_date인_모든_active공고를_불러온다() {
         //given
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
         for (int i = 0; i < times; i++){
-            recruitService.create(RecruitCreate.builder()
+            recruitService.create(requestMember, RecruitCreate.builder()
                 .endTime(dateTime)
                 .build());
         }
 
         //when
-        List<Recruit> result = recruitService.findAllByEndTime(dateTime.toLocalDate());
+        List<Recruit> result = recruitService.findAllByEndTime(requestMember, dateTime.toLocalDate());
 
         //then
         assertThat(result.size()).isEqualTo(times);
@@ -235,14 +315,14 @@ class RecruitServiceTest {
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
         for (int i = 0; i < times; i++){
-            Recruit recruit = recruitService.create(RecruitCreate.builder()
+            Recruit recruit = recruitService.create(requestMember, RecruitCreate.builder()
                     .endTime(dateTime)
                     .build());
-            recruitService.disable(recruit.getId());
+            recruitService.disable(requestMember, recruit.getId());
         }
 
         //when
-        List<Recruit> result = recruitService.findAllByEndTime(dateTime.toLocalDate());
+        List<Recruit> result = recruitService.findAllByEndTime(requestMember, dateTime.toLocalDate());
 
         //then
         assertThat(result.size()).isZero();
@@ -254,14 +334,14 @@ class RecruitServiceTest {
         LocalDateTime dateTime = LocalDateTime.of(2024, 7, 30, 2, 30);
         int times = 10;
         for (int i = 0; i < times; i++){
-            Recruit recruit = recruitService.create(RecruitCreate.builder()
+            Recruit recruit = recruitService.create(requestMember, RecruitCreate.builder()
                     .endTime(dateTime)
                     .build());
             if (i % 2 == 0)
-                recruitService.disable(recruit.getId());
+                recruitService.disable(requestMember, recruit.getId());
         }
         //when
-        List<Recruit> result = recruitService.findAllByEndTime(dateTime.toLocalDate());
+        List<Recruit> result = recruitService.findAllByEndTime(requestMember, dateTime.toLocalDate());
 
         //then
         assertThat(result.size()).isEqualTo(times / 2);
@@ -271,7 +351,7 @@ class RecruitServiceTest {
     void findAllByEndTimeAfter_마감이_안지난_active공고를_불러온다() {
         //given
         //when
-        List<Recruit> result = recruitService.findAllByEndTimeAfter(LocalDateTime.of(2024, 1, 1, 1, 1));
+        List<Recruit> result = recruitService.findAllByEndTimeAfter(requestMember, LocalDateTime.of(2024, 1, 1, 1, 1));
 
         //then
         assertThat(result.size()).isOne();
@@ -280,10 +360,10 @@ class RecruitServiceTest {
     @Test
     void findAllByEndTimeAfter_inactive공고는_제외한다() {
         //given
-        recruitService.disable(1L);
+        recruitService.disable(requestMember, 1L);
 
         //when
-        List<Recruit> result = recruitService.findAllByEndTimeAfter(LocalDateTime.of(2024, 1, 1, 1, 1));
+        List<Recruit> result = recruitService.findAllByEndTimeAfter(requestMember, LocalDateTime.of(2024, 1, 1, 1, 1));
 
         //then
         assertThat(result.size()).isZero();

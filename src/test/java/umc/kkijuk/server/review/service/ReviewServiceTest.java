@@ -3,7 +3,7 @@ package umc.kkijuk.server.review.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.common.domian.exception.ReviewRecruitNotMatchException;
+import umc.kkijuk.server.common.domian.exception.ReviewRecruitMismatchException;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
@@ -178,7 +178,7 @@ class ReviewServiceTest {
         //when
         //then
         assertThatThrownBy(
-                () -> reviewService.delete(recruit_2, review.getId())).isInstanceOf(ReviewRecruitNotMatchException.class);
+                () -> reviewService.delete(recruit_2, review.getId())).isInstanceOf(ReviewRecruitMismatchException.class);
     }
 
     @Test

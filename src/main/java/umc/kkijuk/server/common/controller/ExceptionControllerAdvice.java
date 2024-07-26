@@ -5,8 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.common.domian.exception.ReviewRecruitNotMatchException;
+import umc.kkijuk.server.common.domian.exception.ReviewRecruitMismatchException;
 import umc.kkijuk.server.common.domian.response.ErrorResponse;
 
 @RestControllerAdvice
@@ -20,8 +21,14 @@ public class ExceptionControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    @ExceptionHandler(ReviewRecruitNotMatchException.class)
-    public ErrorResponse ReviewRecruitMatchException(ReviewRecruitNotMatchException exception) {
+    @ExceptionHandler(ReviewRecruitMismatchException.class)
+    public ErrorResponse ReviewRecruitMatchException(ReviewRecruitMismatchException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(RecruitOwnerMismatchException.class)
+    public ErrorResponse RecruitOwnerMismatchException(RecruitOwnerMismatchException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }

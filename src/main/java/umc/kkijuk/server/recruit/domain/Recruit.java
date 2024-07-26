@@ -8,10 +8,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@Builder
 @Getter
+@Builder
 public class Recruit {
     private final Long id;
+    private final Long memberId;
     private final String title;
     private final RecruitStatus status;
     private final LocalDateTime startTime;
@@ -22,8 +23,9 @@ public class Recruit {
     private final boolean active;
     private final LocalDateTime disabledTime;
 
-    public static Recruit from(RecruitCreate recruitCreate) {
+    public static Recruit from(Long memberId, RecruitCreate recruitCreate) {
         return Recruit.builder()
+                .memberId(memberId)
                 .title(recruitCreate.getTitle())
                 .status(recruitCreate.getStatus())
                 .startTime(recruitCreate.getStartTime())
@@ -38,6 +40,7 @@ public class Recruit {
     public Recruit update(RecruitUpdate recruitUpdate) {
         return Recruit.builder()
                 .id(this.id)
+                .memberId(this.memberId)
                 .title(recruitUpdate.getTitle())
                 .status(recruitUpdate.getStatus())
                 .startTime(recruitUpdate.getStartTime())
@@ -52,6 +55,7 @@ public class Recruit {
     public Recruit updateStatus(RecruitStatusUpdate recruitStatusUpdate) {
         return Recruit.builder()
                 .id(this.id)
+                .memberId(this.memberId)
                 .title(this.getTitle())
                 .status(recruitStatusUpdate.getStatus())
                 .startTime(this.getStartTime())
@@ -66,6 +70,7 @@ public class Recruit {
     public Recruit disable() {
         return Recruit.builder()
                 .id(this.id)
+                .memberId(memberId)
                 .title(this.getTitle())
                 .status(this.getStatus())
                 .startTime(this.getStartTime())

@@ -26,6 +26,7 @@ public class FakeRecruitRepository implements RecruitRepository {
         if (recruit.getId() == null || recruit.getId() == 0){
             Recruit newRecruit = Recruit.builder()
                     .id(authGeneratedID.incrementAndGet())
+                    .memberId(recruit.getMemberId())
                     .title(recruit.getTitle())
                     .status(recruit.getStatus())
                     .startTime(recruit.getStartTime())
@@ -60,16 +61,34 @@ public class FakeRecruitRepository implements RecruitRepository {
     }
 
     @Override
-    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, boolean active) {
+    public List<Recruit> findAllByEndDateAndActive(LocalDate endTime, boolean active) {
         return data.stream()
                 .filter(item -> endTime.equals(item.getEndTime().toLocalDate()) &&
                         item.isActive() == active).toList();
     }
 
     @Override
-    public List<Recruit> findAllByEndTimeAfterAndIsActive(LocalDateTime endTime, boolean active) {
+    public List<Recruit> findAllByEndTimeAfterAndActive(LocalDateTime endTime, boolean active) {
         return data.stream()
                 .filter(item -> item.getEndTime().isAfter(endTime) &&
                                 item.isActive() == active).toList();
+    }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberIdAndEndDate(Long memberId, LocalDate endTime) {
+        return data.stream()
+                .filter(item -> endTime.equals(item.getEndTime().toLocalDate()) &&
+                        item.isActive() &&
+                        item.getMemberId().equals(memberId))
+                .toList();
+    }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberIdAndEndTimeAfter(Long memberId, LocalDateTime endTime) {
+        return data.stream()
+                .filter(item -> item.getEndTime().isAfter(endTime) &&
+                        item.isActive() &&
+                        item.getMemberId().equals(memberId))
+                .toList();
     }
 }

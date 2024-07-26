@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.controller.response.RecruitInfoResponse;
 import umc.kkijuk.server.recruit.controller.response.RecruitListByEndDateResponse;
@@ -31,13 +32,17 @@ public class RecruitController {
     private final RecruitService recruitService;
     private final ReviewService reviewService;
 
+    private final Member requestMember = Member.builder()
+            .id(LoginUser.get().getId())
+            .build();
+
     @Operation(
             summary = "지원 공고 생성",
             description = "주어진 정보를 바탕으로 지원 공고 데이터를 생성합니다.")
     @PostMapping
     public ResponseEntity<RecruitIdResponse> create(@RequestBody @Valid RecruitCreate recruitCreate) {
-        LoginUser loginUser = LoginUser.get();
-        Recruit recruit = recruitService.create(recruitCreate);
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.create(requestMember, recruitCreate);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(RecruitIdResponse.from(recruit));
@@ -50,10 +55,11 @@ public class RecruitController {
     @PutMapping("/{recruitId}")
     public ResponseEntity<Long> update(@RequestBody @Valid RecruitUpdate recruitUpdate,
                                        @PathVariable long recruitId) {
-        LoginUser loginUser = LoginUser.get();
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.update(requestMember, recruitId, recruitUpdate);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(recruitService.update(recruitId, recruitUpdate).getId());
+                .body(recruit.getId());
     }
 
     @Operation(
@@ -63,10 +69,11 @@ public class RecruitController {
     @PatchMapping("/{recruitId}")
     public ResponseEntity<Long> updateState(@RequestBody @Valid RecruitStatusUpdate recruitStatusUpdate,
                                             @PathVariable long recruitId) {
-        LoginUser loginUser = LoginUser.get();
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.updateStatus(requestMember, recruitId, recruitStatusUpdate);
         return ResponseEntity
                 .ok()
-                .body(recruitService.updateStatus(recruitId, recruitStatusUpdate).getId());
+                .body(recruit.getId());
     }
 
     @Operation(
@@ -75,10 +82,11 @@ public class RecruitController {
     @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
     @DeleteMapping("/{recruitId}")
     public ResponseEntity<Long> delete(@PathVariable long recruitId) {
-        LoginUser loginUser = LoginUser.get();
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.disable(requestMember, recruitId);
         return ResponseEntity
                 .ok()
-                .body(recruitService.disable(recruitId).getId());
+                .body(recruit.getId());
     }
 
     @Operation(
@@ -103,7 +111,8 @@ public class RecruitController {
     public ResponseEntity<RecruitListByEndDateResponse> findAllRecruitListByEndTime(
             @Parameter(name = "date", description = "지원 공고 마감 날짜", example = "2024-07-20")
             @RequestParam LocalDate date) {
-        List<Recruit> recruits = recruitService.findAllByEndTime(date);
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<Recruit> recruits = recruitService.findAllByEndTime(requestMember, date);
         return ResponseEntity
                 .ok()
                 .body(RecruitListByEndDateResponse.from(recruits));
@@ -117,7 +126,8 @@ public class RecruitController {
             @Parameter(name = "time", description = "이 시간 이후에 마감되는 공고를 요청", example = "2024-07-20 10:30")
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
             @RequestParam LocalDateTime time) {
-        List<Recruit> recruits = recruitService.findAllByEndTimeAfter(time);
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<Recruit> recruits = recruitService.findAllByEndTimeAfter(requestMember, time);
         return ResponseEntity
                 .ok()
                 .body(RecruitListByEndTimeAfterResponse.from(recruits));
