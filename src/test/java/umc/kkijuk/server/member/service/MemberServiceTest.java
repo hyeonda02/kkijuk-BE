@@ -56,7 +56,7 @@ public class MemberServiceTest {
                 .birthDate(LocalDate.now())
                 .password("passwordTest")
                 .passwordConfirm("passwordTest")
-                .marketingAgree(Boolean.TRUE)
+                .marketingAgree(MarketingAgree.BOTH)
                 .userState(State.ACTIVATE)
                 .build();
 
@@ -80,7 +80,7 @@ public class MemberServiceTest {
                 .birthDate(LocalDate.now())
                 .password("passwordTest")
                 .passwordConfirm("wrongPassword")
-                .marketingAgree(Boolean.TRUE)
+                .marketingAgree(MarketingAgree.BOTH)
                 .userState(State.ACTIVATE)
                 .build();
 
