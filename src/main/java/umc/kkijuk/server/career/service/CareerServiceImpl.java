@@ -3,7 +3,7 @@ package umc.kkijuk.server.career.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.kkijuk.server.career.controller.exception.CareerValidationException;
+import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
@@ -11,6 +11,8 @@ import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.converter.CareerConverter;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +92,7 @@ public class CareerServiceImpl implements CareerService {
     @Override
     public Optional<Career> findCareer(Long careerId) {
         return Optional.ofNullable(careerRepository.findById(careerId).orElseThrow(
-                () -> new CareerValidationException(CareerResponseMessage.CAREER_NOT_FOUND.toString())));
+                () -> new ResourceNotFoundException("Career",careerId)));
     }
 
 

@@ -1,4 +1,4 @@
-package umc.kkijuk.server.career.controller.exception;
+package umc.kkijuk.server.common.controller;
 
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
+import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 
 
 @RestControllerAdvice(assignableTypes = {umc.kkijuk.server.career.controller.CareerController.class})

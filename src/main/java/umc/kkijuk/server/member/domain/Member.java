@@ -1,22 +1,23 @@
 package umc.kkijuk.server.member.domain;
 
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import umc.kkijuk.server.member.converter.StringListConverter;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.ArrayList;
+
+import umc.kkijuk.server.common.converter.StringListToStringConverter;
 
 @Entity
+@Getter
 @Builder
-@Getter @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class Member {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long id;
 
@@ -35,17 +36,22 @@ public class Member {
     @NotNull
     private String password;
 
-    @Convert(converter = StringListConverter.class)
-    private List<String> field  = new ArrayList<>();
+
+    @Convert(converter = StringListToStringConverter.class)
+    private List<String> field;
 
     @NotNull
-    private Boolean marketingAgree;
+    @Enumerated(EnumType.STRING)
+    private MarketingAgree marketingAgree;
 
     @NotNull
     @Enumerated(EnumType.STRING)
     private State userState;
 
-    public Member(String email, String name, String phoneNumber, LocalDate birthDate, String password, Boolean marketingAgree, State userState) {
+    private LocalDate deleteDate;
+
+
+    public Member( String email, String name, String phoneNumber, LocalDate birthDate, String password, MarketingAgree marketingAgree, State userState) {
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -54,5 +60,16 @@ public class Member {
         this.marketingAgree = marketingAgree;
         this.userState = userState;
     }
-}
 
+    public void changeFieldInfo(List<String> field){
+        this.field = field;
+    }
+
+    public void changeMemberInfo(String phoneNumber, LocalDate birthDate, MarketingAgree marketingAgree){
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
+        this.marketingAgree = marketingAgree;
+    }
+
+
+}

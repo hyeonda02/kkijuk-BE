@@ -1,4 +1,4 @@
-package umc.kkijuk.server.career.controller.exception;
+package umc.kkijuk.server.common.domian.exception;
 
 public class CareerValidationException extends RuntimeException{
 
