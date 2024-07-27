@@ -9,6 +9,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @Setter
 public class IntroduceResDto {
@@ -21,10 +23,11 @@ public class IntroduceResDto {
     private String link;
     private String updatedAt;
     private String timeSinceUpdate;
+    private List<String> introduceList;
     private int state;
 
     @Builder
-    public IntroduceResDto(Introduce introduce, List<QuestionDto> questionList) {
+    public IntroduceResDto(Introduce introduce, List<QuestionDto> questionList, List<String> introduceList) {
         this.id = introduce.getId();
         this.recruitId=introduce.getRecruit().toModel().getId();
         this.recruitTitle=introduce.getRecruit().toModel().getTitle();
@@ -34,6 +37,7 @@ public class IntroduceResDto {
         this.link=introduce.getRecruit().toModel().getLink();
         this.updatedAt = formatUpdatedAt(introduce.getUpdated_at());
         this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdated_at());
+        this.introduceList = introduceList;
         this.state=introduce.getState();
     }
     private String formatUpdatedAt(LocalDateTime updatedAt) {
@@ -46,4 +50,5 @@ public class IntroduceResDto {
         long days = duration.toDays();
         return days > 0 ? "D-" + days : "공고 기한 마감";
     }
+
 }

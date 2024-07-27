@@ -3,12 +3,11 @@ package umc.kkijuk.server.introduce.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.introduce.common.BaseResponse;
-import umc.kkijuk.server.introduce.domain.Introduce;
-import umc.kkijuk.server.introduce.domain.MasterIntroduce;
 import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.introduce.error.BaseErrorResponse;
 import umc.kkijuk.server.introduce.error.BaseException;
@@ -20,6 +19,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/history/intro/")
+@Slf4j
 public class IntroduceController {
     private final IntroduceService introduceService;
 
@@ -36,6 +36,7 @@ public class IntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
@@ -55,6 +56,7 @@ public class IntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
@@ -63,7 +65,7 @@ public class IntroduceController {
 
     @GetMapping("list")
     @Operation(summary = "자기소개서 목록 조회")
-    public ResponseEntity<Object> get(){
+    public ResponseEntity<Object> getList(){
         try {
             List<IntroduceListResDto> introduceListResDtos = introduceService.getIntroList();
             return ResponseEntity
@@ -74,6 +76,7 @@ public class IntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
@@ -93,9 +96,10 @@ public class IntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"+e.getMessage()+e.getStackTrace()));
+                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error "+e.getMessage()+e.getCause()));
         }
     }
 
@@ -112,6 +116,7 @@ public class IntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));

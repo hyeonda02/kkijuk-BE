@@ -40,8 +40,8 @@ public class IntroduceService {
                 .build();
 
         introduceRepository.save(introduce);
-
-        return new IntroduceResDto(introduce, introduceReqDto.getQuestionList());
+        List<String> introduceList=getIntroduceTitles();
+        return new IntroduceResDto(introduce, introduceReqDto.getQuestionList(),introduceList);
     }
 
     @Transactional
@@ -54,7 +54,9 @@ public class IntroduceService {
                 .map(question -> new QuestionDto(question.getTitle(), question.getContent(), question.getNumber()))
                 .collect(Collectors.toList());
 
-        return new IntroduceResDto(introduce, questionList);
+        List<String> introduceList=getIntroduceTitles();
+
+        return new IntroduceResDto(introduce, questionList, introduceList);
     }
 
     @Transactional
@@ -66,7 +68,7 @@ public class IntroduceService {
     }
 
     @Transactional
-    public IntroduceResDto updateIntro(Long introId, IntroduceReqDto introduceReqDto) {
+    public IntroduceResDto updateIntro(Long introId, IntroduceReqDto introduceReqDto) throws Exception{
         Introduce introduce = introduceRepository.findById(introId)
                 .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 자기소개서를 찾을 수 없습니다"));
 
@@ -134,5 +136,18 @@ public class IntroduceService {
         introduceRepository.delete(introduce);
 
         return introduce.getId();
+    }
+
+    @Transactional
+    public List<String> getIntroduceTitles() {
+        // Fetch all Introduce entities
+        List<Introduce> introduces = introduceRepository.findAll();
+
+        // Map Introduce entities to Recruit titles
+        return introduces.stream()
+                .map(introduce -> recruitJpaRepository.findById(introduce.getRecruit().toModel().getId())) // Get the Recruit entity
+                .filter(Optional::isPresent) // Filter out any empty results
+                .map(opt -> opt.get().toModel().getTitle()) // Get the title of the Recruit
+                .collect(Collectors.toList()); // Collect titles into a List
     }
 }

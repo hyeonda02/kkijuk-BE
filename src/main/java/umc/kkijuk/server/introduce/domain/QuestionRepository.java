@@ -6,6 +6,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
-    List<Question> findByNumber(int number);
-    List<Question> findByIntroduceId(Long number);
+
 }
