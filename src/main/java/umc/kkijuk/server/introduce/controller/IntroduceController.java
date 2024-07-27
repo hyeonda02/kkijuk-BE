@@ -9,10 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.introduce.common.BaseResponse;
 import umc.kkijuk.server.introduce.domain.Introduce;
 import umc.kkijuk.server.introduce.domain.MasterIntroduce;
-import umc.kkijuk.server.introduce.dto.IntroduceReqDto;
-import umc.kkijuk.server.introduce.dto.IntroduceResDto;
-import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
-import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
+import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.introduce.error.BaseErrorResponse;
 import umc.kkijuk.server.introduce.error.BaseException;
 import umc.kkijuk.server.introduce.service.IntroduceService;
@@ -45,8 +42,8 @@ public class IntroduceController {
         }
     }
 
-   @GetMapping("/{introId}")
-   @Operation(summary = "자기소개서 조회")
+   @GetMapping("detail/{introId}")
+   @Operation(summary = "자기소개서 개별 조회")
     public ResponseEntity<Object> get(@PathVariable("introId") Long introId){
         try {
             IntroduceResDto introduceResDto = introduceService.getIntro(introId);
@@ -64,11 +61,30 @@ public class IntroduceController {
         }
     }
 
-    /*@PatchMapping("/{introId}")
+    @GetMapping("list")
+    @Operation(summary = "자기소개서 목록 조회")
+    public ResponseEntity<Object> get(){
+        try {
+            List<IntroduceListResDto> introduceListResDtos = introduceService.getIntroList();
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(new BaseResponse<>(HttpStatus.OK.value(), "자기소개서 목록 조회 완료", introduceListResDtos));
+        } catch (BaseException e) {
+            return ResponseEntity
+                    .status(e.getCode())
+                    .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
+        }
+    }
+
+    @PatchMapping("/{introId}")
     @Operation(summary = "자기소개서 수정")
     public ResponseEntity<Object> update(@PathVariable("introId") Long introId, @RequestBody IntroduceReqDto introduceReqDto){
         try {
-            IntroduceResDto introduceResDto = introduceService.saveIntro(introId, introduceReqDto);
+            IntroduceResDto introduceResDto = introduceService.updateIntro(introId, introduceReqDto);
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new BaseResponse<>(HttpStatus.OK.value(), "자기소개서 수정 완료", introduceResDto));
@@ -79,9 +95,9 @@ public class IntroduceController {
         } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
+                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"+e.getMessage()+e.getStackTrace()));
         }
-    }*/
+    }
 
     @DeleteMapping("/{introId}")
     @Operation(summary = "자기소개서 삭제")

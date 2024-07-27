@@ -11,7 +11,7 @@ import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
 
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class IntroduceService {
             throw new BaseException(HttpStatus.CONFLICT.value(), "이미 자기소개서가 존재합니다");
         }
         List<Question> questions = introduceReqDto.getQuestionList().stream()
-                .map(dto -> new Question(dto.getTitle(), dto.getContent()))
+                .map(dto -> new Question(dto.getTitle(), dto.getContent(), dto.getNumber()))
                 .collect(Collectors.toList());
 
         Introduce introduce=Introduce.builder()
@@ -51,51 +51,80 @@ public class IntroduceService {
 
         List<QuestionDto> questionList = introduce.getQuestions()
                 .stream()
-                .map(question -> new QuestionDto(question.getTitle(), question.getContent()))
+                .map(question -> new QuestionDto(question.getTitle(), question.getContent(), question.getNumber()))
                 .collect(Collectors.toList());
 
         return new IntroduceResDto(introduce, questionList);
     }
 
-    /*@Transactional
-    public IntroduceResDto updateIntro(Long introId, IntroduceReqDto introduceReqDto){
-        Introduce introduce=introduceRepository.findById(introId)
-                .orElseThrow(()-> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 자기소개서를 찾을 수 없습니다"));
+    @Transactional
+    public List<IntroduceListResDto> getIntroList(){
+        List<Introduce> introduces = introduceRepository.findAll();
+        return introduces.stream()
+                .map(IntroduceListResDto::new)
+                .collect(Collectors.toList());
+    }
 
-        List<Question> updatedQuestions = introduceReqDto.getQuestionList().stream()
-                .map(questionDto -> {
-                    if (questionDto.getId() != null) {
-                        // 기존 질문을 찾아서 업데이트
-                        Question question = questionRepository.findById(questionDto.getId())
-                                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 질문을 찾을 수 없습니다"));
-                        question.update(questionDto.getTitle(), questionDto.getContent());
-                        return question;
-                    } else {
-                        // 새 질문 생성
-                        Question newQuestion = new Question(questionDto.getTitle(), questionDto.getContent());
-                        newQuestion.setIntroduce(introduce); // 자기소개서와 연관 설정
-                        return newQuestion;
-                    }
-                })
+    @Transactional
+    public IntroduceResDto updateIntro(Long introId, IntroduceReqDto introduceReqDto) {
+        Introduce introduce = introduceRepository.findById(introId)
+                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 자기소개서를 찾을 수 없습니다"));
+
+        introduce.update(introduceReqDto.getState());
+
+        List<Question> existingQuestions = introduce.getQuestions();
+        Map<Integer, Question> existingQuestionsMap = existingQuestions.stream()
+                .collect(Collectors.toMap(Question::getNumber, q -> q));
+
+        List<QuestionDto> questionDtos = introduceReqDto.getQuestionList();
+        List<Question> updatedQuestions = new ArrayList<>();
+
+        for (QuestionDto questionDto : questionDtos) {
+            Integer number = questionDto.getNumber();
+            Question existingQuestion = existingQuestionsMap.get(number);
+
+            if (existingQuestion != null) {
+                existingQuestion.update(questionDto.getTitle(), questionDto.getContent());
+                updatedQuestions.add(existingQuestion);
+            } else {
+                Question newQuestion = new Question();
+                newQuestion.setTitle(questionDto.getTitle());
+                newQuestion.setContent(questionDto.getContent());
+                newQuestion.setNumber(questionDto.getNumber());
+                newQuestion.setIntroduce(introduce);
+                updatedQuestions.add(newQuestion);
+            }
+        }
+
+        List<Question> toRemove = existingQuestions.stream()
+                .filter(q -> !questionDtos.stream()
+                        .anyMatch(dto -> dto.getNumber() == q.getNumber()))
                 .collect(Collectors.toList());
 
-        introduce.getQuestions().forEach(question -> {
-            if (updatedQuestions.stream().noneMatch(updatedQuestion -> updatedQuestion.getId().equals(question.getId()))) {
-                questionRepository.delete(question);
-            }
+        toRemove.forEach(question -> {
+            introduce.getQuestions().remove(question);
+            questionRepository.delete(question);
         });
 
-        introduce.setQuestions(updatedQuestions);
+        introduce.getQuestions().clear();
+        introduce.getQuestions().addAll(updatedQuestions);
 
         introduceRepository.save(introduce);
 
-        List<QuestionDto> questionList = introduce.getQuestions()
-                .stream()
-                .map(question -> new QuestionDto(question.getId(), question.getTitle(), question.getContent()))
+        List<QuestionDto> responseQuestionList = introduce.getQuestions().stream()
+                .map(question -> QuestionDto.builder()
+                        .title(question.getTitle())
+                        .content(question.getContent())
+                        .number(question.getNumber())
+                        .build())
                 .collect(Collectors.toList());
 
-        return new IntroduceResDto(introduce, questionList);
-    }*/
+        return IntroduceResDto.builder()
+                .introduce(introduce)
+                .questionList(responseQuestionList)
+                .build();
+    }
+
 
     @Transactional
     public Long deleteIntro(Long introId){

@@ -5,10 +5,12 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name="question")
 @Getter
+@Setter
 @NoArgsConstructor
 public class Question {
     @Id
@@ -20,13 +22,16 @@ public class Question {
     private Introduce introduce;
 
     private String title;
+
     private String content;
 
+    private int number;
+
     @Builder
-    public Question(String title, String content) {
-        this.introduce = introduce;
+    public Question(String title, String content, int number) {
         this.title = title;
         this.content = content;
+        this.number = number;
     }
 
     public void setIntroduce(Introduce introduce) {

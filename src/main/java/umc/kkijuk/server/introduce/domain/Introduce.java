@@ -49,11 +49,6 @@ public class Introduce {
         setQuestions(questions);
     }
 
-    public String getUpdated_at() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return updated_at != null ? updated_at.format(formatter) : null;
-    }
-
     public void setQuestions(List<Question> questions) {
         this.questions = questions;
         for (Question question : questions) {

@@ -9,13 +9,15 @@ import umc.kkijuk.server.introduce.domain.Question;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class QuestionDto {
     private String title;
     private String content;
+    private int number;
 
-    @Builder
     public QuestionDto(Question question) {
         this.title = question.getTitle();
         this.content = question.getContent();
+        this.number = question.getNumber();
     }
 }
