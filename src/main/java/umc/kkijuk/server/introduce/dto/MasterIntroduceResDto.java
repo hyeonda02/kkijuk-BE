@@ -9,15 +9,17 @@ import java.time.LocalDateTime;
 @Setter
 public class MasterIntroduceResDto {
     private String oneLiner;
-    private String subTitle;
-    private String content;
+    private String introduction;
+    private String motive;
+    private String prosAndCons;
     private String updatedAt;
 
     @Builder
     public MasterIntroduceResDto(MasterIntroduce masterIntroduce) {
         this.oneLiner = masterIntroduce.getOneLiner();
-        this.subTitle = masterIntroduce.getSubTitle();
-        this.content = masterIntroduce.getContent();
+        this.introduction = masterIntroduce.getIntroduction();
+        this.motive = masterIntroduce.getMotive();
+        this.prosAndCons = masterIntroduce.getProsAndCons();
         this.updatedAt = masterIntroduce.getUpdated_at();
     }
 

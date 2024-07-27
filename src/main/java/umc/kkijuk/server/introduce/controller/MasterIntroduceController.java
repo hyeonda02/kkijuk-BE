@@ -1,5 +1,6 @@
 package umc.kkijuk.server.introduce.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,7 @@ public class MasterIntroduceController {
     private final MasterIntroduceService masterIntroduceService;
 
     @PostMapping
+    @Operation(summary = "마스터 자기소개서 생성")
     public ResponseEntity<Object> save(@RequestBody MasterIntroduceReqDto masterIntroduceReqDto){
         try {
             MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.saveMasterIntro(masterIntroduceReqDto);
@@ -41,6 +43,7 @@ public class MasterIntroduceController {
     }
 
     @GetMapping
+    @Operation(summary = "마스터 자기소개서 조회")
     public ResponseEntity<Object> get(){
         try {
             List<MasterIntroduce> masterIntroduce = masterIntroduceService.getMasterIntro();
@@ -59,6 +62,7 @@ public class MasterIntroduceController {
     }
 
     @PatchMapping
+    @Operation(summary = "마스터 자기소개서 수정")
     public ResponseEntity<Object> update(Long id, @RequestBody MasterIntroduceReqDto masterIntroduceReqDto){
         try {
             MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.updateMasterIntro(id, masterIntroduceReqDto);
