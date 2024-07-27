@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -130,7 +131,10 @@ public class RecruitController {
                 .body(RecruitListByEndTimeAfterResponse.from(recruits));
     }
 
-//     멤버 추가시 추가
+    @Operation(
+            summary = "지원 현황 목록",
+            description = "주어진 시간 이후 유효한 지원 목록을 불러옵니다. " +
+    "상태가 UNAPPLIED 혹은 PLANNED일 경우, 해당 지원 공고의 마감시간이 요청한 시간보다 이후여야 합니다.")
     @GetMapping("/list/valid")
     public ResponseEntity<ValidRecruitListResponse> findValidRecruit(
             @Parameter(name = "time", description = "이 시간 이후에 유효한 공고 목록 요청", example = "2024-07-20 10:30")
@@ -138,9 +142,24 @@ public class RecruitController {
             @RequestParam LocalDateTime time
     ) {
 //        Member requestMember = memberService.findOne(LoginUser.get().getId());
-        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMemberId(requestMember.getId(), time);
+        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMemberId(requestMember, time);
         return ResponseEntity
                 .ok()
                 .body(ValidRecruitListResponse.from(ValidRecruitDtoList));
+    }
+    @Operation(
+            summary = "달력",
+            description = "요청한 년도와 월에 대해서 해당 월에 마감되는 공고의 종류와 갯수를 요청합니다.")
+    @GetMapping("/calendar")
+    public ResponseEntity<RecruitListByMonthResponse> getByMonth(
+            @Parameter(name = "year", description = "년도", example = "2024")
+            @RequestParam Integer year,
+            @Parameter(name = "month", description = "월", example = "7")
+            @RequestParam Integer month) {
+        //        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<RecruitListByMonthDto> recruitListByMonthDtoList = recruitService.findAllValidRecruitByYearAndMonth(requestMember, year, month);
+        return ResponseEntity
+                .ok()
+                .body(RecruitListByMonthResponse.from(recruitListByMonthDtoList));
     }
 }

@@ -400,7 +400,7 @@ class RecruitServiceTest {
         }
 
         //when
-        List<ValidRecruitDto> result = recruitService.findAllValidRecruitByMemberId(testMemberId, LocalDateTime.now());
+        List<ValidRecruitDto> result = recruitService.findAllValidRecruitByMemberId(requestMember, LocalDateTime.now());
 
         //then
         assertAll(
@@ -411,5 +411,52 @@ class RecruitServiceTest {
                 () -> assertThat(result.stream().filter(item -> item.getStatus().equals(RecruitStatus.UNAPPLIED)).count()).isOne(),
                 () -> assertThat(result.size()).isEqualTo(8)
         );
+    }
+
+    @Test
+    void findAllValidRecruitByYearAndMonthTest() {
+        //given
+        for (int i = 0; i <10; i++) {
+            RecruitCreate recruitCreate = RecruitCreate.builder()
+                    .title("dto-title")
+                    .status(RecruitStatus.PLANNED)
+                    .startTime(newRecruitStartTime)
+                    .endTime(newRecruitEndTime)
+                    .applyDate(newRecruitApplyDate)
+                    .tags(new ArrayList<>(Arrays.asList("tag1", "tag2", "tag3")))
+                    .link("https://www.dto-title.com")
+                    .build();
+            recruitService.create(requestMember, recruitCreate);
+        }
+
+        //when
+        List<RecruitListByMonthDto> result = recruitService.findAllValidRecruitByYearAndMonth(requestMember, newRecruitEndTime.getYear(), newRecruitEndTime.getMonthValue());
+
+        //then
+        assertThat(result.size()).isEqualTo(10);
+    }
+
+    @Test
+    void findAllValidRecruitByYearAndMonth_inactive는_제외() {
+        //given
+        for (int i = 0; i <10; i++) {
+            RecruitCreate recruitCreate = RecruitCreate.builder()
+                    .title("dto-title")
+                    .status(RecruitStatus.PLANNED)
+                    .startTime(newRecruitStartTime)
+                    .endTime(newRecruitEndTime)
+                    .applyDate(newRecruitApplyDate)
+                    .tags(new ArrayList<>(Arrays.asList("tag1", "tag2", "tag3")))
+                    .link("https://www.dto-title.com")
+                    .build();
+            Recruit recruit = recruitService.create(requestMember, recruitCreate);
+            if (i % 2 == 1) recruitService.disable(requestMember, recruit.getId());
+        }
+
+        //when
+        List<RecruitListByMonthDto> result = recruitService.findAllValidRecruitByYearAndMonth(requestMember, newRecruitEndTime.getYear(), newRecruitEndTime.getMonthValue());
+
+        //then
+        assertThat(result.size()).isEqualTo(5);
     }
 }

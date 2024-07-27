@@ -99,4 +99,15 @@ public class FakeRecruitRepository implements RecruitRepository {
                         item.isActive())
                 .toList();
     }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberIdAndMonth(Long memberId, Integer year, Integer month) {
+        return data.stream()
+                .filter(item ->
+                        item.getMemberId().equals(memberId) &&
+                        item.isActive() &&
+                        item.getEndTime().getMonthValue() == month &&
+                        item.getEndTime().getYear() == year)
+                .toList();
+    }
 }

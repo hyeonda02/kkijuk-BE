@@ -84,11 +84,19 @@ public class RecruitServiceImpl implements RecruitService {
     }
 
     @Override
-    public List<ValidRecruitDto> findAllValidRecruitByMemberId(Long memberId, LocalDateTime endTime) {
-        List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberId(memberId);
+    public List<ValidRecruitDto> findAllValidRecruitByMemberId(Member requestMember, LocalDateTime endTime) {
+        List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberId(requestMember.getId());
         return recruits.stream()
                 .filter(item -> !isUnappliedOrPlanned(item) || item.getEndTime().isAfter(endTime))
                 .map(ValidRecruitDto::from)
+                .toList();
+    }
+
+    @Override
+    public List<RecruitListByMonthDto> findAllValidRecruitByYearAndMonth(Member requestMember, Integer year, Integer month) {
+        List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberIdAndMonth(requestMember.getId(), year, month);
+        return recruits.stream()
+                .map(RecruitListByMonthDto::from)
                 .toList();
     }
 

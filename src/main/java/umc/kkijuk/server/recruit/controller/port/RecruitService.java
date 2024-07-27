@@ -24,5 +24,7 @@ public interface RecruitService {
 
     List<Recruit> findAllByEndTimeAfter(Member member, LocalDateTime endTime);
 
-    List<ValidRecruitDto> findAllValidRecruitByMemberId(Long memberId, LocalDateTime endTime);
+    List<ValidRecruitDto> findAllValidRecruitByMemberId(Member member, LocalDateTime endTime);
+
+    List<RecruitListByMonthDto> findAllValidRecruitByYearAndMonth(Member member, Integer year, Integer month);
 }
