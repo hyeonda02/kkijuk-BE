@@ -38,7 +38,6 @@ class ReviewServiceTest {
                 .phoneNumber("test-test-test")
                 .birthDate(LocalDate.of(2024, 7, 25))
                 .password("test-password")
-                .marketingAgree(true)
                 .userState(State.ACTIVATE)
                 .build();
 
