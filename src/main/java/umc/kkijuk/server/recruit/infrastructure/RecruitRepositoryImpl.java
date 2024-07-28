@@ -38,14 +38,38 @@ public class RecruitRepositoryImpl implements RecruitRepository {
     }
 
     @Override
-    public List<Recruit> findAllByEndDateAndIsActive(LocalDate endTime, boolean active) {
+    public List<Recruit> findAllByEndDateAndActive(LocalDate endTime, boolean active) {
         return recruitJpaRepository.findAllByEndDateAndActive(endTime, active)
                 .stream().map(RecruitEntity::toModel).toList();
     }
 
     @Override
-    public List<Recruit> findAllByEndTimeAfterAndIsActive(LocalDateTime endTime, boolean active) {
+    public List<Recruit> findAllByEndTimeAfterAndActive(LocalDateTime endTime, boolean active) {
         return recruitJpaRepository.findAllByEndTimeAfterAndActive(endTime,active)
+                .stream().map(RecruitEntity::toModel).toList();
+    }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberIdAndEndDate(Long memberId, LocalDate endDate) {
+        return recruitJpaRepository.findAllByMemberIdAndEndDateAndActive(memberId, endDate, true)
+                .stream().map(RecruitEntity::toModel).toList();
+    }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberIdAndEndTimeAfter(Long memberId, LocalDateTime endTime) {
+        return recruitJpaRepository.findAllByMemberIdAndEndTimeAfterAndActive(memberId, endTime, true)
+                .stream().map(RecruitEntity::toModel).toList();
+    }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberId(Long memberId) {
+        return recruitJpaRepository.findAllByMemberIdAndActive(memberId, true)
+                .stream().map(RecruitEntity::toModel).toList();
+    }
+
+    @Override
+    public List<Recruit> findAllActiveRecruitByMemberIdAndMonth(Long memberId, Integer year, Integer month) {
+        return recruitJpaRepository.findAllByMemberIdAndMonth(memberId, year, month)
                 .stream().map(RecruitEntity::toModel).toList();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
@@ -34,9 +35,10 @@ public class MemberServiceTest {
     private TestRestTemplate restTemplate;
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void 유저정보db저장및조회() throws Exception {
         // given
-        Member member1 = new Member("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.now(), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        Member member1 = new Member("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
 
         // when
         Long savedId = memberService.join(member1);
@@ -47,13 +49,14 @@ public class MemberServiceTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void 회원가입성공() {
         // given
         MemberJoinDto memberJoinDto = MemberJoinDto.builder()
                 .email("asd@naver.com")
                 .name("홍길동")
                 .phoneNumber("010-7444-1768")
-                .birthDate(LocalDate.now())
+                .birthDate(LocalDate.parse("1999-03-31"))
                 .password("passwordTest")
                 .passwordConfirm("passwordTest")
                 .marketingAgree(MarketingAgree.BOTH)
@@ -71,13 +74,14 @@ public class MemberServiceTest {
     }
 
     @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void 회원가입실패_비밀번호불일치() {
         // given
         MemberJoinDto memberJoinDto = MemberJoinDto.builder()
                 .email("asd@naver.com")
                 .name("홍길동")
                 .phoneNumber("010-7444-1768")
-                .birthDate(LocalDate.now())
+                .birthDate(LocalDate.parse("1999-03-31"))
                 .password("passwordTest")
                 .passwordConfirm("wrongPassword")
                 .marketingAgree(MarketingAgree.BOTH)

@@ -7,15 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.member.controller.response.CreateMemberResponse;
+import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
+import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
+import umc.kkijuk.server.member.controller.response.ResultResponse;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.service.MemberService;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.time.LocalDate;
 import java.util.List;
 
 
@@ -40,10 +42,11 @@ public class MemberController {
         }
 
         try {
-            Long memberId = memberService.join(memberJoinDto.toEntity());
+            Long loginUser = LoginUser.get().getId();
+            memberService.join(memberJoinDto.toEntity());
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(new CreateMemberResponse(memberId, "Member created successfully"));
+                    .body(new CreateMemberResponse(loginUser , "Member created successfully"));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity
@@ -52,9 +55,6 @@ public class MemberController {
         }
     }
 
-    /**
-    일단 RequestParam 사용, 나중에 jwt토큰으로 사용자 정보 식별할 수 있도록 변경
-     */
     @Operation(
             summary = "내 정보 조회",
             description = "마이페이지에서 내 정보들을 가져옵니다.")
@@ -93,7 +93,6 @@ public class MemberController {
 
     }
 
-
     @Operation(
             summary = "관심분야 조회",
             description = "마이페이지에서 관심분야를 조회합니다.")
@@ -123,55 +122,6 @@ public class MemberController {
         }
     }
 
-
-
-    @Data
-    static class CreateMemberResponse {
-        private Long id;
-        private String message;
-
-        public CreateMemberResponse(String message) {
-            this.message = message;
-        }
-
-        public CreateMemberResponse(Long id, String message) {
-            this.id = id;
-            this.message = message;
-        }
-    }
-
-    @Data
-    static class ResultResponse{
-        private String message;
-
-        public ResultResponse(String message) {
-            this.message = message;
-        }
-    }
-
-    @Data
-    static class MemberInfoResponse {
-        private String email;
-        private String name;
-        private String phoneNumber;
-        private LocalDate birthDate;
-
-        public MemberInfoResponse(String email, String name, String phoneNumber, LocalDate birthDate) {
-            this.email = email;
-            this.name = name;
-            this.phoneNumber = phoneNumber;
-            this.birthDate = birthDate;
-        }
-    }
-
-    @Data
-    static class MemberFieldResponse{
-        private List<String> field;
-
-        public MemberFieldResponse(List<String> field) {
-            this.field = field;
-        }
-    }
 }
 
 
