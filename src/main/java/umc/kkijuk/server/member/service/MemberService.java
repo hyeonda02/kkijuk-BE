@@ -3,6 +3,7 @@ package umc.kkijuk.server.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
@@ -17,7 +18,8 @@ public class MemberService {
     private final MemberJpaRepository memberJpaRepository;
 
     public Member findOne(Long memberId) {
-        return memberJpaRepository.findById(memberId).get();
+        return memberJpaRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Member", memberId));
     }
 
 
@@ -27,6 +29,14 @@ public class MemberService {
         memberJpaRepository.save(member);
         return member.getId();
     }
+
+    /* security 의존성 추가후 변경할 join 함수 */
+//    @Transactional
+//    public Long join(Member member) {
+//        member.changeMemberPassword(passwordEncoder.encode(member.getPassword()));
+//        memberJpaRepository.save(member);
+//        return member.getId();
+//    }
 
     public Member getMemberInfo(Long memberId) {
         return memberJpaRepository.findById(memberId)
