@@ -2,6 +2,8 @@ package umc.kkijuk.server.introduce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,10 +24,15 @@ import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.QuestionDto;
 import umc.kkijuk.server.introduce.service.IntroduceService;
 import umc.kkijuk.server.introduce.service.MasterIntroduceService;
+import umc.kkijuk.server.member.domain.MarketingAgree;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
+import umc.kkijuk.server.member.service.MemberService;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
+import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,6 +58,8 @@ class IntroduceControllerTest {
     @Autowired
     private IntroduceRepository introduceRepository;
     @Autowired
+    private RecruitRepository recruitRepository;
+    @Autowired
     private RecruitJpaRepository recruitJpaRepository;
     @Autowired
     private MockMvc mockMvc;
@@ -60,6 +69,17 @@ class IntroduceControllerTest {
     private ObjectMapper objectMapper;
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private MemberService memberService;
+
+    private Member requestMember;
+
+    @BeforeEach
+    public void Init() {
+        Member member = new Member("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        Long savedId = memberService.join(member);
+        requestMember = memberService.findOne(savedId);
+    }
 
     @Test
     @DisplayName("자기소개서 생성 테스트")
@@ -67,6 +87,7 @@ class IntroduceControllerTest {
         final int state = 1;
 
         Recruit recruit = Recruit.builder()
+                .memberId(requestMember.getId())
                 .title("test-title")
                 .status(RecruitStatus.PLANNED)
                 .startTime(LocalDateTime.of(2024, 7, 19, 2, 30))
@@ -77,8 +98,8 @@ class IntroduceControllerTest {
                 .active(true)
                 .build();
 
-        RecruitEntity recruitEntity = recruitJpaRepository.save(RecruitEntity.from(recruit));
-        Long recruitId = recruitEntity.toModel().getId();
+        Recruit savedRecruit = recruitRepository.save(recruit);
+        Long recruitId = savedRecruit.getId();
 
         // 테스트용 질문 목록 생성
         final List<QuestionDto> questions = Arrays.asList(
@@ -107,6 +128,7 @@ class IntroduceControllerTest {
         final int state = 1;
 
         Recruit recruit = Recruit.builder()
+                .memberId(requestMember.getId())
                 .title("test-title")
                 .status(RecruitStatus.PLANNED)
                 .startTime(LocalDateTime.of(2024, 7, 19, 2, 30))
@@ -117,7 +139,7 @@ class IntroduceControllerTest {
                 .active(true)
                 .build();
 
-        RecruitEntity recruitEntity = recruitJpaRepository.save(RecruitEntity.from(recruit));
+        RecruitEntity recruitEntity = RecruitEntity.from(recruitRepository.save(recruit));
 
         Introduce introduce= introduceRepository.save(Introduce.builder()
                 .recruit(recruitEntity)
@@ -159,6 +181,7 @@ class IntroduceControllerTest {
         final int state = 1;
 
         Recruit recruit = Recruit.builder()
+                .memberId(requestMember.getId())
                 .title("test-title")
                 .status(RecruitStatus.PLANNED)
                 .startTime(LocalDateTime.of(2024, 7, 19, 2, 30))
@@ -169,8 +192,7 @@ class IntroduceControllerTest {
                 .active(true)
                 .build();
 
-        RecruitEntity recruitEntity = recruitJpaRepository.save(RecruitEntity.from(recruit));
-        Long recruitId = recruitEntity.toModel().getId();
+        RecruitEntity recruitEntity = RecruitEntity.from(recruitRepository.save(recruit));
 
         // 테스트용 질문 목록 생성
         final List<Question> questions = Arrays.asList(
