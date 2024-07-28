@@ -15,10 +15,6 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
-import umc.kkijuk.server.member.dto.MemberPhoneNumberDto;
-import umc.kkijuk.server.member.phoneauth.MessageService;
-import umc.kkijuk.server.member.phoneauth.SmsCertificationDto;
-import umc.kkijuk.server.member.phoneauth.SmsCertificationResponse;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -32,7 +28,6 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
-    private final MessageService messageService;
 
     @Operation(
             summary = "회원가입 요청",
@@ -127,36 +122,6 @@ public class MemberController {
         }
     }
 
-    @Operation(
-            summary = "휴대폰 인증번호 요청",
-            description = "휴대폰 인증정보를 요청합니다.")
-    @PostMapping("/auth")
-    public ResponseEntity<?> sendAuthNumber(@RequestBody @Valid MemberPhoneNumberDto memberPhoneNumberDto) {
-        try {
-            System.out.println("memberPhoneNumberDto = " + memberPhoneNumberDto);
-            SmsCertificationResponse smsCertificationResponse = messageService.sendSMS(memberPhoneNumberDto.getPhoneNumber());
-            return ResponseEntity.ok().body(smsCertificationResponse);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Failed to send authentication number: " + e.getMessage());
-        }
-    }
-
-    @Operation(
-            summary = "휴대폰 인증번호 인증",
-            description = "휴대폰 인증번호를 인증합니다.")
-    @PostMapping("/auth/confirm")
-    public ResponseEntity<?> confirmAuthNumber(@RequestBody @Valid SmsCertificationDto smsCertificationDto) {
-        try {
-            return ResponseEntity.ok(messageService.verifySms(smsCertificationDto));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body("Verification failed: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("An error occurred during verification: " + e.getMessage());
-        }
-    }
 }
 
 
