@@ -10,5 +10,9 @@ public class CreateMemberResponse {
     public CreateMemberResponse(String message) {
         this.message = message;
     }
+    public CreateMemberResponse(Long id, String message){
+        this.id = id;
+        this.message = message;
+    }
 
 }

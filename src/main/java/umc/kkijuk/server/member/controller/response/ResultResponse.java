@@ -7,7 +7,6 @@ public class ResultResponse{
     private String message;
 
     public ResultResponse(){
-
     }
 
     public ResultResponse(String message) {

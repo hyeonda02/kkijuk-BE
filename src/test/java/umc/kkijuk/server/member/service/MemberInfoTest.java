@@ -1,17 +1,14 @@
 package umc.kkijuk.server.member.service;
 
-import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import umc.kkijuk.server.member.controller.MemberController;
 import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
 import umc.kkijuk.server.member.controller.response.ResultResponse;
@@ -21,7 +18,6 @@ import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
-import umc.kkijuk.server.common.LoginUser;
 
 import java.time.LocalDate;
 import java.util.List;

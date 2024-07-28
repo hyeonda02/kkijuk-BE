@@ -1,6 +1,5 @@
 package umc.kkijuk.server.member.phoneauth;
 
-import lombok.RequiredArgsConstructor;
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
 import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
@@ -18,23 +17,15 @@ public class MessageService {
     private final SmsCertification smsCertification;
     private final DefaultMessageService messageService;
 
-//    @Value("${coolsms.apikey}")
-//    private String apiKey;
-//
-//    @Value("${coolsms.apisecret}")
-//    private String apiSecret;
 
-    @Value("$01033236326")
-    private String fromNumber;
-
-    public MessageService(SmsCertification smsCertification, @Value("${coolsms.api.key}") String apiKey,
-                          @Value("${coolsms.api.secret}") String apiSecret ) {
+    public MessageService(SmsCertification smsCertification, @Value("${coolsms.apikey}") String apiKey, @Value("${coolsms.apisecret}") String apiSecret) {
         this.smsCertification = smsCertification;
         // 반드시 계정 내 등록된 유효한 API 키, API Secret Key를 입력해주셔야 합니다!
         this.messageService = NurigoApp.INSTANCE.initialize(apiKey, apiSecret, "https://api.coolsms.co.kr");
     }
 
-
+    @Value("${coolsms.fromnumber}")
+    private String fromNumber;
 
     private String createRandomNumber() {
         Random rand = new Random();
@@ -59,7 +50,7 @@ public class MessageService {
 
 
     // 인증번호 전송하기
-    public SingleMessageSentResponse sendSMS(String phoneNumber) {
+    public SmsCertificationResponse sendSMS(String phoneNumber) {
         Message coolsms = new Message();
         coolsms.setFrom(fromNumber);
         coolsms.setTo(phoneNumber);
@@ -88,7 +79,7 @@ public class MessageService {
         smsCertification.createSmsCertification(phoneNumber,randomNum);
 
 
-        return response;
+        return new SmsCertificationResponse(phoneNumber, randomNum);
 
 
 //        return "문자 전송이 완료되었습니다.";
