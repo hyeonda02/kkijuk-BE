@@ -1,7 +1,9 @@
 package umc.kkijuk.server.introduce.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +21,12 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/history/intro/master")
+@Slf4j
 public class MasterIntroduceController {
     private final MasterIntroduceService masterIntroduceService;
 
     @PostMapping
+    @Operation(summary = "마스터 자기소개서 생성")
     public ResponseEntity<Object> save(@RequestBody MasterIntroduceReqDto masterIntroduceReqDto){
         try {
             MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.saveMasterIntro(masterIntroduceReqDto);
@@ -34,6 +38,7 @@ public class MasterIntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
@@ -41,9 +46,10 @@ public class MasterIntroduceController {
     }
 
     @GetMapping
+    @Operation(summary = "마스터 자기소개서 조회")
     public ResponseEntity<Object> get(){
         try {
-            List<MasterIntroduce> masterIntroduce = masterIntroduceService.getMasterIntro();
+            List<MasterIntroduceResDto> masterIntroduce = masterIntroduceService.getMasterIntro();
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 조회 완료", masterIntroduce));
@@ -52,6 +58,7 @@ public class MasterIntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
@@ -59,6 +66,7 @@ public class MasterIntroduceController {
     }
 
     @PatchMapping
+    @Operation(summary = "마스터 자기소개서 수정")
     public ResponseEntity<Object> update(Long id, @RequestBody MasterIntroduceReqDto masterIntroduceReqDto){
         try {
             MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.updateMasterIntro(id, masterIntroduceReqDto);
@@ -70,6 +78,7 @@ public class MasterIntroduceController {
                     .status(e.getCode())
                     .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
         } catch (Exception e) {
+            log.info("Exception occurred: ", e);
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));

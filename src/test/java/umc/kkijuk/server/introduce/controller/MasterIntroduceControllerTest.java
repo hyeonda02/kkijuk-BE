@@ -41,14 +41,16 @@ class MasterIntroduceControllerTest {
     @Test
     @DisplayName("마스터 자기소개서 생성 테스트")
     public void postMaster() throws Exception{
-        final String oneLiner= "one-liner-test";
-        final String subTitle= "sub-title-test";
-        final String content= "content-test";
+        final String oneLiner="one-liner-test";
+        final String introduction="introduction-test";
+        final String motive="motive-test";
+        final String prosAndCons="prosAndCons-test";
 
         MasterIntroduceReqDto masterIntroduceReqDto= MasterIntroduceReqDto.builder()
                 .oneLiner(oneLiner)
-                .subTitle(subTitle)
-                .content(content)
+                .introduction(introduction)
+                .motive(motive)
+                .prosAndCons(prosAndCons)
                 .build();
 
 
@@ -57,33 +59,38 @@ class MasterIntroduceControllerTest {
                         .content(objectMapper.writeValueAsString(masterIntroduceReqDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.oneLiner").value("one-liner-test"))
-                .andExpect(jsonPath("$.data.subTitle").value("sub-title-test"))
-                .andExpect(jsonPath("$.data.content").value("content-test"));
+                .andExpect(jsonPath("$.data.introduction").value("introduction-test"))
+                .andExpect(jsonPath("$.data.motive").value("motive-test"))
+                .andExpect(jsonPath("$.data.prosAndCons").value("prosAndCons-test"));
     }
 
     @Test
     @DisplayName("마스터 자기소개서 수정 테스트")
     public void updateMaster() throws Exception {
-        final String oneLiner = "one-liner-test";
-        final String subTitle = "sub-title-test";
-        final String content = "content-test";
+        final String oneLiner="one-liner-test";
+        final String introduction="introduction-test";
+        final String motive="motive-test";
+        final String prosAndCons="prosAndCons-test";
 
         MasterIntroduce masterIntroduce = masterIntroduceRepository.save(MasterIntroduce.builder()
                 .oneLiner(oneLiner)
-                .subTitle(subTitle)
-                .content(content)
+                .introduction(introduction)
+                .motive(motive)
+                .prosAndCons(prosAndCons)
                 .build());
 
         Long id = masterIntroduce.getId();
 
-        String expectedOneLiner = "one-liner2";
-        String expectedSubTitle = "sub-title2";
-        String expectedContent = "content2";
+        String expectedOneLiner = "one-liner-test2";
+        String expectedIntroduce = "introduction-test2";
+        String expectedMotivate = "motive-test2";
+        String expectedPnC = "prosAndCons-test2";
 
         MasterIntroduceReqDto masterIntroduceReqDto = MasterIntroduceReqDto.builder()
                 .oneLiner(expectedOneLiner)
-                .subTitle(expectedSubTitle)
-                .content(expectedContent)
+                .introduction(expectedIntroduce)
+                .motive(expectedMotivate)
+                .prosAndCons(expectedPnC)
                 .build();
 
         mockMvc.perform(patch("/history/intro/master")
@@ -92,7 +99,8 @@ class MasterIntroduceControllerTest {
                         .content(objectMapper.writeValueAsString(masterIntroduceReqDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.oneLiner").value(expectedOneLiner))
-                .andExpect(jsonPath("$.data.subTitle").value(expectedSubTitle))
-                .andExpect(jsonPath("$.data.content").value(expectedContent));
+                .andExpect(jsonPath("$.data.introduction").value(expectedIntroduce))
+                .andExpect(jsonPath("$.data.motive").value(expectedMotivate))
+                .andExpect(jsonPath("$.data.prosAndCons").value(expectedPnC));
     }
 }
