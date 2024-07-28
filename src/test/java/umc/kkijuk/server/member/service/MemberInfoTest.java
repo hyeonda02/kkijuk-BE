@@ -1,5 +1,6 @@
 package umc.kkijuk.server.member.service;
 
+import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,16 +11,20 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+import umc.kkijuk.server.member.controller.MemberController;
+import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
 import umc.kkijuk.server.member.controller.response.ResultResponse;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
+import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
 import umc.kkijuk.server.common.LoginUser;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -39,6 +44,8 @@ public class MemberInfoTest {
         memberJpaRepository.deleteAll();
     }
 
+
+
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void 내정보_조회() {
@@ -46,7 +53,6 @@ public class MemberInfoTest {
         Member member1 = new Member("asd@naver.com", "홍길동", "010-1234-5678",
                 LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
         memberJpaRepository.save(member1);
-        System.out.println("test1");
         // When
         ResponseEntity<MemberInfoResponse> response = restTemplate.getForEntity("/member/myPage/info", MemberInfoResponse.class);
 
@@ -68,7 +74,6 @@ public class MemberInfoTest {
         Member member1 = new Member("asd@naver.com", "홍길동", "010-1234-5678",
                 LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
         memberJpaRepository.save(member1);
-        System.out.println("test2");
 
 
         MemberInfoChangeDto changeDto = MemberInfoChangeDto.builder()
@@ -94,6 +99,50 @@ public class MemberInfoTest {
         assertEquals("010-5678-1234", updatedMember.getPhoneNumber());
         assertEquals(LocalDate.parse("2000-01-01"), updatedMember.getBirthDate());
         assertEquals(MarketingAgree.EMAIL, updatedMember.getMarketingAgree());
+    }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void 관심분야_조회(){
+        // 회원추가
+        Member member1 = new Member("asd@naver.com", "홍길동", "010-1234-5678",
+                LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        member1.changeFieldInfo(List.of("game", "computer"));
+        memberJpaRepository.save(member1);
+
+        ResponseEntity<MemberFieldResponse> response = restTemplate.getForEntity("/member/myPage/field", MemberFieldResponse.class);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        MemberFieldResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(List.of("game", "computer"), body.getField());
+    }
+
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void 관심분야_수정(){
+        //given
+        //회원추가
+        Member member1 = new Member("asd@naver.com", "홍길동", "010-1234-5678",
+                LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        member1.changeFieldInfo(List.of("game", "computer"));
+        memberJpaRepository.save(member1);
+
+
+        MemberFieldDto memberFieldDto = MemberFieldDto.builder().field(List.of("book", "movie")).build();
+        HttpEntity<MemberFieldDto> request = new HttpEntity<>(memberFieldDto);
+        //when
+        ResponseEntity<MemberFieldResponse> response = restTemplate.postForEntity("/member/myPage/field", request, MemberFieldResponse.class);
+        //then
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        MemberFieldResponse body = response.getBody();
+        assertNotNull(body);
+        assertEquals(List.of("book", "movie"), body.getField());
+
+        Member updatedMember = memberJpaRepository.findById(1L).orElse(null);
+        assertNotNull(updatedMember);
+        assertEquals(List.of("book", "movie"), updatedMember.getField());
     }
 
 }

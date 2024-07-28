@@ -40,10 +40,11 @@ public class MemberController {
         }
 
         try {
-            Long memberId = memberService.join(memberJoinDto.toEntity());
+            Long loginUser = LoginUser.get().getId();
+            memberService.join(memberJoinDto.toEntity());
             return ResponseEntity
                     .status(HttpStatus.CREATED)
-                    .body(new CreateMemberResponse(memberId, "Member created successfully"));
+                    .body(new CreateMemberResponse(loginUser, "Member created successfully"));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity
@@ -52,9 +53,7 @@ public class MemberController {
         }
     }
 
-    /**
-    일단 RequestParam 사용, 나중에 jwt토큰으로 사용자 정보 식별할 수 있도록 변경
-     */
+
     @Operation(
             summary = "내 정보 조회",
             description = "마이페이지에서 내 정보들을 가져옵니다.")

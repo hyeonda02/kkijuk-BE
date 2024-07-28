@@ -8,6 +8,10 @@ import java.util.List;
 public class MemberFieldResponse{
     private List<String> field;
 
+    public MemberFieldResponse(){
+
+    }
+
     public MemberFieldResponse(List<String> field) {
         this.field = field;
     }
