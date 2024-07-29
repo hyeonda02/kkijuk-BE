@@ -5,10 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
-import umc.kkijuk.server.common.domian.exception.InvalidTagNameException;
-import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.common.domian.exception.ReviewRecruitMismatchException;
+import umc.kkijuk.server.common.domian.exception.*;
 import umc.kkijuk.server.common.domian.response.ErrorResponse;
 
 @RestControllerAdvice
@@ -37,5 +34,11 @@ public class ExceptionControllerAdvice {
     @ExceptionHandler(InvalidTagNameException.class)
     public ErrorResponse InvalidTagNameException(InvalidTagNameException exception) {
         return new ErrorResponse(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConfirmPasswordMismatchException.class)
+    public ErrorResponse ConfirmPasswordMismatchException(ConfirmPasswordMismatchException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }

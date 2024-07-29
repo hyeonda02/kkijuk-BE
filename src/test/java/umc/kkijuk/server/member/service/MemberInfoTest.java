@@ -9,6 +9,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
 import umc.kkijuk.server.member.controller.response.ResultResponse;
@@ -48,7 +49,8 @@ public class MemberInfoTest {
         // Given
         Member member1 = new Member("asd@naver.com", "홍길동", "010-1234-5678",
                 LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
-        memberJpaRepository.save(member1);
+        Member savedMember = memberJpaRepository.save(member1);
+
         // When
         ResponseEntity<MemberInfoResponse> response = restTemplate.getForEntity("/member/myPage/info", MemberInfoResponse.class);
 

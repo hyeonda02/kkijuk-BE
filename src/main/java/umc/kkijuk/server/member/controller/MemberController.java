@@ -33,26 +33,14 @@ public class MemberController {
             summary = "회원가입 요청",
             description = "회원가입 요청을 받아 성공/실패 여부를 반환합니다.")
     @PostMapping
-    public ResponseEntity<CreateMemberResponse> saveMember(@RequestBody @Valid MemberJoinDto memberJoinDto) {
-        String passwordConfirm = memberJoinDto.getPasswordConfirm();
-        if (!passwordConfirm.equals(memberJoinDto.getPassword())) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new CreateMemberResponse("Passwords do not match"));
-        }
+    public ResponseEntity<CreateMemberResponse> saveMember(
+            @RequestBody @Valid MemberJoinDto memberJoinDto
+    ) {
+        Member joinMember = memberService.join(memberJoinDto);
 
-        try {
-            Long loginUser = LoginUser.get().getId();
-            memberService.join(memberJoinDto.toEntity());
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(new CreateMemberResponse(loginUser , "Member created successfully"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CreateMemberResponse("Member creation failed"));
-        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new CreateMemberResponse(joinMember.getId(), "Member created successfully"));
     }
 
     @Operation(
@@ -86,6 +74,7 @@ public class MemberController {
             return ResponseEntity.ok()
                     .body(new ResultResponse("information update success"));
         }catch (Exception e){
+            System.out.println("e.getMessage() = " + e.getMessage());
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ResultResponse("information update failed"));

@@ -1,5 +1,7 @@
 package umc.kkijuk.server.member.service;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.common.domian.exception.ConfirmPasswordMismatchException;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
@@ -19,6 +22,8 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -34,19 +39,35 @@ public class MemberServiceTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
+    private String testMemberEmail = "asd@naver.com";
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
     public void 유저정보db저장및조회() throws Exception {
         // given
-        Member member1 = new Member("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        MemberJoinDto memberJoinDto = new MemberJoinDto(testMemberEmail, "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
 
         // when
-        Long savedId = memberService.join(member1);
-        Optional<Member> member2 = memberJpaRepository.findById(savedId);
+        Member joinMember = memberService.join(memberJoinDto);
 
         // then
-        assertEquals(member1, member2.get());
+        assertAll(
+                () -> assertEquals(joinMember.getEmail(), testMemberEmail),
+                () -> assertEquals(joinMember.getName(), "홍길동")
+        );
     }
+
+    @Test
+    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+    public void joinExceptionWIthPasswordIncorrect() {
+        // given
+        MemberJoinDto memberJoinDto = new MemberJoinDto(testMemberEmail, "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", "incorrectPassword", MarketingAgree.BOTH, State.ACTIVATE);
+
+        // when
+        // then
+        assertThatThrownBy(() -> memberService.join(memberJoinDto))
+                .isInstanceOf(ConfirmPasswordMismatchException.class);
+    }
+
 
     @Test
     @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
@@ -97,6 +118,4 @@ public class MemberServiceTest {
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
         assertThat(response.getBody()).contains("Passwords do not match");
     }
-
-
 }
