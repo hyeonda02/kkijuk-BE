@@ -1,7 +1,5 @@
 package umc.kkijuk.server.member.service;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.transaction.annotation.Transactional;
-import umc.kkijuk.server.common.domian.exception.ConfirmPasswordMismatchException;
+import umc.kkijuk.server.member.domain.exception.ConfirmPasswordMismatchException;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
@@ -19,7 +17,6 @@ import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

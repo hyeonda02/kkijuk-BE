@@ -1,14 +1,14 @@
 package umc.kkijuk.server.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.kkijuk.server.common.domian.exception.ConfirmPasswordMismatchException;
+import umc.kkijuk.server.member.domain.exception.ConfirmPasswordMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.member.controller.response.CreateMemberResponse;
+import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
 import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.exception.FieldUpdateException;
+import umc.kkijuk.server.member.domain.exception.InvalidMemberDataException;
 import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
@@ -22,7 +22,7 @@ import java.util.List;
 public class MemberService {
     private final MemberJpaRepository memberJpaRepository;
 
-    public Member findOne(Long memberId) {
+    public Member getById(Long memberId) {
         return memberJpaRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Member", memberId));
     }
@@ -50,31 +50,45 @@ public class MemberService {
 //        return member.getId();
 //    }
 
-    public Member getMemberInfo(Long memberId) {
-        return memberJpaRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+    public MemberInfoResponse getMemberInfo(Long memberId) {
+        Member member = this.getById(memberId);
+
+        if(member.getEmail() == null || member.getName() == null || member.getPhoneNumber() == null || member.getBirthDate() == null){
+            throw new InvalidMemberDataException();
+        }
+
+        return MemberInfoResponse.builder()
+                .email(member.getEmail())
+                .name(member.getName())
+                .phoneNumber(member.getPhoneNumber())
+                .birthDate(member.getBirthDate())
+                .build();
     }
 
     public List<String> getMemberField(Long memberId){
-        Member member = memberJpaRepository.findById(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+        Member member = this.getById(memberId);
         return member.getField();
     }
 
     @Transactional
-    public List<String> updateMemberField(Long id,MemberFieldDto memberFieldDto){
-        Member member = memberJpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+    public Member updateMemberField(Long memberId,MemberFieldDto memberFieldDto){
+        Member member = this.getById(memberId);
         member.changeFieldInfo(memberFieldDto.getField());
-        return member.getField();
+
+        if(!member.getField().equals(memberFieldDto.getField())){
+            throw new FieldUpdateException();
+        }
+        return member;
     }
 
     @Transactional
-    public Long updateMemberInfo(Long id,MemberInfoChangeDto memberInfoChangeDto){
-        Member member = memberJpaRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
+    public Member updateMemberInfo(Long memberId, MemberInfoChangeDto memberInfoChangeDto){
+        Member member = this.getById(memberId);
         member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
-        return member.getId();
+        if(member.getPhoneNumber() == null || member.getBirthDate() == null || member.getMarketingAgree() == null){
+            throw new InvalidMemberDataException();
+        }
+        return member;
     }
 
 

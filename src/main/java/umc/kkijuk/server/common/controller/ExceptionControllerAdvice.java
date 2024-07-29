@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import umc.kkijuk.server.common.domian.exception.*;
 import umc.kkijuk.server.common.domian.response.ErrorResponse;
+import umc.kkijuk.server.member.domain.exception.ConfirmPasswordMismatchException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor

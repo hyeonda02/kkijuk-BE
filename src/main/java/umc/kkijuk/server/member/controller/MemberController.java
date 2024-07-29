@@ -33,9 +33,7 @@ public class MemberController {
             summary = "회원가입 요청",
             description = "회원가입 요청을 받아 성공/실패 여부를 반환합니다.")
     @PostMapping
-    public ResponseEntity<CreateMemberResponse> saveMember(
-            @RequestBody @Valid MemberJoinDto memberJoinDto
-    ) {
+    public ResponseEntity<CreateMemberResponse> saveMember(@RequestBody @Valid MemberJoinDto memberJoinDto) {
         Member joinMember = memberService.join(memberJoinDto);
 
         return ResponseEntity
@@ -48,38 +46,21 @@ public class MemberController {
             description = "마이페이지에서 내 정보들을 가져옵니다.")
     @GetMapping("/myPage/info")
     public ResponseEntity<MemberInfoResponse> getInfo() {
-        try {
-            Long loginUser = LoginUser.get().getId();
-            Member member = memberService.getMemberInfo(loginUser);
-            MemberInfoResponse response = new MemberInfoResponse(
-                    member.getEmail(),
-                    member.getName(),
-                    member.getPhoneNumber(),
-                    member.getBirthDate()
-            );
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        Long loginUser = LoginUser.get().getId();
+        MemberInfoResponse memberInfoResponse = memberService.getMemberInfo(loginUser);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberInfoResponse);
     }
 
     @Operation(
             summary = "내 정보 수정",
             description = "내 정보 수정 요청을 받아 성공/실패를 반환합니다.")
     @PutMapping("/myPage/info")
-    public ResponseEntity<ResultResponse> changeMemberInfo(@RequestBody MemberInfoChangeDto memberInfoChangeDto) {
+    public ResponseEntity<Boolean> changeMemberInfo(@RequestBody @Valid  MemberInfoChangeDto memberInfoChangeDto) {
         Long loginUser = LoginUser.get().getId();
-        try {
-            memberService.updateMemberInfo(loginUser, memberInfoChangeDto);
-            return ResponseEntity.ok()
-                    .body(new ResultResponse("information update success"));
-        }catch (Exception e){
-            System.out.println("e.getMessage() = " + e.getMessage());
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResultResponse("information update failed"));
-        }
-
+        memberService.updateMemberInfo(loginUser, memberInfoChangeDto);
+        return ResponseEntity.ok(Boolean.TRUE);
     }
 
     @Operation(
@@ -87,28 +68,20 @@ public class MemberController {
             description = "마이페이지에서 관심분야를 조회합니다.")
     @GetMapping("/myPage/field")
     public ResponseEntity<MemberFieldResponse> getField() {
-        try {
-            Long loginUser = LoginUser.get().getId();
-            List<String> memberField = memberService.getMemberField(loginUser);
-            return ResponseEntity.ok().body(new MemberFieldResponse(memberField));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        Long loginUser = LoginUser.get().getId();
+        List<String> memberField = memberService.getMemberField(loginUser);
+        return ResponseEntity.ok().body(new MemberFieldResponse(memberField));
     }
 
     @Operation(
             summary = "관심분야 등록/수정",
             description = "초기/마이페이지에서 관심분야를 등록/수정합니다.")
     @PostMapping({"/field", "/myPage/field"})
-    public ResponseEntity<MemberFieldResponse> postField(@RequestBody @Valid MemberFieldDto memberFieldDto) {
-        try {
-            Long loginUserId = LoginUser.get().getId();
-            List<String> updatedMember = memberService.updateMemberField(loginUserId, memberFieldDto);
-            MemberFieldResponse response = new MemberFieldResponse(updatedMember);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<Boolean> postField(@RequestBody MemberFieldDto memberFieldDto) {
+
+        Long loginUserId = LoginUser.get().getId();
+        memberService.updateMemberField(loginUserId, memberFieldDto);
+        return ResponseEntity.ok(Boolean.TRUE);
     }
 
 }
