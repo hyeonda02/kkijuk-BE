@@ -26,9 +26,9 @@ public class MasterIntroduce {
 
     @Size(max = 24)
     private String oneLiner;
-
-    private String subTitle;
-    private String content;
+    private String introduction;
+    private String motive;
+    private String prosAndCons;
 
     @CreationTimestamp
     private LocalDateTime created_at;
@@ -37,10 +37,11 @@ public class MasterIntroduce {
     private LocalDateTime updated_at;
 
     @Builder
-    public MasterIntroduce(String oneLiner, String subTitle, String content) {
+    public MasterIntroduce(String oneLiner, String introduction, String motive, String prosAndCons) {
         this.oneLiner = oneLiner;
-        this.subTitle = subTitle;
-        this.content = content;
+        this.introduction = introduction;
+        this.motive = motive;
+        this.prosAndCons = prosAndCons;
     }
 
     public String getUpdated_at() {
@@ -48,10 +49,11 @@ public class MasterIntroduce {
         return updated_at != null ? updated_at.format(formatter) : null;
     }
 
-    public void update(String oneLiner, String subTitle, String content) {
+    public void update(String oneLiner, String introduction, String motive, String prosAndCons) {
         this.oneLiner = oneLiner;
-        this.subTitle = subTitle;
-        this.content = content;
+        this.introduction = introduction;
+        this.motive = motive;
+        this.prosAndCons = prosAndCons;
     }
 
 }

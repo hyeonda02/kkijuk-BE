@@ -12,7 +12,7 @@ import java.util.*;
 public class RecruitByEndDate {
     private final LocalDate endDate;
     private int count;
-    private List<RecruitListResponse> recruits;
+    private List<RecruitByEndDateInfoResponse> recruits;
 
     public static List<RecruitByEndDate> from(List<Recruit> recruits) {
         List<RecruitByEndDate> outputs = new ArrayList<>();
@@ -21,14 +21,14 @@ public class RecruitByEndDate {
                     .filter(item -> recruit.getEndTime().toLocalDate().isEqual(item.getEndDate()))
                     .findFirst();
             o.ifPresent(recruitByEndDate -> {
-                recruitByEndDate.recruits.add(RecruitListResponse.from(recruit));
+                recruitByEndDate.recruits.add(RecruitByEndDateInfoResponse.from(recruit));
                 recruitByEndDate.count++;
             });
             if (o.isEmpty()) {
                 outputs.add(RecruitByEndDate.builder()
                         .endDate(recruit.getEndTime().toLocalDate())
                         .count(1)
-                        .recruits(new ArrayList<>(Arrays.asList(RecruitListResponse.from(recruit))))
+                        .recruits(new ArrayList<>(Arrays.asList(RecruitByEndDateInfoResponse.from(recruit))))
                         .build());
             }
         });

@@ -1,26 +1,30 @@
 package umc.kkijuk.server.recruit.controller.port;
 
-import umc.kkijuk.server.recruit.domain.Recruit;
-import umc.kkijuk.server.recruit.domain.RecruitCreate;
-import umc.kkijuk.server.recruit.domain.RecruitStatusUpdate;
-import umc.kkijuk.server.recruit.domain.RecruitUpdate;
+import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.recruit.domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecruitService {
-    Recruit create(RecruitCreate recruitCreate);
+    @Transactional
+    Recruit create(Member member, RecruitCreate recruitCreate);
 
-    Recruit update(Long recruitId, RecruitUpdate recruitUpdate);
+    Recruit update(Member member, Long recruitId, RecruitUpdate recruitUpdate);
 
     Recruit getById(long id);
 
-    Recruit updateStatus(long recruitId, RecruitStatusUpdate recruitStatusUpdate);
+    Recruit updateStatus(Member member, long recruitId, RecruitStatusUpdate recruitStatusUpdate);
 
-    Recruit disable(long recruitId);
+    Recruit disable(Member member, long recruitId);
 
-    List<Recruit> findAllByEndTime(LocalDate date);
+    List<Recruit> findAllByEndTime(Member member, LocalDate date);
 
-    List<Recruit> findAllByEndTimeAfter(LocalDateTime endTime);
+    List<Recruit> findAllByEndTimeAfter(Member member, LocalDateTime endTime);
+
+    List<ValidRecruitDto> findAllValidRecruitByMemberId(Member member, LocalDateTime endTime);
+
+    List<RecruitListByMonthDto> findAllValidRecruitByYearAndMonth(Member member, Integer year, Integer month);
 }

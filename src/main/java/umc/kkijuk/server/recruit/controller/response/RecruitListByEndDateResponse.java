@@ -10,12 +10,12 @@ import java.util.List;
 @Builder
 public class RecruitListByEndDateResponse {
     private final int count;
-    private final List<RecruitListResponse> recruits;
+    private final List<RecruitByEndDateInfoResponse> recruits;
 
     public static RecruitListByEndDateResponse from(List<Recruit> recruits) {
         return RecruitListByEndDateResponse.builder()
                 .count(recruits.size())
-                .recruits(recruits.stream().map(RecruitListResponse::from).toList())
+                .recruits(recruits.stream().map(RecruitByEndDateInfoResponse::from).toList())
                 .build();
     }
 }

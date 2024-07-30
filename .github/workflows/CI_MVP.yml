@@ -28,7 +28,7 @@ jobs:
       - name: Setup MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
-          mysql database: 'kkijuk'
+          mysql database: 'testDB'
           mysql user: 'test'
           mysql password: 'testPW'
 

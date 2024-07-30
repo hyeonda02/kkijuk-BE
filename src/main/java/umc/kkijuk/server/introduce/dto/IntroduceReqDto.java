@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
+
 @Builder
 @AllArgsConstructor
 @Getter
-public class MasterIntroduceReqDto {
-    private String oneLiner;
-    private String introduction;
-    private String motive;
-    private String prosAndCons;
+public class IntroduceReqDto {
+    private List<QuestionDto> questionList;
+    private int state;
 }

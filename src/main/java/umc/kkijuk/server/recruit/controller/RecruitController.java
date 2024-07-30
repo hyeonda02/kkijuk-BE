@@ -5,17 +5,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
-import umc.kkijuk.server.recruit.controller.response.RecruitInfoResponse;
-import umc.kkijuk.server.recruit.controller.response.RecruitListByEndDateResponse;
-import umc.kkijuk.server.recruit.controller.response.RecruitListByEndTimeAfterResponse;
+import umc.kkijuk.server.recruit.controller.response.*;
 import umc.kkijuk.server.recruit.domain.*;
-import umc.kkijuk.server.recruit.controller.response.RecruitIdResponse;
 import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
 
@@ -31,13 +30,17 @@ public class RecruitController {
     private final RecruitService recruitService;
     private final ReviewService reviewService;
 
+    private final Member requestMember = Member.builder()
+            .id(LoginUser.get().getId())
+            .build();
+
     @Operation(
             summary = "지원 공고 생성",
             description = "주어진 정보를 바탕으로 지원 공고 데이터를 생성합니다.")
     @PostMapping
     public ResponseEntity<RecruitIdResponse> create(@RequestBody @Valid RecruitCreate recruitCreate) {
-        LoginUser loginUser = LoginUser.get();
-        Recruit recruit = recruitService.create(recruitCreate);
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.create(requestMember, recruitCreate);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(RecruitIdResponse.from(recruit));
@@ -50,10 +53,11 @@ public class RecruitController {
     @PutMapping("/{recruitId}")
     public ResponseEntity<Long> update(@RequestBody @Valid RecruitUpdate recruitUpdate,
                                        @PathVariable long recruitId) {
-        LoginUser loginUser = LoginUser.get();
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.update(requestMember, recruitId, recruitUpdate);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(recruitService.update(recruitId, recruitUpdate).getId());
+                .body(recruit.getId());
     }
 
     @Operation(
@@ -63,10 +67,11 @@ public class RecruitController {
     @PatchMapping("/{recruitId}")
     public ResponseEntity<Long> updateState(@RequestBody @Valid RecruitStatusUpdate recruitStatusUpdate,
                                             @PathVariable long recruitId) {
-        LoginUser loginUser = LoginUser.get();
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.updateStatus(requestMember, recruitId, recruitStatusUpdate);
         return ResponseEntity
                 .ok()
-                .body(recruitService.updateStatus(recruitId, recruitStatusUpdate).getId());
+                .body(recruit.getId());
     }
 
     @Operation(
@@ -75,10 +80,11 @@ public class RecruitController {
     @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
     @DeleteMapping("/{recruitId}")
     public ResponseEntity<Long> delete(@PathVariable long recruitId) {
-        LoginUser loginUser = LoginUser.get();
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.disable(requestMember, recruitId);
         return ResponseEntity
                 .ok()
-                .body(recruitService.disable(recruitId).getId());
+                .body(recruit.getId());
     }
 
     @Operation(
@@ -103,7 +109,8 @@ public class RecruitController {
     public ResponseEntity<RecruitListByEndDateResponse> findAllRecruitListByEndTime(
             @Parameter(name = "date", description = "지원 공고 마감 날짜", example = "2024-07-20")
             @RequestParam LocalDate date) {
-        List<Recruit> recruits = recruitService.findAllByEndTime(date);
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<Recruit> recruits = recruitService.findAllByEndTime(requestMember, date);
         return ResponseEntity
                 .ok()
                 .body(RecruitListByEndDateResponse.from(recruits));
@@ -117,15 +124,42 @@ public class RecruitController {
             @Parameter(name = "time", description = "이 시간 이후에 마감되는 공고를 요청", example = "2024-07-20 10:30")
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
             @RequestParam LocalDateTime time) {
-        List<Recruit> recruits = recruitService.findAllByEndTimeAfter(time);
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<Recruit> recruits = recruitService.findAllByEndTimeAfter(requestMember, time);
         return ResponseEntity
                 .ok()
                 .body(RecruitListByEndTimeAfterResponse.from(recruits));
     }
 
-    // 멤버 추가시 추가
-//    @GetMapping("/list/valid")
-//    public ResponseEntity<ValidRecruitListResponse> findValidRecruit() {
-//
-//    }
+    @Operation(
+            summary = "지원 현황 목록",
+            description = "주어진 시간 이후 유효한 지원 목록을 불러옵니다. " +
+    "상태가 UNAPPLIED 혹은 PLANNED일 경우, 해당 지원 공고의 마감시간이 요청한 시간보다 이후여야 합니다.")
+    @GetMapping("/list/valid")
+    public ResponseEntity<ValidRecruitListResponse> findValidRecruit(
+            @Parameter(name = "time", description = "이 시간 이후에 유효한 공고 목록 요청", example = "2024-07-20 10:30")
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+            @RequestParam LocalDateTime time
+    ) {
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMemberId(requestMember, time);
+        return ResponseEntity
+                .ok()
+                .body(ValidRecruitListResponse.from(ValidRecruitDtoList));
+    }
+    @Operation(
+            summary = "달력",
+            description = "요청한 년도와 월에 대해서 해당 월에 마감되는 공고의 종류와 갯수를 요청합니다.")
+    @GetMapping("/calendar")
+    public ResponseEntity<RecruitListByMonthResponse> getByMonth(
+            @Parameter(name = "year", description = "년도", example = "2024")
+            @RequestParam Integer year,
+            @Parameter(name = "month", description = "월", example = "7")
+            @RequestParam Integer month) {
+        //        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        List<RecruitListByMonthDto> recruitListByMonthDtoList = recruitService.findAllValidRecruitByYearAndMonth(requestMember, year, month);
+        return ResponseEntity
+                .ok()
+                .body(RecruitListByMonthResponse.from(recruitListByMonthDtoList));
+    }
 }

@@ -4,7 +4,9 @@ import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.kkijuk.server.common.domian.exception.ReviewRecruitNotMatchException;
+import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
+import umc.kkijuk.server.common.domian.exception.ReviewRecruitMismatchException;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
@@ -31,17 +33,25 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional //멤버 + recruit 사이의 인가 예외처리
-    public Review create(Recruit recruit, ReviewCreate reviewCreate) {
+    public Review create(Member requestMember, Recruit recruit, ReviewCreate reviewCreate) {
+        if (!recruit.getMemberId().equals(requestMember.getId())) {
+            throw new RecruitOwnerMismatchException();
+        }
+
         Review review = Review.from(recruit, reviewCreate);
         return reviewRepository.save(review);
     }
 
     @Override
     @Transactional
-    public Review update(Recruit recruit, Long reviewId, ReviewUpdate reviewUpdate) {
+    public Review update(Member requestMember, Recruit recruit, Long reviewId, ReviewUpdate reviewUpdate) {
+        if (!recruit.getMemberId().equals(requestMember.getId())) {
+            throw new RecruitOwnerMismatchException();
+        }
+
         Review review = getById(reviewId);
         if (!review.getRecruitId().equals(recruit.getId())) {
-            throw new ReviewRecruitNotMatchException(recruit.getId(), reviewId);
+            throw new ReviewRecruitMismatchException(recruit.getId(), reviewId);
         }
 
         review = review.update(reviewUpdate);
@@ -49,10 +59,14 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public void delete(Recruit recruit, Long reviewId) {
+    public void delete(Member requestMember, Recruit recruit, Long reviewId) {
+        if (!recruit.getMemberId().equals(requestMember.getId())) {
+            throw new RecruitOwnerMismatchException();
+        }
+
         Review review = getById(reviewId);
         if (!review.getRecruitId().equals(recruit.getId())) {
-            throw new ReviewRecruitNotMatchException(recruit.getId(), reviewId);
+            throw new ReviewRecruitMismatchException(recruit.getId(), reviewId);
         }
 
         reviewRepository.delete(review);

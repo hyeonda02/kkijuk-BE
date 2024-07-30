@@ -18,6 +18,9 @@ public class RecruitEntity {
     private Long id;
 
     @Column(nullable = false)
+    private Long memberId;
+
+    @Column(nullable = false)
     private String title;
 
     @Column(nullable = false)
@@ -42,6 +45,7 @@ public class RecruitEntity {
     public static RecruitEntity from(Recruit recruit) {
         RecruitEntity recruitEntity = new RecruitEntity();
         recruitEntity.id = recruit.getId();
+        recruitEntity.memberId = recruit.getMemberId();
         recruitEntity.title = recruit.getTitle();
         recruitEntity.status = recruit.getStatus();
         recruitEntity.startTime = recruit.getStartTime();
@@ -57,6 +61,7 @@ public class RecruitEntity {
     public Recruit toModel() {
         return Recruit.builder()
                 .id(id)
+                .memberId(memberId)
                 .title(title)
                 .status(status)
                 .startTime(startTime)
