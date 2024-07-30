@@ -1,11 +1,14 @@
 package umc.kkijuk.server.introduce.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,20 +23,20 @@ public class MasterIntroduce extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
+    private Member member;
+
     @Size(max = 24)
     private String oneLiner;
     private String introduction;
     private String motive;
     private String prosAndCons;
 
-/*    @CreationTimestamp
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    private LocalDateTime updated_at;*/
-
     @Builder
-    public MasterIntroduce(String oneLiner, String introduction, String motive, String prosAndCons) {
+    public MasterIntroduce(Member member, String oneLiner, String introduction, String motive, String prosAndCons) {
+        this.member = member;
         this.oneLiner = oneLiner;
         this.introduction = introduction;
         this.motive = motive;

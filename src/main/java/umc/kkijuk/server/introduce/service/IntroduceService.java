@@ -11,8 +11,6 @@ import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.introduce.error.BaseException;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
-
-
 import java.util.*;
 import java.util.stream.Collectors;
 

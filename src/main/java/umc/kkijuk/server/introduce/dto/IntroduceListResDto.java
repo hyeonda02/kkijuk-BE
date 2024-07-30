@@ -27,7 +27,7 @@ public class IntroduceListResDto {
         this.recruitTitle=introduce.getRecruit().toModel().getTitle();
         this.deadline=formatUpdatedAt(introduce.getRecruit().toModel().getEndTime());
         this.updatedAt = formatUpdatedAt(introduce.getUpdatedAt());
-        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdatedAt());
+        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdatedAt(), introduce.getRecruit().toModel().getEndTime());
         this.state=introduce.getState();
     }
 
@@ -36,8 +36,8 @@ public class IntroduceListResDto {
         return updatedAt != null ? updatedAt.format(formatter) : null;
     }
 
-    private String calculateTimeUntilDeadline(LocalDateTime deadline) {
-        Duration duration = Duration.between(LocalDateTime.now(), deadline);
+    private String calculateTimeUntilDeadline(LocalDateTime updatedAt, LocalDateTime deadline) {
+        Duration duration = Duration.between(updatedAt, deadline);
         long days = duration.toDays();
         return days > 0 ? "D-" + days : "공고 기한 마감";
     }

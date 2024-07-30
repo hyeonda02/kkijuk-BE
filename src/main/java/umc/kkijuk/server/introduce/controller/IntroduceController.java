@@ -9,8 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.introduce.common.BaseResponse;
 import umc.kkijuk.server.introduce.dto.*;
-import umc.kkijuk.server.introduce.error.BaseErrorResponse;
-import umc.kkijuk.server.introduce.error.BaseException;
 import umc.kkijuk.server.introduce.service.IntroduceService;
 
 import java.util.List;
@@ -19,7 +17,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/history/intro/")
-@Slf4j
 public class IntroduceController {
     private final IntroduceService introduceService;
 

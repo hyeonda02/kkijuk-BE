@@ -5,14 +5,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
-import umc.kkijuk.server.recruit.domain.Recruit;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Entity
@@ -29,18 +24,17 @@ public class Introduce extends BaseEntity {
     @NotNull
     private RecruitEntity recruit;
 
+    @ManyToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
+    private Member member;
+
     @NotNull
     @OneToMany(mappedBy = "introduce", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questions;
 
     @NotNull
     private int state;
-
-/*    @CreationTimestamp
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    private LocalDateTime updated_at;*/
 
     @Builder
     public Introduce(RecruitEntity recruit, List<Question> questions, int state) {

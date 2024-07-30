@@ -7,13 +7,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.introduce.common.BaseResponse;
-import umc.kkijuk.server.introduce.domain.MasterIntroduce;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
-import umc.kkijuk.server.introduce.error.BaseErrorResponse;
-import umc.kkijuk.server.introduce.error.BaseException;
 import umc.kkijuk.server.introduce.service.MasterIntroduceService;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.service.MemberService;
 
 import java.util.List;
 
@@ -21,13 +21,16 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/history/intro/master")
-@Slf4j
 public class MasterIntroduceController {
     private final MasterIntroduceService masterIntroduceService;
+    private final MemberService memberService;
 
     @PostMapping
     @Operation(summary = "마스터 자기소개서 생성")
     public ResponseEntity<Object> save(@RequestBody MasterIntroduceReqDto masterIntroduceReqDto) throws Exception {
+        // Member requestMember = memberService.getById(loginInfo.getId);
+        Long loginUser = LoginUser.get().getId();
+        Member member = memberService.getMemberInfo(loginUser);
         MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.saveMasterIntro(masterIntroduceReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)

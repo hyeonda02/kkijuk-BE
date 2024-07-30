@@ -15,6 +15,7 @@ import umc.kkijuk.server.introduce.dto.IntroduceListResDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.introduce.error.BaseException;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class MasterIntroduceService{
                 .introduction(masterIntroduceReqDto.getIntroduction())
                 .prosAndCons(masterIntroduceReqDto.getProsAndCons())
                 .build();
+
 
         masterIntroduceRepository.save(masterIntroduce);
 
