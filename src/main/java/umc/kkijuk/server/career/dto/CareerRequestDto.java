@@ -36,7 +36,7 @@ public class CareerRequestDto {
         @Schema(description = "활동 여부", example = "false", type = "boolean")
         Boolean isCurrent;
 
-        @NotNull(message = "활동 시작 날짜는 필수 입력 항목입니다.")
+
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         @Schema(description = "활동 시작 날짜", example = "2024-04-14", type="string")
         LocalDate startDate;

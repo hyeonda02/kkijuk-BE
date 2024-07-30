@@ -10,7 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import umc.kkijuk.server.common.controller.CareerExceptionControllerAdvice;
+import umc.kkijuk.server.common.controller.ExceptionControllerAdvice;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponse;
@@ -22,6 +22,7 @@ import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.common.domian.response.ErrorResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -41,7 +42,7 @@ public class CareerServiceTest {
     @Autowired
     private CareerRepository careerRepository;
     @Autowired
-    private CareerExceptionControllerAdvice careerExceptionControllerAdvice;
+    private ExceptionControllerAdvice exceptionControllerAdvice;
     private Career career1;
     private Career career2;
     private Category category1;
@@ -274,20 +275,6 @@ public class CareerServiceTest {
         assertThat(groupedResult.getCount()).isEqualTo(2);
     }
 
-    @Test
-    void CareerExceptionControllerAdvice가_올바른_예외_응답을_반환하는지_검증() {
-        //given
-        InvalidFormatException invalidFormatException = mock(InvalidFormatException.class);
-        when(invalidFormatException.getMessage()).thenReturn(CareerResponseMessage.CAREER_FOTMAT_INVALID);
-
-        //when
-        ResponseEntity<CareerResponse<?>> responseEntiy = careerExceptionControllerAdvice.handleInvalidFormatExceptions(invalidFormatException);
-
-        //then
-        assertEquals(HttpStatus.BAD_REQUEST,responseEntiy.getStatusCode());
-        CareerResponse<?> responseBody = responseEntiy.getBody();
-        assertEquals(CareerResponseMessage.CAREER_FOTMAT_INVALID,responseBody.getMessage());
-    }
 
 
 }
