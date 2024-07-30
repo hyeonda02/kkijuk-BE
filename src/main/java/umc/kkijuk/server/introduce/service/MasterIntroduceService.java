@@ -31,7 +31,7 @@ public class MasterIntroduceService{
 
     @Transactional
     public MasterIntroduceResDto saveMasterIntro(MasterIntroduceReqDto masterIntroduceReqDto) throws Exception{
-        if( masterIntroduceRepository.findAll().stream().count()>0 ){
+        if(masterIntroduceRepository.findAll().stream().count()>0 ){
             throw new MasterFoundException("이미 마스터 자기소개가 존재합니다");
         }
 

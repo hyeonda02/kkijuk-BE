@@ -4,6 +4,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import umc.kkijuk.server.common.domian.exception.MasterFoundException;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.introduce.error.BaseException;
@@ -25,9 +27,9 @@ public class IntroduceService {
     @Transactional
     public IntroduceResDto saveIntro(Long recruitId, IntroduceReqDto introduceReqDto){
         RecruitEntity recruit=recruitJpaRepository.findById(recruitId)
-                .orElseThrow(()-> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 공고를 찾을 수 없습니다"));
+                .orElseThrow(()-> new ResourceNotFoundException("recruit ", recruitId));
         if (introduceRepository.findByRecruitId(recruitId).isPresent()) {
-            throw new BaseException(HttpStatus.CONFLICT.value(), "이미 자기소개서가 존재합니다");
+            throw new MasterFoundException("이미 자기소개서가 존재합니다");
         }
         List<Question> questions = introduceReqDto.getQuestionList().stream()
                 .map(dto -> new Question(dto.getTitle(), dto.getContent(), dto.getNumber()))
@@ -47,7 +49,7 @@ public class IntroduceService {
     @Transactional
     public IntroduceResDto getIntro(Long introId){
         Introduce introduce=introduceRepository.findById(introId)
-                .orElseThrow(()-> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 자기소개서를 찾을 수 없습니다"));
+                .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
 
         List<QuestionDto> questionList = introduce.getQuestions()
                 .stream()
@@ -69,8 +71,8 @@ public class IntroduceService {
 
     @Transactional
     public IntroduceResDto updateIntro(Long introId, IntroduceReqDto introduceReqDto) throws Exception{
-        Introduce introduce = introduceRepository.findById(introId)
-                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 자기소개서를 찾을 수 없습니다"));
+        Introduce introduce=introduceRepository.findById(introId)
+                .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
 
         introduce.update(introduceReqDto.getState());
 
@@ -130,8 +132,8 @@ public class IntroduceService {
 
     @Transactional
     public Long deleteIntro(Long introId){
-        Introduce introduce = introduceRepository.findById(introId)
-                .orElseThrow(()-> new BaseException(HttpStatus.NOT_FOUND.value(), "해당 자기소개서를 찾을 수 없습니다"));
+        Introduce introduce=introduceRepository.findById(introId)
+                .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
 
         introduceRepository.delete(introduce);
 
