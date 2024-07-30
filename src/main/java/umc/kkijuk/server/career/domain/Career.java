@@ -3,8 +3,11 @@ package umc.kkijuk.server.career.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +43,12 @@ public class Career extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+
+    @OneToMany(mappedBy = "career", cascade = CascadeType.ALL)
+    private List<CareerDetail> careerDetailList = new ArrayList<>();
+
+
 
     public void setName(String name) {
         this.name = name;
