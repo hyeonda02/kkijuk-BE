@@ -1,20 +1,14 @@
 package umc.kkijuk.server.career.service;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import umc.kkijuk.server.common.controller.ExceptionControllerAdvice;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
-import umc.kkijuk.server.career.controller.response.CareerResponse;
-import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
@@ -22,7 +16,6 @@ import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.common.domian.response.ErrorResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +23,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -41,8 +33,6 @@ public class CareerServiceTest {
     private CategoryRepository categoryRepository;
     @Autowired
     private CareerRepository careerRepository;
-    @Autowired
-    private ExceptionControllerAdvice exceptionControllerAdvice;
     private Career career1;
     private Career career2;
     private Category category1;
@@ -66,7 +56,7 @@ public class CareerServiceTest {
                 .name("test1")
                 .alias("alias1")
                 .summary("summary1")
-                .current(false)
+                .unknown(false)
                 .startdate(LocalDate.of(2024, 4, 10))
                 .enddate(LocalDate.of(2024, 7, 20))
                 .year(2024)
@@ -77,7 +67,7 @@ public class CareerServiceTest {
                 .name("test2")
                 .alias("alias2")
                 .summary("summary2")
-                .current(false)
+                .unknown(false)
                 .startdate(LocalDate.of(2024, 4, 10))
                 .enddate(LocalDate.of(2024, 7, 20))
                 .year(2024)
@@ -94,7 +84,7 @@ public class CareerServiceTest {
         CareerRequestDto.CreateCareerDto careerCreateDto = CareerRequestDto.CreateCareerDto.builder()
                 .careerName("test3")
                 .alias("alias3")
-                .isCurrent(false)
+                .isUnknown(false)
                 .summary("summary3")
                 .startDate(LocalDate.of(2024, 4, 10))
                 .endDate(LocalDate.of(2024, 7, 20))
@@ -126,7 +116,7 @@ public class CareerServiceTest {
                 () -> assertThat(updateCareer.getName()).isEqualTo("test2"),
                 () -> assertThat(updateCareer.getAlias()).isEqualTo("alias2"),
                 () -> assertThat(updateCareer.getSummary()).isEqualTo("summary2"),
-                () -> assertThat(updateCareer.getCurrent()).isEqualTo(false),
+                () -> assertThat(updateCareer.getUnknown()).isEqualTo(false),
                 () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2024, 4, 10)),
                 () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.of(2024, 7, 20)),
                 () -> assertThat(updateCareer.getYear()).isEqualTo(2024),
@@ -140,7 +130,7 @@ public class CareerServiceTest {
                 .careerName("update test")
                 .summary("update summary")
                 .alias("update alias")
-                .isCurrent(true)
+                .isUnknown(true)
                 .category(2)
                 .startDate(LocalDate.of(2021,01,01))
                 .build();
@@ -153,7 +143,7 @@ public class CareerServiceTest {
                 () -> assertThat(updateCareer.getName()).isEqualTo("update test"),
                 () -> assertThat(updateCareer.getSummary()).isEqualTo("update summary"),
                 () -> assertThat(updateCareer.getAlias()).isEqualTo("update alias"),
-                () -> assertThat(updateCareer.getCurrent()).isEqualTo(true),
+                () -> assertThat(updateCareer.getUnknown()).isEqualTo(true),
                 () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2021,01,01)),
                 () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.now()),
                 () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(2L),
@@ -168,7 +158,7 @@ public class CareerServiceTest {
                 .careerName("update test")
                 .summary("update summary")
                 .alias("update alias")
-                .isCurrent(true)
+                .isUnknown(true)
                 .startDate(LocalDate.of(2021,01,01))
                 .category(2)
                 .build();
@@ -183,7 +173,7 @@ public class CareerServiceTest {
                  .careerName("update test")
                  .summary("update summary")
                  .alias("update alias")
-                 .isCurrent(true)
+                 .isUnknown(true)
                  .startDate(LocalDate.of(2024543,01,01))
                  .category(Math.toIntExact(category2.getId()))
                  .build();
@@ -200,7 +190,7 @@ public class CareerServiceTest {
                 .careerName("update test")
                 .summary("update summary")
                 .alias("update alias")
-                .isCurrent(false)
+                .isUnknown(false)
                 .startDate(LocalDate.of(2024,01,01))
                 .endDate(LocalDate.of(2023,01,01))
                 .category(Math.toIntExact(category2.getId()))

@@ -30,7 +30,7 @@ public class CareerServiceImpl implements CareerService {
     @Transactional
     public Career createCareer(CareerRequestDto.CreateCareerDto request) {
         Career career = CareerConverter.toCareer(request);
-        if(career.getCurrent()){
+        if(career.getUnknown()){
             career.setEnddate(LocalDate.now());
             career.setYear(LocalDate.now().getYear());
         }
@@ -59,8 +59,8 @@ public class CareerServiceImpl implements CareerService {
         if (request.getSummary()!=null) {
             career.setSummary(request.getSummary());
         }
-        if (request.getIsCurrent()!=null || request.getEndDate()!=null ) {
-            updateEndDateAndCurrentStatus(career,request.getIsCurrent(),request.getEndDate());
+        if (request.getIsUnknown()!=null || request.getEndDate()!=null ) {
+            updateEndDateAndUnknownStatus(career,request.getIsUnknown(),request.getEndDate());
             validatedPeriod(career);
         }
         if (request.getStartDate()!=null) {
@@ -101,10 +101,10 @@ public class CareerServiceImpl implements CareerService {
 
 
 
-    private void updateEndDateAndCurrentStatus(Career career, Boolean isCurrent, LocalDate endDate) {
-        if (isCurrent != null) {
-            career.setCurrent(isCurrent);
-            if (isCurrent) {
+    private void updateEndDateAndUnknownStatus(Career career, Boolean isUnknown, LocalDate endDate) {
+        if (isUnknown != null) {
+            career.setUnknown(isUnknown);
+            if (isUnknown) {
                 career.setEnddate(LocalDate.now());
                 career.setYear(LocalDate.now().getYear());
             } else {
@@ -136,7 +136,7 @@ public class CareerServiceImpl implements CareerService {
     }
 
     private int parsingYear(CareerRequestDto.CreateCareerDto request){
-        if(!request.getIsCurrent()){
+        if(!request.getIsUnknown()){
             return request.getEndDate().getYear();
         }
         return LocalDate.now().getYear();
