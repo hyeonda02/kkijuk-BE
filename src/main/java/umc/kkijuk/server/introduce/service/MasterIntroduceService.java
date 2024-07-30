@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import umc.kkijuk.server.common.domian.exception.MasterFoundException;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.introduce.domain.Introduce;
 import umc.kkijuk.server.introduce.domain.IntroduceRepository;
 import umc.kkijuk.server.introduce.domain.MasterIntroduce;
@@ -30,7 +32,7 @@ public class MasterIntroduceService{
     @Transactional
     public MasterIntroduceResDto saveMasterIntro(MasterIntroduceReqDto masterIntroduceReqDto) throws Exception{
         if( masterIntroduceRepository.findAll().stream().count()>0 ){
-            throw new BaseException(HttpStatus.CONFLICT.value(), "이미 마스터 자기소개가 존재합니다");
+            throw new MasterFoundException("이미 마스터 자기소개가 존재합니다");
         }
 
         MasterIntroduce masterIntroduce=MasterIntroduce.builder()
@@ -49,17 +51,6 @@ public class MasterIntroduceService{
     public List<MasterIntroduceResDto> getMasterIntro(){
         List<MasterIntroduce> masterIntroduces= masterIntroduceRepository.findAll();
         List<String> introduceList=getIntroduceTitles();
-        /*return masterIntroduces.stream()
-                .map(masterIntroduce -> MasterIntroduceResDto.builder()
-                        .id(masterIntroduce.getId())
-                        .oneLiner(masterIntroduce.getOneLiner())
-                        .introduction(masterIntroduce.getIntroduction())
-                        .motive(masterIntroduce.getMotive())
-                        .prosAndCons(masterIntroduce.getProsAndCons())
-                        .updatedAt(masterIntroduce.getUpdatedAt().toString())
-                        .introduceList(introduceList)
-                        .build())
-                .collect(Collectors.toList());*/
 
         return masterIntroduces.stream()
                 .map(masterIntroduce -> new MasterIntroduceResDto(masterIntroduce, introduceList))
@@ -68,8 +59,8 @@ public class MasterIntroduceService{
 
     @Transactional
     public MasterIntroduceResDto updateMasterIntro(Long id, MasterIntroduceReqDto masterIntroduceReqDto) throws Exception{
-        MasterIntroduce masterIntroduce=masterIntroduceRepository.findById(id)
-                .orElseThrow(() -> new BaseException(HttpStatus.NOT_FOUND.value(), "아이디를 다시 확인해주세요"));
+        MasterIntroduce masterIntroduce = masterIntroduceRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("masterIntroduce ", id));
 
         masterIntroduce.update(
                 masterIntroduceReqDto.getOneLiner(),
@@ -82,14 +73,12 @@ public class MasterIntroduceService{
 
     @Transactional
     public List<String> getIntroduceTitles() {
-        // Fetch all Introduce entities
         List<Introduce> introduces = introduceRepository.findAll();
 
-        // Map Introduce entities to Recruit titles
         return introduces.stream()
-                .map(introduce -> recruitJpaRepository.findById(introduce.getRecruit().toModel().getId())) // Get the Recruit entity
-                .filter(Optional::isPresent) // Filter out any empty results
-                .map(opt -> opt.get().toModel().getTitle()) // Get the title of the Recruit
-                .collect(Collectors.toList()); // Collect titles into a List
+                .map(introduce -> recruitJpaRepository.findById(introduce.getRecruit().toModel().getId()))
+                .filter(Optional::isPresent)
+                .map(opt -> opt.get().toModel().getTitle())
+                .collect(Collectors.toList());
     }
 }

@@ -27,62 +27,29 @@ public class MasterIntroduceController {
 
     @PostMapping
     @Operation(summary = "마스터 자기소개서 생성")
-    public ResponseEntity<Object> save(@RequestBody MasterIntroduceReqDto masterIntroduceReqDto){
-        try {
-            MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.saveMasterIntro(masterIntroduceReqDto);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 생성 완료", masterIntroduceResDto));
-        } catch (BaseException e) {
-            return ResponseEntity
-                    .status(e.getCode())
-                    .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            log.info("Exception occurred: ", e);
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
-        }
+    public ResponseEntity<Object> save(@RequestBody MasterIntroduceReqDto masterIntroduceReqDto) throws Exception {
+        MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.saveMasterIntro(masterIntroduceReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 생성 완료", masterIntroduceResDto));
     }
 
     @GetMapping
     @Operation(summary = "마스터 자기소개서 조회")
     public ResponseEntity<Object> get(){
-        try {
-            List<MasterIntroduceResDto> masterIntroduce = masterIntroduceService.getMasterIntro();
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 조회 완료", masterIntroduce));
-        } catch (BaseException e) {
-            return ResponseEntity
-                    .status(e.getCode())
-                    .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            log.info("Exception occurred: ", e);
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
-        }
+        List<MasterIntroduceResDto> masterIntroduce = masterIntroduceService.getMasterIntro();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 조회 완료", masterIntroduce));
     }
 
     @PatchMapping
     @Operation(summary = "마스터 자기소개서 수정")
-    public ResponseEntity<Object> update(Long id, @RequestBody MasterIntroduceReqDto masterIntroduceReqDto){
-        try {
-            MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.updateMasterIntro(id, masterIntroduceReqDto);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 수정 완료", masterIntroduceResDto));
-        } catch (BaseException e) {
-            return ResponseEntity
-                    .status(e.getCode())
-                    .body(new BaseErrorResponse(e.getCode(), e.getMessage()));
-        } catch (Exception e) {
-            log.info("Exception occurred: ", e);
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new BaseErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Server error"));
-        }
+    public ResponseEntity<Object> update(Long id, @RequestBody MasterIntroduceReqDto masterIntroduceReqDto) throws Exception {
+        MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.updateMasterIntro(id, masterIntroduceReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 수정 완료", masterIntroduceResDto));
     }
 
 }
