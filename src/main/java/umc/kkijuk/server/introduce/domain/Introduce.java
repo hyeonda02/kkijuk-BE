@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import umc.kkijuk.server.career.domain.base.BaseEntity;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 
@@ -18,7 +19,7 @@ import java.util.List;
 @Table(name="introduce")
 @Getter
 @NoArgsConstructor
-public class Introduce {
+public class Introduce extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,11 +36,11 @@ public class Introduce {
     @NotNull
     private int state;
 
-    @CreationTimestamp
+/*    @CreationTimestamp
     private LocalDateTime created_at;
 
     @UpdateTimestamp
-    private LocalDateTime updated_at;
+    private LocalDateTime updated_at;*/
 
     @Builder
     public Introduce(RecruitEntity recruit, List<Question> questions, int state) {

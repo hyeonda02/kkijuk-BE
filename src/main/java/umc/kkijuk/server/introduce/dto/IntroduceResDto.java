@@ -35,18 +35,19 @@ public class IntroduceResDto {
         this.deadline=formatUpdatedAt(introduce.getRecruit().toModel().getEndTime());
         this.tags=introduce.getRecruit().toModel().getTags();
         this.link=introduce.getRecruit().toModel().getLink();
-        this.updatedAt = formatUpdatedAt(introduce.getUpdated_at());
-        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdated_at());
+        this.updatedAt = formatUpdatedAt(introduce.getUpdatedAt());
+        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdatedAt(), introduce.getRecruit().toModel().getEndTime());
         this.introduceList = introduceList;
         this.state=introduce.getState();
     }
+
     private String formatUpdatedAt(LocalDateTime updatedAt) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return updatedAt != null ? updatedAt.format(formatter) : null;
     }
 
-    private String calculateTimeUntilDeadline(LocalDateTime deadline) {
-        Duration duration = Duration.between(LocalDateTime.now(), deadline);
+    private String calculateTimeUntilDeadline(LocalDateTime updatedAt, LocalDateTime deadline) {
+        Duration duration = Duration.between(updatedAt, deadline);
         long days = duration.toDays();
         return days > 0 ? "D-" + days : "공고 기한 마감";
     }

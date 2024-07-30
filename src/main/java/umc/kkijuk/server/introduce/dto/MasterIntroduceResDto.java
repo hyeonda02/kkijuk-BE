@@ -9,6 +9,7 @@ import umc.kkijuk.server.introduce.domain.MasterIntroduceRepository;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -32,8 +33,14 @@ public class MasterIntroduceResDto {
         this.introduction = masterIntroduce.getIntroduction();
         this.motive = masterIntroduce.getMotive();
         this.prosAndCons = masterIntroduce.getProsAndCons();
-        this.updatedAt = masterIntroduce.getUpdated_at();
+        this.updatedAt = formatUpdatedAt(masterIntroduce.getUpdatedAt());
         this.introduceList = introduceList;
+    }
+
+
+    private String formatUpdatedAt(LocalDateTime updatedAt) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return updatedAt != null ? updatedAt.format(formatter) : null;
     }
 
 

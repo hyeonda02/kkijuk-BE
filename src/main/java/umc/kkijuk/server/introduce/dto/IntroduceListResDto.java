@@ -26,8 +26,8 @@ public class IntroduceListResDto {
         this.recruitId=introduce.getRecruit().toModel().getId();
         this.recruitTitle=introduce.getRecruit().toModel().getTitle();
         this.deadline=formatUpdatedAt(introduce.getRecruit().toModel().getEndTime());
-        this.updatedAt = formatUpdatedAt(introduce.getUpdated_at());
-        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdated_at());
+        this.updatedAt = formatUpdatedAt(introduce.getUpdatedAt());
+        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdatedAt());
         this.state=introduce.getState();
     }
 

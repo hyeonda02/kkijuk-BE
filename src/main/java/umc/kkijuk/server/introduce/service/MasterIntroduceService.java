@@ -49,16 +49,20 @@ public class MasterIntroduceService{
     public List<MasterIntroduceResDto> getMasterIntro(){
         List<MasterIntroduce> masterIntroduces= masterIntroduceRepository.findAll();
         List<String> introduceList=getIntroduceTitles();
-        return masterIntroduces.stream()
+        /*return masterIntroduces.stream()
                 .map(masterIntroduce -> MasterIntroduceResDto.builder()
                         .id(masterIntroduce.getId())
                         .oneLiner(masterIntroduce.getOneLiner())
                         .introduction(masterIntroduce.getIntroduction())
                         .motive(masterIntroduce.getMotive())
                         .prosAndCons(masterIntroduce.getProsAndCons())
-                        .updatedAt(masterIntroduce.getUpdated_at())
+                        .updatedAt(masterIntroduce.getUpdatedAt().toString())
                         .introduceList(introduceList)
                         .build())
+                .collect(Collectors.toList());*/
+
+        return masterIntroduces.stream()
+                .map(masterIntroduce -> new MasterIntroduceResDto(masterIntroduce, introduceList))
                 .collect(Collectors.toList());
     }
 
