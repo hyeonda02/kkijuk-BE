@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import umc.kkijuk.server.introduce.domain.Introduce;
+import umc.kkijuk.server.member.domain.Member;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class IntroduceResDto {
     private Long id;
     private Long recruitId;
+    private Long memberId;
     private String recruitTitle;
     private List<QuestionDto> questionList;
     private String deadline;
@@ -30,6 +32,7 @@ public class IntroduceResDto {
     public IntroduceResDto(Introduce introduce, List<QuestionDto> questionList, List<String> introduceList) {
         this.id = introduce.getId();
         this.recruitId=introduce.getRecruit().toModel().getId();
+        this.memberId=introduce.getMember().getId();
         this.recruitTitle=introduce.getRecruit().toModel().getTitle();
         this.questionList = questionList;
         this.deadline=formatUpdatedAt(introduce.getRecruit().toModel().getEndTime());

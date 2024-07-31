@@ -23,15 +23,16 @@ import java.util.List;
 @RequestMapping("/history/intro/master")
 public class MasterIntroduceController {
     private final MasterIntroduceService masterIntroduceService;
-    private final MemberService memberService;
+
+    private final Member requestMember = Member.builder()
+            .id(LoginUser.get().getId())
+            .build();
 
     @PostMapping
     @Operation(summary = "마스터 자기소개서 생성")
     public ResponseEntity<Object> save(@RequestBody MasterIntroduceReqDto masterIntroduceReqDto) throws Exception {
-        // Member requestMember = memberService.getById(loginInfo.getId);
-        Long loginUser = LoginUser.get().getId();
-        Member member = memberService.getMemberInfo(loginUser);
-        MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.saveMasterIntro(masterIntroduceReqDto);
+        MasterIntroduceResDto masterIntroduceResDto =
+                masterIntroduceService.saveMasterIntro(requestMember, masterIntroduceReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 생성 완료", masterIntroduceResDto));
@@ -40,7 +41,7 @@ public class MasterIntroduceController {
     @GetMapping
     @Operation(summary = "마스터 자기소개서 조회")
     public ResponseEntity<Object> get(){
-        List<MasterIntroduceResDto> masterIntroduce = masterIntroduceService.getMasterIntro();
+        List<MasterIntroduceResDto> masterIntroduce = masterIntroduceService.getMasterIntro(requestMember);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 조회 완료", masterIntroduce));
@@ -49,7 +50,8 @@ public class MasterIntroduceController {
     @PatchMapping
     @Operation(summary = "마스터 자기소개서 수정")
     public ResponseEntity<Object> update(Long id, @RequestBody MasterIntroduceReqDto masterIntroduceReqDto) throws Exception {
-        MasterIntroduceResDto masterIntroduceResDto = masterIntroduceService.updateMasterIntro(id, masterIntroduceReqDto);
+        MasterIntroduceResDto masterIntroduceResDto =
+                masterIntroduceService.updateMasterIntro(requestMember, id, masterIntroduceReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 수정 완료", masterIntroduceResDto));

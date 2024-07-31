@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MasterIntroduceResDto {
     private Long id;
+    private Long memberId;
     private String oneLiner;
     private String introduction;
     private String motive;
@@ -29,6 +30,7 @@ public class MasterIntroduceResDto {
 
     public MasterIntroduceResDto(MasterIntroduce masterIntroduce, List<String> introduceList) {
         this.id = masterIntroduce.getId();
+        this.memberId=masterIntroduce.getMember().getId();
         this.oneLiner = masterIntroduce.getOneLiner();
         this.introduction = masterIntroduce.getIntroduction();
         this.motive = masterIntroduce.getMotive();

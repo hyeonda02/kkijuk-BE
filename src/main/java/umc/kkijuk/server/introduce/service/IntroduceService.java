@@ -2,13 +2,14 @@ package umc.kkijuk.server.introduce.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import umc.kkijuk.server.common.domian.exception.MasterFoundException;
+import umc.kkijuk.server.common.domian.exception.IntroFoundException;
+import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
+import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.*;
-import umc.kkijuk.server.introduce.error.BaseException;
+import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
 import java.util.*;
@@ -23,17 +24,18 @@ public class IntroduceService {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public IntroduceResDto saveIntro(Long recruitId, IntroduceReqDto introduceReqDto){
+    public IntroduceResDto saveIntro(Member requestMember, Long recruitId, IntroduceReqDto introduceReqDto){
         RecruitEntity recruit=recruitJpaRepository.findById(recruitId)
                 .orElseThrow(()-> new ResourceNotFoundException("recruit ", recruitId));
         if (introduceRepository.findByRecruitId(recruitId).isPresent()) {
-            throw new MasterFoundException("이미 자기소개서가 존재합니다");
+            throw new IntroFoundException("이미 자기소개서가 존재합니다");
         }
         List<Question> questions = introduceReqDto.getQuestionList().stream()
                 .map(dto -> new Question(dto.getTitle(), dto.getContent(), dto.getNumber()))
                 .collect(Collectors.toList());
 
         Introduce introduce=Introduce.builder()
+                .member(requestMember)
                 .recruit(recruit)
                 .questions(questions)
                 .state(introduceReqDto.getState())
@@ -45,9 +47,12 @@ public class IntroduceService {
     }
 
     @Transactional
-    public IntroduceResDto getIntro(Long introId){
+    public IntroduceResDto getIntro(Member requestMember, Long introId){
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
+        if (!introduce.getMember().getId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
 
         List<QuestionDto> questionList = introduce.getQuestions()
                 .stream()
@@ -60,17 +65,23 @@ public class IntroduceService {
     }
 
     @Transactional
-    public List<IntroduceListResDto> getIntroList(){
-        List<Introduce> introduces = introduceRepository.findAll();
+    public List<IntroduceListResDto> getIntroList(Member requestMember){
+        List<Introduce> introduces = introduceRepository.findAllByMemberId(requestMember.getId())
+                .orElseThrow(IntroOwnerMismatchException::new);
+
         return introduces.stream()
                 .map(IntroduceListResDto::new)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public IntroduceResDto updateIntro(Long introId, IntroduceReqDto introduceReqDto) throws Exception{
+    public IntroduceResDto updateIntro(Member requestMember, Long introId, IntroduceReqDto introduceReqDto) throws Exception{
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
+
+        if (!introduce.getMember().getId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
 
         introduce.update(introduceReqDto.getState());
 
@@ -129,9 +140,12 @@ public class IntroduceService {
 
 
     @Transactional
-    public Long deleteIntro(Long introId){
+    public Long deleteIntro(Member requestMember, Long introId){
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
+        if (!introduce.getMember().getId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
 
         introduceRepository.delete(introduce);
 

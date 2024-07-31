@@ -37,7 +37,8 @@ public class Introduce extends BaseEntity {
     private int state;
 
     @Builder
-    public Introduce(RecruitEntity recruit, List<Question> questions, int state) {
+    public Introduce(Member member, RecruitEntity recruit, List<Question> questions, int state) {
+        this.member = member;
         this.recruit = recruit;
         this.questions = questions;
         this.state = state;

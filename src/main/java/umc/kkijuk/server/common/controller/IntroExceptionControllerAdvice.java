@@ -13,8 +13,14 @@ import umc.kkijuk.server.common.domian.response.ErrorResponse;
 public class IntroExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.CONFLICT)
-    @ExceptionHandler(MasterFoundException.class)
-    public ErrorResponse MasterFoundException(MasterFoundException exception) {
+    @ExceptionHandler(IntroFoundException.class)
+    public ErrorResponse IntroFoundException(IntroFoundException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(IntroOwnerMismatchException.class)
+    public ErrorResponse IntroOwnerMismatchException(IntroOwnerMismatchException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }
