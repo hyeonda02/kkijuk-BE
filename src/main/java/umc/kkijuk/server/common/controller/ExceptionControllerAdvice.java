@@ -34,6 +34,7 @@ public class ExceptionControllerAdvice {
     public ErrorResponse RecruitOwnerMismatchException(RecruitOwnerMismatchException exception) {
         return new ErrorResponse(exception.getMessage());
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidTagNameException.class)
     public ErrorResponse InvalidTagNameException(InvalidTagNameException exception) {
@@ -51,9 +52,16 @@ public class ExceptionControllerAdvice {
         BindingResult bindingResult = exception.getBindingResult();
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ErrorResultResponse.createFail(bindingResult));
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidFormatException.class)
     public ErrorResponse handleInvalidFormatExceptions(InvalidFormatException exception) {
         return new ErrorResponse("올바른 형식이 아닙니다.");
     }
 
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(OwnerMismatchException.class)
+    public ErrorResponse CareerOwnerMismatchException(OwnerMismatchException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
 }

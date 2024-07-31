@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CareerRepository extends JpaRepository<Career, Long> {
     List<Career> findAllByUnknown(boolean isUnknown);
+    List<Career> findAllCareerByMemberId(Long memberId);
 }

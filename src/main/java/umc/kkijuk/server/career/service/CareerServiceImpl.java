@@ -3,6 +3,7 @@ package umc.kkijuk.server.career.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
@@ -12,6 +13,7 @@ import umc.kkijuk.server.career.dto.converter.CareerConverter;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.member.domain.Member;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,8 +30,8 @@ public class CareerServiceImpl implements CareerService {
 
     @Override
     @Transactional
-    public Career createCareer(CareerRequestDto.CreateCareerDto request) {
-        Career career = CareerConverter.toCareer(request);
+    public Career createCareer(Member requestMember, CareerRequestDto.CreateCareerDto request) {
+        Career career = CareerConverter.toCareer(request, requestMember.getId());
         if(career.getUnknown()){
             career.setEnddate(LocalDate.now());
             career.setYear(LocalDate.now().getYear());
@@ -40,15 +42,21 @@ public class CareerServiceImpl implements CareerService {
     }
     @Override
     @Transactional
-    public void deleteCareer(Long careerId) {
-        Optional<Career> career = findCareer(careerId);
-        careerRepository.delete(career.get());
+    public void deleteCareer(Member requestMember, Long careerId) {
+        Career career = findCareer(careerId).get();
+        if(!career.getMemberId().equals(requestMember.getId())){
+            throw new OwnerMismatchException();
+        }
+        careerRepository.delete(career);
     }
 
     @Override
     @Transactional
-    public Career updateCareer(Long careerId, CareerRequestDto.UpdateCareerDto request) {
+    public Career updateCareer(Member requestMember, Long careerId, CareerRequestDto.UpdateCareerDto request) {
         Career career = findCareer(careerId).get();
+        if(!career.getMemberId().equals(requestMember.getId())){
+            throw new OwnerMismatchException();
+        }
 
         if (request.getCareerName()!=null) {
             career.setName(request.getCareerName());
@@ -74,8 +82,9 @@ public class CareerServiceImpl implements CareerService {
     }
 
     @Override
-    public List<? extends CareerGroupedByResponse> getCareerGroupedBy(String status) {
-        List<Career> careers = careerRepository.findAll();
+    public List<? extends CareerGroupedByResponse> getCareerGroupedBy(Member requestMember, String status) {
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId()); //동작하는지 확인해야 됨 ( 멤버 아이디 넣음 -> CareerRepository )
+
         Map<String,List<Career>> groupedCareers;
 
         if(status.equalsIgnoreCase("category")){

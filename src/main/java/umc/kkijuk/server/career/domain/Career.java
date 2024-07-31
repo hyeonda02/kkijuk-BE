@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
 import umc.kkijuk.server.careerdetail.domain.CareerDetail;
-import umc.kkijuk.server.member.domain.Member;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,9 +49,8 @@ public class Career extends BaseEntity {
     private List<CareerDetail> careerDetailList = new ArrayList<>();
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
+    @Column(nullable = false)
+    private Long memberId;
 
     public void setName(String name) {
         this.name = name;

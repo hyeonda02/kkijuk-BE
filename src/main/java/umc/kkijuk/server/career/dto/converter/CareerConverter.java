@@ -10,8 +10,9 @@ import java.util.stream.Collectors;
 
 public class CareerConverter {
 
-    public static Career toCareer(CareerRequestDto.CreateCareerDto request){
+    public static Career toCareer(CareerRequestDto.CreateCareerDto request, Long memberId){
         return Career.builder()
+                .memberId(memberId)
                 .name(request.getCareerName())
                 .alias(request.getAlias())
                 .summary(request.getSummary())

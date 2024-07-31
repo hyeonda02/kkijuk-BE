@@ -6,13 +6,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -30,12 +31,23 @@ public class CareerServiceUnitTest {
     private CareerRepository careerRepository;
     @InjectMocks
     private CareerServiceImpl careerService;
+    private Long testMemberId = 333L;
+    private Member testRequestMember;
     private Career career1;
     private Career career2;
     private Category category1;
     private Category category2;
     @BeforeEach
     void init() {
+        testRequestMember = Member.builder()
+                .id(testMemberId)
+                .email("test@test.com")
+                .phoneNumber("000-0000-0000")
+                .birthDate(LocalDate.of(2024, 7, 31))
+                .password("test")
+                .userState(State.ACTIVATE)
+                .build();
+
         category1 = Category.builder()
                 .id(1L)
                 .name("동아리")
@@ -48,6 +60,7 @@ public class CareerServiceUnitTest {
 
         career1 = Career.builder()
                 .id(1L)
+                .memberId(testMemberId)
                 .name("test")
                 .alias("alias")
                 .summary("summary")
@@ -60,6 +73,7 @@ public class CareerServiceUnitTest {
 
         career2 = Career.builder()
                 .id(2L)
+                .memberId(testMemberId)
                 .name("test2")
                 .alias("alias2")
                 .summary("summary2")
@@ -74,20 +88,20 @@ public class CareerServiceUnitTest {
     void read_getCareerGroupedBy_Category_성공() {
         //given
         List<Career> careerList = Arrays.asList(career1, career2);
-        when(careerRepository.findAll()).thenReturn(careerList);
+        when(careerRepository.findAllCareerByMemberId(testMemberId)).thenReturn(careerList);
         //when
-        List<? extends CareerResponseDto.CareerGroupedByCategoryDto> result = (List<? extends CareerResponseDto.CareerGroupedByCategoryDto>) careerService.getCareerGroupedBy("category");
+        List<? extends CareerResponseDto.CareerGroupedByCategoryDto> result = (List<? extends CareerResponseDto.CareerGroupedByCategoryDto>) careerService.getCareerGroupedBy(testRequestMember,"category");
         //then
         assertThat(result).isNotEmpty();
         assertThat(result.size()).isEqualTo(2);
-        verify(careerRepository, times(1)).findAll();
+        verify(careerRepository, times(1)).findAllCareerByMemberId(testMemberId);
     }
     @Test
     void delete_기존_career_삭제() {
         //given
         when(careerRepository.findById(anyLong())).thenReturn(Optional.of(career1));
         //when
-        careerService.deleteCareer(1L);
+        careerService.deleteCareer(testRequestMember,1L);
         //then
         verify(careerRepository,times(1)).delete(career1);
     }
@@ -99,7 +113,7 @@ public class CareerServiceUnitTest {
         //when
         //then
         assertThrows(ResourceNotFoundException.class, ()->{
-            careerService.deleteCareer(1L);});
+            careerService.deleteCareer(testRequestMember,1L);});
         verify(careerRepository,never()).delete(any(Career.class));
     }
     @Test
@@ -117,7 +131,7 @@ public class CareerServiceUnitTest {
 
         // when
         // then
-        assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(999L, updateCareerDto));
+        assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(testRequestMember,999L, updateCareerDto));
         verify(careerRepository, never()).save(any(Career.class));
     }
 
