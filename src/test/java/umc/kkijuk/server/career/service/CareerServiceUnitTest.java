@@ -131,7 +131,7 @@ public class CareerServiceUnitTest {
         Career newCareer = careerService.createCareer(testRequestMember, requestDto);
         //then
         assertAll(
-                () -> assertThat(newCareer.getMemberId().equals(testMemberId)),
+                () -> assertThat(newCareer.getMemberId()).isEqualTo(testMemberId),
                 () -> assertThat(newCareer.getId()).isEqualTo(3L),
                 () -> assertThat(newCareer.getName()).isEqualTo("test3"),
                 () -> assertThat(newCareer.getAlias()).isEqualTo("test3"),
