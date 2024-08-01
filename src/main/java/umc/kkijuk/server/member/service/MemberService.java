@@ -14,4 +14,5 @@ public interface MemberService {
     Member updateMemberField(Long memberId, MemberFieldDto memberFieldDto);
     Member updateMemberInfo(Long memberId, MemberInfoChangeDto memberInfoChangeDto);
     Member changeMemberPassword(Long memberId, MemberPasswordChangeDto memberPasswordChangeDto);
+    Member myPagePasswordAuth(Long memberId, MyPagePasswordAuthDto myPagePasswordAuthDto);
 }

@@ -103,6 +103,16 @@ public class MemberServiceImpl implements MemberService {
         return member;
     }
 
+    @Override
+    @Transactional
+    public Member myPagePasswordAuth(Long memberId, MyPagePasswordAuthDto myPagePasswordAuthDto) {
+        Member member = this.getById(memberId);
 
+        if(!passwordEncoder.matches(myPagePasswordAuthDto.getCurrentPassword(), member.getPassword())){
+            throw new CurrentPasswordMismatchException();
+        }
+
+        return member;
+    }
 
 }
