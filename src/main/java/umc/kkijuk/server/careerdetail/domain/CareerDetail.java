@@ -36,7 +36,7 @@ public class CareerDetail extends BaseEntity {
     @OneToMany(mappedBy = "careerDetail", cascade = CascadeType.ALL)
     private List<CareerTag> careerTagList = new ArrayList<>();
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="career_id")
     private Career career;
 

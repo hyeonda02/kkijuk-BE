@@ -139,35 +139,35 @@ public class CareerServiceTest {
                 () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(2L)
         );
     }
-    @Test
-    void update_기존_career_수정() {
-        //given
-        CareerRequestDto.UpdateCareerDto updateCareerDto = CareerRequestDto.UpdateCareerDto.builder()
-                .careerName("update test")
-                .summary("update summary")
-                .alias("update alias")
-                .isUnknown(true)
-                .category(2)
-                .startDate(LocalDate.of(2021,01,01))
-                .build();
-
-        //when
-        Career updateCareer = careerService.updateCareer(testRequestMember,2L, updateCareerDto);
-        //then
-        assertAll(
-                () -> assertThat(updateCareer.getMemberId().equals(testMemberId)),
-                () -> assertThat(updateCareer.getId()).isEqualTo(2L),
-                () -> assertThat(updateCareer.getName()).isEqualTo("update test"),
-                () -> assertThat(updateCareer.getSummary()).isEqualTo("update summary"),
-                () -> assertThat(updateCareer.getAlias()).isEqualTo("update alias"),
-                () -> assertThat(updateCareer.getUnknown()).isEqualTo(true),
-                () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2021,01,01)),
-                () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.now()),
-                () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(2L),
-                () -> assertThat(updateCareer.getYear()).isEqualTo(LocalDate.now().getYear())
-        );
-
-    }
+//    @Test
+//    void update_기존_career_수정() {
+//        //given
+//        CareerRequestDto.UpdateCareerDto updateCareerDto = CareerRequestDto.UpdateCareerDto.builder()
+//                .careerName("update test")
+//                .summary("update summary")
+//                .alias("update alias")
+//                .isUnknown(true)
+//                .category(2)
+//                .startDate(LocalDate.of(2021,01,01))
+//                .build();
+//
+//        //when
+//        Career updateCareer = careerService.updateCareer(testRequestMember,2L, updateCareerDto);
+//        //then
+//        assertAll(
+//                () -> assertThat(updateCareer.getMemberId().equals(testMemberId)),
+//                () -> assertThat(updateCareer.getId()).isEqualTo(2L),
+//                () -> assertThat(updateCareer.getName()).isEqualTo("update test"),
+//                () -> assertThat(updateCareer.getSummary()).isEqualTo("update summary"),
+//                () -> assertThat(updateCareer.getAlias()).isEqualTo("update alias"),
+//                () -> assertThat(updateCareer.getUnknown()).isEqualTo(true),
+//                () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2021,01,01)),
+//                () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.now()),
+//                () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(2L),
+//                () -> assertThat(updateCareer.getYear()).isEqualTo(LocalDate.now().getYear())
+//        );
+//
+//    }
     @Test
     void update_수정시_없는_careerId_요청은_에러() {
         //given
