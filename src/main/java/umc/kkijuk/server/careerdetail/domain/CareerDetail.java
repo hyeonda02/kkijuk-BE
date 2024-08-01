@@ -20,7 +20,7 @@ public class CareerDetail extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="career_detail_id")
     private Long id;
-    @Column(name="career_detail_titlw", length = 30)
+    @Column(name="career_detail_title", length = 30)
     private String title;
     @Column(name="career_detail_content", length = 800)
     private String content;
@@ -28,6 +28,9 @@ public class CareerDetail extends BaseEntity {
     private LocalDate startDate;
     @Column(name="career_detail_enddate")
     private LocalDate endDate;
+
+    @Column(nullable = false)
+    private Long memberId;
 
 
     @OneToMany(mappedBy = "careerDetail", cascade = CascadeType.ALL)

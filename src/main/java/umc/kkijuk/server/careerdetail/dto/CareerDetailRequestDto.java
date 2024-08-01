@@ -19,12 +19,12 @@ public class CareerDetailRequestDto {
 
         @Size(max = 30)
         @NotBlank(message = "활동 기록 제목은 필수 입력 항목입니다. 최대 30자 까지 입력 가능")
-        @Schema(description = "활동 기록 제목", example = "역량 키워드", type="string")
+        @Schema(description = "활동 기록 제목", example = "아이디어톤", type="string")
         String title;
 
         @Size(max = 800)
         @NotBlank(message = "활동 기록 내용은 필수 입력 항목입니다. 최대 800자 까지 입력 가능")
-        @Schema(description = "활동 기록 내용", example = "역량 키워드", type="string")
+        @Schema(description = "활동 기록 내용", example = "기획한 웹/앱 서비스를 발표하고 피드백을 교환함"+"투표 결과 우수상 수상", type="string")
         String content;
 
         @NotNull(message = "활동 시작 날짜는 필수 입력 항목입니다.")
