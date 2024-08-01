@@ -58,13 +58,13 @@ public class CareerServiceImpl implements CareerService {
             throw new OwnerMismatchException();
         }
 
-        if (request.getCareerName()!=null) {
+        if ( request.getCareerName()!=null && !request.getCareerName().trim().isEmpty() ) {
             career.setName(request.getCareerName());
         }
-        if (request.getAlias()!=null) {
+        if (request.getAlias()!=null && !request.getAlias().trim().isEmpty() ) {
             career.setAlias(request.getAlias());
         }
-        if (request.getSummary()!=null) {
+        if (request.getSummary()!=null && request.getSummary().trim().isEmpty()) {
             career.setSummary(request.getSummary());
         }
         if (request.getIsUnknown()!=null || request.getEndDate()!=null ) {
@@ -98,6 +98,14 @@ public class CareerServiceImpl implements CareerService {
         }
     }
 
+    @Override
+    public Career findCareerDetail(Member requestMember, Long careerId) {
+        Career career = findCareer(careerId).get();
+        if(!career.getMemberId().equals(requestMember.getId())){
+            throw new OwnerMismatchException();
+        }
+        return career;
+    }
     @Override
     public Optional<Career> findCareer(Long careerId) {
         return Optional.ofNullable(careerRepository.findById(careerId).orElseThrow(

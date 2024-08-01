@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
+import umc.kkijuk.server.careerdetail.dto.CareerDetailResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -64,6 +65,31 @@ public class CareerResponseDto {
         @Schema(description = "해당 연도 내 활동 목록")
         private List<CareerDto> careers;
     }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CareerDetailDto{
+        private Long id;
+        private Long memberId;
+        private String careerName;
+        private String alias;
+        private String summary;
+
+        private Boolean isUnknown;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        private int year;
+
+        private String categoryName;
+        private int categoryId;
+
+        private int totalDetailCount;
+        private List<CareerDetailResponseDto.CareerDetailResult> details;
+    }
+
+
 
 
 }

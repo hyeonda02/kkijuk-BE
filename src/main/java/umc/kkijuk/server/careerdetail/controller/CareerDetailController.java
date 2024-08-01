@@ -29,7 +29,7 @@ public class CareerDetailController {
             .build();
 
     @PostMapping("/{careerId}")
-    @Operation(summary = "활동 기록 추가 API", description = "내 커리어 - 활동 기록을 생성하는 API")
+    @Operation(summary = "활동 기록 생성", description = "주어진 정보를 바탕으로 활동기록을 생성합니다.")
     @Parameter(name = "careerId", description = "활동 Id, path Variable 입니다.")
     public CareerDetailResponse<CareerDetailResponseDto.CareerDetailResult> create(@RequestBody @Valid CareerDetailRequestDto.CareerDetailCreate request , @PathVariable Long careerId) {
         CareerDetail newCareerDetail = careerDetailService.create(requestMember, request, careerId);
@@ -37,7 +37,7 @@ public class CareerDetailController {
     }
 
     @DeleteMapping("/{careerId}/{detailId}")
-    @Operation(summary = "활동 기록 삭제 API", description = "내 커리어 - 활동 기록을 삭제하는 API")
+    @Operation(summary = "활동 기록을 삭제", description = "활동 기록 ID에 해당하는 활동을 삭제합니다.")
     @Parameters({
             @Parameter(name = "careerId", description = "활동 Id, path variable 입니다."),
             @Parameter(name = "detailId", description = "활동 기록 Id, path variable 입니다.")
