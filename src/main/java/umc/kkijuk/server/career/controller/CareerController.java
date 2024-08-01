@@ -16,6 +16,7 @@ import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.dto.converter.CareerConverter;
 import umc.kkijuk.server.career.service.CareerService;
 import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.member.domain.Member;
 
 import java.util.List;
 
@@ -27,11 +28,14 @@ public class CareerController {
 
     private final CareerService careerService;
 
+    private final Member requestMember = Member.builder()
+            .id(LoginUser.get().getId())
+            .build();
+
     @PostMapping("")
     @Operation(summary = "활동 추가 API", description = "내 커리어 - 활동을 추가하는 API")
     public CareerResponse<CareerResponseDto.CareerResultDto> create(@RequestBody @Valid CareerRequestDto.CreateCareerDto request){
-        LoginUser loginUser = LoginUser.get();
-        Career career = careerService.createCareer(request);
+        Career career = careerService.createCareer(requestMember, request);
         return CareerResponse.success(HttpStatus.CREATED,
                 CareerResponseMessage.CAREER_CREATE_SUCCESS,
                 CareerConverter.toCareerResultDto(career));
@@ -41,8 +45,7 @@ public class CareerController {
     @Operation(summary = "활동 삭제 API", description = "내 커리어 - 활동을 삭제하는 API")
     @Parameter(name="careerId", description = "활동 Id, path variable 입니다.",example = "1")
     public CareerResponse<Object> delete(@PathVariable Long careerId){
-        LoginUser loginUser = LoginUser.get();
-        careerService.deleteCareer(careerId);
+        careerService.deleteCareer(requestMember, careerId);
         return CareerResponse.success(HttpStatus.OK,
                 CareerResponseMessage.CAREER_DELETE_SUCCESS,null);
     }
@@ -52,8 +55,7 @@ public class CareerController {
     @Parameter(name="careerId", description = "활동 Id, path variable 입니다.",example = "1")
     public CareerResponse<Object> update(@RequestBody @Valid CareerRequestDto.UpdateCareerDto request,
                                          @PathVariable Long careerId) {
-        LoginUser loginUser = LoginUser.get();
-        Career updateCareer = careerService.updateCareer(careerId, request);
+        Career updateCareer = careerService.updateCareer(requestMember,careerId, request);
         return CareerResponse.success(HttpStatus.OK,
                 CareerResponseMessage.CAREER_UPDATE_SUCCESS,
                 CareerConverter.toCareerDto(updateCareer));
@@ -62,11 +64,11 @@ public class CareerController {
     @GetMapping("")
     @Operation(
             summary = "활동 조회 API - category(카테고리 기준) , year(연도 기준) ",
-            description = "내 커리어 - 활동을 카테고리 별로 조회하는 API입니다. query 값으로  category 나 year 값을 주세요. " )
+            description = "내 커리어 - 활동을 카테고리, 연도 별로 조회하는 API입니다. query 값으로  category 나 year 값을 주세요. " )
     public CareerResponse<List<? extends CareerGroupedByResponse>> read(@RequestParam(name="status") String value){
         return CareerResponse.success(HttpStatus.OK,
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                careerService.getCareerGroupedBy(value));
+                careerService.getCareerGroupedBy(requestMember, value));
     }
 
 

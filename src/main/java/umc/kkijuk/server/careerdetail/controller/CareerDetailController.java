@@ -23,8 +23,7 @@ public class CareerDetailController {
     @PostMapping("/{careerId}")
     @Operation(summary = "활동 기록 추가 API", description = "내 커리어 - 활동 기록을 생성하는 API")
     @Parameter(name = "careerId", description = "활동 Id, path Variable 입니다.")
-    public CareerDetailResponse<CareerDetailResponseDto.CareerDetailResult> create(@RequestBody @Valid CareerDetailRequestDto.CareerDetailCreate request ,
-                                                                @PathVariable Long careerId) {
+    public CareerDetailResponse<CareerDetailResponseDto.CareerDetailResult> create(@RequestBody @Valid CareerDetailRequestDto.CareerDetailCreate request , @PathVariable Long careerId) {
         CareerDetail newCareerDetail = careerDetailService.create(request, careerId);
         return CareerDetailResponse.success(HttpStatus.CREATED, "활동 기록을 성공적으로 생성했습니다.", CareerDetailConverter.toCareerDetailResult(newCareerDetail));
     }

@@ -16,7 +16,7 @@ public class PeriodValidator implements ConstraintValidator<ValidPeriod, CareerR
     }
     @Override
     public boolean isValid(CareerRequestDto.CreateCareerDto request, ConstraintValidatorContext context) {
-        if(request.getIsCurrent() == false){
+        if(request.getIsUnknown() == false){
             if(request.getEndDate()==null){
                 context.disableDefaultConstraintViolation();
                 context.buildConstraintViolationWithTemplate(CareerResponseMessage.CAREER_ENDDATE)

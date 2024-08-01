@@ -16,5 +16,7 @@ public class Tag {
     @NotNull
     @Column(name="tag_name", length = 30)
     private String name;
+    @Column(nullable = false)
+    private Long memberId;
 
 }

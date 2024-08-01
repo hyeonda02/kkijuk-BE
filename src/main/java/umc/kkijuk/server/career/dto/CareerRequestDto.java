@@ -32,9 +32,10 @@ public class CareerRequestDto {
         @Schema(description = "활동 내역", example = "주요 활동 내용을 요약하여 작성해주세요. 최대 50자 까지 입력 가능 선택사항입니다.", type = "string")
         String summary;
 
-        @NotNull(message = "활동 여부는 필수 선택 항목입니다.")
-        @Schema(description = "활동 여부", example = "false", type = "boolean")
-        Boolean isCurrent;
+        @NotNull(message = "활동 기간을 알고 있는지 여부를 나타냅니다.")
+        @Schema(description = "활동 기간 인지 여부", example = "false", type = "boolean")
+        Boolean isUnknown;
+
 
         @NotNull(message = "활동 시작 날짜는 필수 입력 항목입니다.")
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
@@ -64,8 +65,8 @@ public class CareerRequestDto {
         @Size(max = 50)
         @Schema(description = "수정된 활동 내역", example = "활동 내역 최대 50자까지 입력 가능(선택사항입니다.)",type = "string")
         String summary;
-        @Schema(description = "수정된 활동 여부", example = "false", type = "boolean")
-        Boolean isCurrent;
+        @Schema(description = "수정된 활동 기간 인지 여부", example = "false", type = "boolean")
+        Boolean isUnknown;
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         @Schema(description = "수정된 활동 시작 날짜", example = "2024-04-14", type="string")
         LocalDate startDate;
