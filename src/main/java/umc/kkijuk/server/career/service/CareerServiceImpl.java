@@ -3,6 +3,7 @@ package umc.kkijuk.server.career.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
@@ -67,15 +68,16 @@ public class CareerServiceImpl implements CareerService {
         if (request.getSummary()!=null){
             career.setSummary(request.getSummary());
         }
+        if (request.getStartDate()!=null) {
+            career.setStartdate(request.getStartDate());
+        }
         if (request.getIsUnknown()!=null || request.getEndDate()!=null ) {
             updateEndDateAndUnknownStatus(career,request.getIsUnknown(),request.getEndDate());
             validatedPeriod(career);
         }
-        if (request.getStartDate()!=null) {
-            career.setStartdate(request.getStartDate());
-        }
         if(request.getCategory()!=null){
-            career.setCategory(categoryRepository.findById(Long.valueOf(request.getCategory())).get());
+            Category category = categoryRepository.findById(Long.valueOf(request.getCategory())).orElseThrow(() -> new ResourceNotFoundException("Category",request.getCategory()));
+            career.setCategory(category);
         }
         return careerRepository.save(career);
 

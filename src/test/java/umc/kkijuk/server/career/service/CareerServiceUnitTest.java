@@ -13,6 +13,7 @@ import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
+import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
@@ -189,7 +190,6 @@ public class CareerServiceUnitTest {
         verify(careerRepository).save(any(Career.class));
 
     }
-
     @Test
     @DisplayName("활동 목록들을 카테고리 별로 조회합니다.")
     void read_getCareerGroupedBy_Category_성공() {
@@ -223,9 +223,9 @@ public class CareerServiceUnitTest {
         verify(careerRepository,never()).delete(any(Career.class));
     }
     @Test
+    @DisplayName("update - 활동 데이터 수정 성공, unknown 값이 true 이면, endDate의 값이 현재 날짜로 수정되어야 합니다.")
     void update_기존_Career_데이터_수정_성공() {
         //given
-        when(categoryRepository.findById(2L)).thenReturn(Optional.of(category2));
 
         Career updateCareer = Career.builder()
                 .id(1L)
@@ -249,6 +249,7 @@ public class CareerServiceUnitTest {
                 .category(2)
                 .build();
 
+        when(categoryRepository.findById(2L)).thenReturn(Optional.of(category2));
         when(careerRepository.save(any(Career.class))).thenReturn(updateCareer);
         when(careerRepository.findById(1L)).thenReturn(Optional.of(career1));
 
@@ -268,12 +269,119 @@ public class CareerServiceUnitTest {
                 () -> assertThat(updatedCareer.getCategory().getId()).isEqualTo(2L)
         );
 
-        verify(categoryRepository).findById(2L);
-        verify(careerRepository).save(any(Career.class));
+        verify(categoryRepository,times(1)).findById(2L);
+        verify(careerRepository,times(1)).save(any(Career.class));
 
     }
     @Test
-    void update_기존_Career_데이터_수정_memberId가_일치하지_않을_경우_에러() {
+    @DisplayName("update - null 입력시 기존 내용을 유지해야 합니다.")
+    void update_기존_Career_데이터_수정_성공_nuallable_검사() {
+        //given
+        Career originalCareer = Career.builder()
+                .id(1L)
+                .memberId(testMemberId)
+                .name("test")
+                .alias("alias")
+                .summary("summary")
+                .unknown(false)
+                .category(category1)
+                .startdate(LocalDate.of(2024, 4, 10))
+                .enddate(LocalDate.of(2024, 7, 20))
+                .year(2024)
+                .build();
+
+        CareerRequestDto.UpdateCareerDto updateRequestDto = CareerRequestDto.UpdateCareerDto
+                .builder()
+                .build();
+
+        when(careerRepository.findById(1L)).thenReturn(Optional.of(career1));
+        when(careerRepository.save(any(Career.class))).thenReturn(originalCareer);
+        //when
+        Career updatedCareer = careerService.updateCareer(testRequestMember, 1L, updateRequestDto);
+        //then
+        assertAll(
+                () -> assertThat(updatedCareer.getMemberId().equals(testMemberId)),
+                () -> assertThat(updatedCareer.getId()).isEqualTo(career1.getId()),
+                () -> assertThat(updatedCareer.getName()).isEqualTo(career1.getName()),
+                () -> assertThat(updatedCareer.getAlias()).isEqualTo(career1.getAlias()),
+                () -> assertThat(updatedCareer.getSummary()).isEqualTo(career1.getSummary()),
+                () -> assertThat(updatedCareer.getStartdate()).isEqualTo(career1.getStartdate()),
+                () -> assertThat(updatedCareer.getEnddate()).isEqualTo(career1.getEnddate()),
+                () -> assertThat(updatedCareer.getYear()).isEqualTo(career1.getYear()),
+                () -> assertThat(updatedCareer.getCategory().getId()).isEqualTo(1L)
+
+        );
+        verify(categoryRepository, never()).findById(any(Long.class));
+        verify(careerRepository, times(1)).findById(any(Long.class));
+        verify(careerRepository, times(1)).save(any(Career.class));
+    }
+    @Test
+    @DisplayName("update - 공백을 입력하면 summary 항목을 제외한 나머지 항목들은 기존 값을 유지해야 합니다.")
+    void update_기존_Career_데이터_수정_성공_summary는_공백_입력시_공백값으로_변경() {
+        //given
+        Career updateCareer = Career.builder()
+                .id(1L)
+                .memberId(testMemberId)
+                .name("test")
+                .alias("alias")
+                .summary("     ")
+                .unknown(false)
+                .category(category1)
+                .startdate(LocalDate.of(2024, 4, 10))
+                .enddate(LocalDate.of(2024, 7, 20))
+                .year(2024)
+                .build();
+
+        CareerRequestDto.UpdateCareerDto updateRequestDto = CareerRequestDto.UpdateCareerDto.builder()
+                .careerName("")
+                .summary("     ")
+                .alias("")
+                .build();
+        when(careerRepository.save(any(Career.class))).thenReturn(updateCareer);
+        when(careerRepository.findById(1L)).thenReturn(Optional.of(career1));
+        //when
+        Career updatedCareer = careerService.updateCareer(testRequestMember, 1L, updateRequestDto);
+        //then
+        assertAll(
+                () -> assertThat(updatedCareer.getMemberId().equals(testMemberId)),
+                () -> assertThat(updatedCareer.getId()).isEqualTo(1L),
+                () -> assertThat(updatedCareer.getName()).isEqualTo(career1.getName()),
+                () -> assertThat(updatedCareer.getAlias()).isEqualTo(career1.getAlias()),
+                () -> assertThat(updatedCareer.getSummary()).isEqualTo("     "),
+                () -> assertThat(updatedCareer.getStartdate()).isEqualTo(career1.getStartdate()),
+                () -> assertThat(updatedCareer.getEnddate()).isEqualTo(career1.getEnddate()),
+                () -> assertThat(updatedCareer.getYear()).isEqualTo(career1.getYear()),
+                () -> assertThat(updatedCareer.getCategory().getId()).isEqualTo(1L)
+        );
+        verify(categoryRepository, never()).findById(any(Long.class));
+        verify(careerRepository, times(1)).findById(any(Long.class));
+        verify(careerRepository).save(any(Career.class));
+    }
+    @Test
+    @DisplayName("update - 날짜 기간이 올바르지 않으면 ( 예 : 2024-01-01 ~ 2023-01-01 ) CareerValidationException 에러가 발생합니다.")
+    void update_기존_Career_데이터_수정_실패_날짜기간이_올바르지_않을_경우_에러() {
+        //given
+        CareerRequestDto.UpdateCareerDto updateRequestDto = CareerRequestDto.UpdateCareerDto.builder()
+                .careerName("update test")
+                .summary("update summary")
+                .alias("update alias")
+                .isUnknown(false)
+                .startDate(LocalDate.of(2024, 1, 1))
+                .endDate(LocalDate.of(2023,1,1))
+                .category(1)
+                .build();
+
+        when(careerRepository.findById(1L)).thenReturn(Optional.of(career1));
+        //when
+        //then
+        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(testRequestMember, 1L, updateRequestDto));
+        verify(careerRepository, never()).save(any(Career.class));
+        verify(careerRepository, times(1)).findById(any(Long.class));
+        verify(categoryRepository, never()).findById(any(Long.class));
+    }
+    @Test
+    @DisplayName("update - memberId가 일치하지 않으면, OwnerMismatchException 에러가 발생합니다.")
+    void update_기존_Career_데이터_수정_실패_memberId가_일치하지_않을_경우_에러() {
         //given
         CareerRequestDto.UpdateCareerDto updateRequestDto = CareerRequestDto.UpdateCareerDto.builder()
                 .careerName("update test")
@@ -291,7 +399,8 @@ public class CareerServiceUnitTest {
 
     }
     @Test
-    void update_기존_Career_데이터_수정_careerId가_없는_경우_에러() {
+    @DisplayName("update - careerId가 존재하지 않으면, ResourceNotFoundException 에러가 발생합니다.")
+    void update_기존_Career_데이터_수정_실패_careerId가_없는_경우_에러() {
         // given
         CareerRequestDto.UpdateCareerDto updateCareerDto = CareerRequestDto.UpdateCareerDto.builder()
                 .careerName("update test")
@@ -307,6 +416,28 @@ public class CareerServiceUnitTest {
         // then
         assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(testRequestMember,999L, updateCareerDto));
         verify(careerRepository, never()).save(any(Career.class));
+    }
+    @Test
+    @DisplayName("update - categoryId가 유효하지 않으면, ResourceNotFoundException 에러가 발생합니다.")
+    void update_기존_Career_데이터_수정_실패_categoryId가_유효하지_않을_경우_에러() {
+        //given
+        CareerRequestDto.UpdateCareerDto updateRequestDto = CareerRequestDto.UpdateCareerDto.builder()
+                .careerName("update test")
+                .summary("update summary")
+                .alias("update alias")
+                .isUnknown(false)
+                .startDate(LocalDate.of(2021, 1, 1))
+                .endDate(LocalDate.of(2024,1,1))
+                .category(6)
+                .build();
+        when(careerRepository.findById(1L)).thenReturn(Optional.of(career1));
+        //when
+        //then
+        assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(testRequestMember, 1L, updateRequestDto));
+        verify(careerRepository, never()).save(any(Career.class));
+        verify(categoryRepository, times(1)).findById(any(Long.class));
+        verify(careerRepository, times(1)).findById(any(Long.class));
+
     }
 
 }
