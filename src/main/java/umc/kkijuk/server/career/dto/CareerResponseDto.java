@@ -9,7 +9,6 @@ import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 
 import java.time.LocalDate;
 import java.util.List;
-
 public class CareerResponseDto {
 
     @Getter

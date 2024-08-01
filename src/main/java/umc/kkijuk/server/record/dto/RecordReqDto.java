@@ -8,4 +8,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class RecordReqDto {
+    private String address;
+    private String profileImageUrl;
 }

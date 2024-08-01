@@ -15,6 +15,8 @@ import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,9 +50,9 @@ public class MasterIntroduceService{
 
     @Transactional
     public List<MasterIntroduceResDto> getMasterIntro(Member requestMember){
-        List<MasterIntroduce> masterIntroduces =
-                masterIntroduceRepository.findAllByMemberId(requestMember.getId())
-                        .orElseThrow(IntroOwnerMismatchException::new);
+        List<MasterIntroduce> masterIntroduces =masterIntroduceRepository.findAll();
+        masterIntroduces = masterIntroduces != null ? masterIntroduces : Collections.emptyList();
+
         List<String> introduceList=getIntroduceTitles();
 
         return masterIntroduces.stream()
