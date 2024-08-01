@@ -2,8 +2,10 @@ package umc.kkijuk.server.career.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
@@ -57,23 +59,31 @@ public class CareerRequestDto {
     @Builder
     public static class UpdateCareerDto{
         @Size(max = 20)
-        @Schema(description = "수정된 활동명", example = "IT 서비스 개발 동아리", type="string")
+        @Nullable
+        @Schema(description = "수정된 활동명", example = "수정된 활동명", type="string")
         String careerName;
         @Size(max = 20)
-        @Schema(description = "수정된 활동 별칭", example = "동아리", type="string")
+        @Nullable
+        @Schema(description = "수정된 활동 별칭", example = "수정된 활동 별칭", type="string")
         String alias;
         @Size(max = 50)
-        @Schema(description = "수정된 활동 내역", example = "활동 내역 최대 50자까지 입력 가능(선택사항입니다.)",type = "string")
+        @Nullable
+        @Schema(description = "수정된 활동 내역", example = "수정된 활동 내역",type = "string")
         String summary;
+        @Nullable
         @Schema(description = "수정된 활동 기간 인지 여부", example = "false", type = "boolean")
         Boolean isUnknown;
+        @Nullable
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         @Schema(description = "수정된 활동 시작 날짜", example = "2024-04-14", type="string")
         LocalDate startDate;
+
+        @Nullable
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         @Schema(description = "수정된 활동 종료 날짜", example = "2024-07-20", type = "string")
         LocalDate endDate;
-        @ValidCategory
+
+        @Nullable
         @Schema(description = "수정된 활동 카테고리", example = "1", type = "int")
         Integer category;
     }

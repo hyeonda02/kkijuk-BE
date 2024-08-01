@@ -64,7 +64,7 @@ public class CareerServiceImpl implements CareerService {
         if (request.getAlias()!=null && !request.getAlias().trim().isEmpty() ) {
             career.setAlias(request.getAlias());
         }
-        if (request.getSummary()!=null && request.getSummary().trim().isEmpty()) {
+        if (request.getSummary()!=null){
             career.setSummary(request.getSummary());
         }
         if (request.getIsUnknown()!=null || request.getEndDate()!=null ) {

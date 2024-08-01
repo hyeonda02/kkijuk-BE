@@ -191,6 +191,7 @@ public class CareerServiceUnitTest {
     }
 
     @Test
+    @DisplayName("활동 목록들을 카테고리 별로 조회합니다.")
     void read_getCareerGroupedBy_Category_성공() {
         //given
         List<Career> careerList = Arrays.asList(career1, career2);
@@ -269,8 +270,6 @@ public class CareerServiceUnitTest {
 
         verify(categoryRepository).findById(2L);
         verify(careerRepository).save(any(Career.class));
-
-
 
     }
     @Test
