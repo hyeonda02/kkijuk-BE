@@ -5,13 +5,17 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
+import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.InvalidTagNameException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.tag.domain.Tag;
 import umc.kkijuk.server.tag.dto.TagRequestDto;
 import umc.kkijuk.server.tag.dto.TagResponseDto;
 import umc.kkijuk.server.tag.repository.TagRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,14 +33,32 @@ public class TagServiceTest {
 
     private Tag tag1;
     private Tag tag2;
+    private Long testMemberId1 = 444L;
+    private Long testMemberId2 = 445L;
+
+    private Member testRequestMember;
+
     @BeforeEach
     void init() {
+        testRequestMember = Member.builder()
+                .id(testMemberId1)
+                .email("test@test.com")
+                .phoneNumber("000-0000-0000")
+                .birthDate(LocalDate.of(2024, 7, 31))
+                .password("test")
+                .userState(State.ACTIVATE)
+                .build();
+
         tag1 = Tag.builder()
+                .memberId(testMemberId1)
                 .name("test tag1")
                 .build();
+
         tag2 = Tag.builder()
+                .memberId(testMemberId2)
                 .name("test tag2")
                 .build();
+
         tagRepository.save(tag1);
         tagRepository.save(tag2);
     }
@@ -48,11 +70,12 @@ public class TagServiceTest {
                 .tagName("test tag3")
                 .build();
         //when
-        Tag newTag = tagService.createTag(request);
+        Tag newTag = tagService.createTag(testRequestMember,request);
         //then
         assertAll(
-                ()->assertThat(newTag.getId()).isEqualTo(3L),
-                ()->assertThat(newTag.getName()).isEqualTo("test tag3")
+                () -> assertThat(newTag.getMemberId()).isEqualTo(testMemberId1),
+                () -> assertThat(newTag.getId()).isEqualTo(3L),
+                () -> assertThat(newTag.getName()).isEqualTo("test tag3")
         );
     }
     @Test
@@ -63,7 +86,7 @@ public class TagServiceTest {
                 .build();
         //when
         //then
-        assertThrows(InvalidTagNameException.class, () -> tagService.createTag(request));
+        assertThrows(InvalidTagNameException.class, () -> tagService.createTag(testRequestMember,request));
 
     }
     @Test
@@ -74,7 +97,7 @@ public class TagServiceTest {
                 .build();
         //when
         //then
-        assertThrows(InvalidTagNameException.class, () -> tagService.createTag(request));
+        assertThrows(InvalidTagNameException.class, () -> tagService.createTag(testRequestMember,request));
 
     }
     @Test
@@ -85,16 +108,24 @@ public class TagServiceTest {
                 .build();
         //when
         //then
-        assertThrows(InvalidTagNameException.class, () -> tagService.createTag(request));
+        assertThrows(InvalidTagNameException.class, () -> tagService.createTag(testRequestMember,request));
 
 
+    }
+    @Test
+    void delete_기존_tag_삭제하기_memberId가_다를_경우_에러() {
+        //given
+        Long tagId = 2L;
+        //when
+        //then
+        assertThrows(OwnerMismatchException.class, () -> tagService.delete(testRequestMember, tagId));
     }
     @Test
     void delete_기존_tag_삭제하기() {
         //given
         Long tagId = 1L;
         //when
-        tagService.delete(tagId);
+        tagService.delete(testRequestMember,tagId);
         //then
         Optional<Tag>  deletedTag = tagRepository.findById(tagId);
         assertThat(deletedTag).isEmpty();
@@ -106,29 +137,28 @@ public class TagServiceTest {
         Long tagId = 999L;
         //when
         //given
-        assertThrows(ResourceNotFoundException.class, () -> tagService.delete(tagId));
+        assertThrows(ResourceNotFoundException.class, () -> tagService.delete(testRequestMember,tagId));
 
     }
     @Test
-    void read_태그_전부_조회하기() {
+    void read_태그_전부_조회하기_특정_memberId로_조회() {
         //given
         //when
-        TagResponseDto.ResultTagDtoList tagListResult = tagService.findAllTags();
+        TagResponseDto.ResultTagDtoList tagListResult = tagService.findAllTags(testRequestMember);
         List<TagResponseDto.ResultTagDto> tagList = tagListResult.getTagList();
 
         TagResponseDto.ResultTagDto tag1 = tagList.get(0);
-        TagResponseDto.ResultTagDto tag2 = tagList.get(1);
 
         //then
         assertAll(
-                () -> assertThat(tagListResult.getCount()).isEqualTo(2),
-                () -> assertThat(tagListResult.getTagList().size()).isEqualTo(2),
+
+                () -> assertThat(tagListResult.getCount()).isEqualTo(1),
+                () -> assertThat(tagListResult.getTagList().size()).isEqualTo(1),
                 () -> assertThat(tagList).isNotEmpty(),
-                () -> assertThat(tagList.size()).isEqualTo(2),
+                () -> assertThat(tagList.size()).isEqualTo(1),
                 () -> assertThat(tag1.getId()).isEqualTo(1L),
-                () -> assertThat(tag1.getTagName()).isEqualTo("test tag1"),
-                () -> assertThat(tag2.getId()).isEqualTo(2L),
-                () -> assertThat(tag2.getTagName()).isEqualTo("test tag2")
+                () -> assertThat(tag1.getMemberId()).isEqualTo(testMemberId1),
+                () -> assertThat(tag1.getTagName()).isEqualTo("test tag1")
 
         );
 

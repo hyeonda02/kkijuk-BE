@@ -25,8 +25,8 @@ public class Career extends BaseEntity {
     @Column(name="career_alias", length = 20)
     private String alias;
 
-    @Column(name="career_current")
-    private Boolean current;
+    @Column(name="career_unknown")
+    private Boolean unknown;
 
     @Column(name="career_summary",length = 50)
     private String summary;
@@ -49,6 +49,8 @@ public class Career extends BaseEntity {
     private List<CareerDetail> careerDetailList = new ArrayList<>();
 
 
+    @Column(nullable = false)
+    private Long memberId;
 
     public void setName(String name) {
         this.name = name;
@@ -58,8 +60,8 @@ public class Career extends BaseEntity {
         this.alias = alias;
     }
 
-    public void setCurrent(Boolean current) {
-        this.current = current;
+    public void setUnknown(Boolean unknown) {
+        this.unknown = unknown;
     }
 
     public void setSummary(String summary) {
