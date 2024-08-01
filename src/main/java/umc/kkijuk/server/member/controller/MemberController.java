@@ -10,11 +10,11 @@ import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.member.controller.response.CreateMemberResponse;
 import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
-import umc.kkijuk.server.member.controller.response.ResultResponse;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.MemberFieldDto;
 import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
+import umc.kkijuk.server.member.dto.MemberPasswordChangeDto;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -79,10 +79,22 @@ public class MemberController {
     @PostMapping({"/field", "/myPage/field"})
     public ResponseEntity<Boolean> postField(@RequestBody MemberFieldDto memberFieldDto) {
 
-        Long loginUserId = LoginUser.get().getId();
-        memberService.updateMemberField(loginUserId, memberFieldDto);
+        Long loginUser = LoginUser.get().getId();
+        memberService.updateMemberField(loginUser, memberFieldDto);
         return ResponseEntity.ok(Boolean.TRUE);
     }
+
+    @Operation(
+            summary = "비밀번호 변경",
+            description = "비밀번호를 변경합니다.")
+    @PostMapping("myPage/password")
+    public ResponseEntity<Boolean> changePassword(@RequestBody @Valid MemberPasswordChangeDto memberPasswordChangeDto){
+        Long loginUser = LoginUser.get().getId();
+        memberService.changeMemberPassword(loginUser, memberPasswordChangeDto);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+
 
 }
 

@@ -72,5 +72,8 @@ public class Member {
         this.marketingAgree = marketingAgree;
     }
 
+    public void changeMemberPassword(String password){
+        this.password = password;
+    }
 
 }

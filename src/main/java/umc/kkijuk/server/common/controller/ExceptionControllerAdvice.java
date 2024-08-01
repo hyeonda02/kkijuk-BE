@@ -42,14 +42,29 @@ public class ExceptionControllerAdvice {
     public ErrorResponse ConfirmPasswordMismatchException(ConfirmPasswordMismatchException e) {
         return new ErrorResponse(e.getMessage());
     }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(FieldUpdateException.class)
     public ErrorResponse FieldUpdateException(FieldUpdateException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidMemberDataException.class)
     public ErrorResponse InvalidMemberDataException(InvalidMemberDataException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CurrentPasswordMismatchException.class)
+    public ErrorResponse CurrentPasswordMismatchException(CurrentPasswordMismatchException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ErrorResponse EmailNotFoundException(EmailNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
