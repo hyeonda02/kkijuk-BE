@@ -37,7 +37,8 @@ public class CareerServiceUnitTest {
     private CategoryRepository categoryRepository;
     @InjectMocks
     private CareerServiceImpl careerService;
-    private Long testMemberId = 333L;
+    private final Long testMemberId = 333L;
+
     private Member testRequestMember;
     private Member testRequestMember2;
     private Career career1;
