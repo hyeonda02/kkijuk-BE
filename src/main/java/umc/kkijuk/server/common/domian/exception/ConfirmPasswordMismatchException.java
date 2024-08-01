@@ -1,4 +1,4 @@
-package umc.kkijuk.server.member.domain.exception;
+package umc.kkijuk.server.common.domian.exception;
 
 public class ConfirmPasswordMismatchException extends RuntimeException {
     public ConfirmPasswordMismatchException() {

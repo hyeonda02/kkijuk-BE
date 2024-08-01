@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import umc.kkijuk.server.common.domian.exception.*;
 import umc.kkijuk.server.common.domian.response.ErrorResponse;
-import umc.kkijuk.server.member.domain.exception.ConfirmPasswordMismatchException;
+import umc.kkijuk.server.common.domian.exception.ConfirmPasswordMismatchException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -42,4 +42,15 @@ public class ExceptionControllerAdvice {
     public ErrorResponse ConfirmPasswordMismatchException(ConfirmPasswordMismatchException e) {
         return new ErrorResponse(e.getMessage());
     }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FieldUpdateException.class)
+    public ErrorResponse FieldUpdateException(FieldUpdateException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidMemberDataException.class)
+    public ErrorResponse InvalidMemberDataException(InvalidMemberDataException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
 }
