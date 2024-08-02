@@ -27,6 +27,7 @@ import umc.kkijuk.server.introduce.service.MasterIntroduceService;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
+import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.service.MemberService;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
@@ -76,9 +77,8 @@ class IntroduceControllerTest {
 
     @BeforeEach
     public void Init() {
-        Member member = new Member("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
-        Long savedId = memberService.join(member);
-        requestMember = memberService.findOne(savedId);
+        MemberJoinDto memberJoinDto = new MemberJoinDto("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        requestMember = memberService.join(memberJoinDto);
     }
 
     @Test

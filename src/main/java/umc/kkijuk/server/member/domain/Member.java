@@ -8,6 +8,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
+import umc.kkijuk.server.career.domain.base.BaseEntity;
 import umc.kkijuk.server.common.converter.StringListToStringConverter;
 
 @Entity
@@ -71,5 +72,8 @@ public class Member {
         this.marketingAgree = marketingAgree;
     }
 
+    public void changeMemberPassword(String password){
+        this.password = password;
+    }
 
 }

@@ -10,11 +10,8 @@ import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.member.controller.response.CreateMemberResponse;
 import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
-import umc.kkijuk.server.member.controller.response.ResultResponse;
 import umc.kkijuk.server.member.domain.Member;
-import umc.kkijuk.server.member.dto.MemberFieldDto;
-import umc.kkijuk.server.member.dto.MemberInfoChangeDto;
-import umc.kkijuk.server.member.dto.MemberJoinDto;
+import umc.kkijuk.server.member.dto.*;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -34,25 +31,11 @@ public class MemberController {
             description = "회원가입 요청을 받아 성공/실패 여부를 반환합니다.")
     @PostMapping
     public ResponseEntity<CreateMemberResponse> saveMember(@RequestBody @Valid MemberJoinDto memberJoinDto) {
-        String passwordConfirm = memberJoinDto.getPasswordConfirm();
-        if (!passwordConfirm.equals(memberJoinDto.getPassword())) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(new CreateMemberResponse("Passwords do not match"));
-        }
+        Member joinMember = memberService.join(memberJoinDto);
 
-        try {
-            Long loginUser = LoginUser.get().getId();
-            memberService.join(memberJoinDto.toEntity());
-            return ResponseEntity
-                    .status(HttpStatus.CREATED)
-                    .body(new CreateMemberResponse(loginUser , "Member created successfully"));
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new CreateMemberResponse("Member creation failed"));
-        }
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new CreateMemberResponse(joinMember.getId(), "Member created successfully"));
     }
 
     @Operation(
@@ -60,37 +43,21 @@ public class MemberController {
             description = "마이페이지에서 내 정보들을 가져옵니다.")
     @GetMapping("/myPage/info")
     public ResponseEntity<MemberInfoResponse> getInfo() {
-        try {
-            Long loginUser = LoginUser.get().getId();
-            Member member = memberService.getMemberInfo(loginUser);
-            MemberInfoResponse response = new MemberInfoResponse(
-                    member.getEmail(),
-                    member.getName(),
-                    member.getPhoneNumber(),
-                    member.getBirthDate()
-            );
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        Long loginUser = LoginUser.get().getId();
+        MemberInfoResponse memberInfoResponse = memberService.getMemberInfo(loginUser);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberInfoResponse);
     }
 
     @Operation(
             summary = "내 정보 수정",
             description = "내 정보 수정 요청을 받아 성공/실패를 반환합니다.")
     @PutMapping("/myPage/info")
-    public ResponseEntity<ResultResponse> changeMemberInfo(@RequestBody MemberInfoChangeDto memberInfoChangeDto) {
+    public ResponseEntity<Boolean> changeMemberInfo(@RequestBody @Valid  MemberInfoChangeDto memberInfoChangeDto) {
         Long loginUser = LoginUser.get().getId();
-        try {
-            memberService.updateMemberInfo(loginUser, memberInfoChangeDto);
-            return ResponseEntity.ok()
-                    .body(new ResultResponse("information update success"));
-        }catch (Exception e){
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResultResponse("information update failed"));
-        }
-
+        memberService.updateMemberInfo(loginUser, memberInfoChangeDto);
+        return ResponseEntity.ok(Boolean.TRUE);
     }
 
     @Operation(
@@ -98,29 +65,45 @@ public class MemberController {
             description = "마이페이지에서 관심분야를 조회합니다.")
     @GetMapping("/myPage/field")
     public ResponseEntity<MemberFieldResponse> getField() {
-        try {
-            Long loginUser = LoginUser.get().getId();
-            List<String> memberField = memberService.getMemberField(loginUser);
-            return ResponseEntity.ok().body(new MemberFieldResponse(memberField));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+        Long loginUser = LoginUser.get().getId();
+        List<String> memberField = memberService.getMemberField(loginUser);
+        return ResponseEntity.ok().body(new MemberFieldResponse(memberField));
     }
 
     @Operation(
             summary = "관심분야 등록/수정",
             description = "초기/마이페이지에서 관심분야를 등록/수정합니다.")
     @PostMapping({"/field", "/myPage/field"})
-    public ResponseEntity<MemberFieldResponse> postField(@RequestBody @Valid MemberFieldDto memberFieldDto) {
-        try {
-            Long loginUserId = LoginUser.get().getId();
-            List<String> updatedMember = memberService.updateMemberField(loginUserId, memberFieldDto);
-            MemberFieldResponse response = new MemberFieldResponse(updatedMember);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
+    public ResponseEntity<Boolean> postField(@RequestBody MemberFieldDto memberFieldDto) {
+
+        Long loginUser = LoginUser.get().getId();
+        memberService.updateMemberField(loginUser, memberFieldDto);
+        return ResponseEntity.ok(Boolean.TRUE);
     }
+
+    @Operation(
+            summary = "비밀번호 변경",
+            description = "비밀번호를 변경합니다.")
+    @PostMapping("myPage/password")
+    public ResponseEntity<Boolean> changeMemberPassword(@RequestBody @Valid MemberPasswordChangeDto memberPasswordChangeDto){
+        Long loginUser = LoginUser.get().getId();
+        memberService.changeMemberPassword(loginUser, memberPasswordChangeDto);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    @Operation(
+            summary = "내정보 조회용 비밀번호 인증",
+            description = "내 정보를 조회하기 위해 비밀번호를 인증합니다.")
+    @PostMapping("/myPage")
+    public ResponseEntity<Boolean> myPagePasswordAuth(@RequestBody @Valid MyPagePasswordAuthDto myPagePasswordAuthDto){{
+        Long loginUser = LoginUser.get().getId();
+        memberService.myPagePasswordAuth(loginUser, myPagePasswordAuthDto);
+        return ResponseEntity.ok(Boolean.TRUE);
+    }
+
+    }
+
+
 
 }
 
