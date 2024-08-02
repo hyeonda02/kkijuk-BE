@@ -27,9 +27,11 @@ public class MasterIntroduceResDto {
     private String prosAndCons;
     private String jobSuitability;
     private String updatedAt;
+/*
     private List<String> introduceList;
+*/
 
-    public MasterIntroduceResDto(MasterIntroduce masterIntroduce, List<String> introduceList) {
+    public MasterIntroduceResDto(MasterIntroduce masterIntroduce/*, List<String> introduceList*/) {
         this.id = masterIntroduce.getId();
         this.memberId=masterIntroduce.getMember().getId();
         this.oneLiner = masterIntroduce.getOneLiner();
@@ -38,7 +40,9 @@ public class MasterIntroduceResDto {
         this.prosAndCons = masterIntroduce.getProsAndCons();
         this.jobSuitability = masterIntroduce.getJobSuitability();
         this.updatedAt = formatUpdatedAt(masterIntroduce.getUpdatedAt());
+/*
         this.introduceList = introduceList;
+*/
     }
 
 

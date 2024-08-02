@@ -8,9 +8,6 @@ import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.introduce.domain.MasterIntroduce;
-import umc.kkijuk.server.introduce.domain.Question;
-import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
 import umc.kkijuk.server.record.domain.Record;
@@ -52,8 +49,6 @@ public class RecordService {
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
         List<Record> records = recordRepository.findAll();
-        records = records != null ? records : Collections.emptyList();
-
         List<Career> careers = careerRepository.findAll(); // null 처리 필요
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬

@@ -46,17 +46,19 @@ public class MasterIntroduceService{
 
         masterIntroduceRepository.save(masterIntroduce);
 
-        return new MasterIntroduceResDto(masterIntroduce, null);
+        return new MasterIntroduceResDto(masterIntroduce/*, null*/);
     }
 
     @Transactional
     public List<MasterIntroduceResDto> getMasterIntro(Member requestMember){
         List<MasterIntroduce> masterIntroduces =masterIntroduceRepository.findAll();
 
+/*
         List<String> introduceList=getIntroduceTitles();
+*/
 
         return masterIntroduces.stream()
-                .map(masterIntroduce -> new MasterIntroduceResDto(masterIntroduce, introduceList))
+                .map(masterIntroduce -> new MasterIntroduceResDto(masterIntroduce/*, introduceList*/))
                 .collect(Collectors.toList());
     }
 
@@ -73,11 +75,13 @@ public class MasterIntroduceService{
                 masterIntroduceReqDto.getMotive(),
                 masterIntroduceReqDto.getProsAndCons(),
                 masterIntroduceReqDto.getJobSuitability());
+/*
         List<String> introduceList=getIntroduceTitles();
-        return new MasterIntroduceResDto(masterIntroduce, introduceList);
+*/
+        return new MasterIntroduceResDto(masterIntroduce/*, introduceList*/);
     }
 
-    @Transactional
+/*    @Transactional
     public List<String> getIntroduceTitles() {
         List<Introduce> introduces = introduceRepository.findAll();
 
@@ -86,5 +90,5 @@ public class MasterIntroduceService{
                 .filter(Optional::isPresent)
                 .map(opt -> opt.get().toModel().getTitle())
                 .collect(Collectors.toList());
-    }
+    }*/
 }
