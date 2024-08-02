@@ -83,6 +83,7 @@ class IntroduceControllerTest {
 
     @Test
     @DisplayName("자기소개서 생성 테스트")
+    @Transactional
     public void postIntro() throws Exception {
         final int state = 1;
 
@@ -124,6 +125,7 @@ class IntroduceControllerTest {
 
     @Test
     @DisplayName("자기소개서 수정 테스트")
+    @Transactional
     public void updateIntro() throws Exception {
         final int state = 1;
 
@@ -142,6 +144,7 @@ class IntroduceControllerTest {
         RecruitEntity recruitEntity = RecruitEntity.from(recruitRepository.save(recruit));
 
         Introduce introduce= introduceRepository.save(Introduce.builder()
+                .member(requestMember)
                 .recruit(recruitEntity)
                 .questions(new ArrayList<>())
                 .state(state)
@@ -177,6 +180,7 @@ class IntroduceControllerTest {
 
     @Test
     @DisplayName("자기소개서 삭제 테스트")
+    @Transactional
     public void deleteIntro() throws Exception {
         final int state = 1;
 
@@ -201,6 +205,7 @@ class IntroduceControllerTest {
         );
 
         Introduce introduce= introduceRepository.save(Introduce.builder()
+                        .member(requestMember)
                         .recruit(recruitEntity)
                         .questions(questions)
                         .state(state)

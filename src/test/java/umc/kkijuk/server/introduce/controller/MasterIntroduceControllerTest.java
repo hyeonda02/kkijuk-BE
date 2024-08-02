@@ -2,6 +2,7 @@ package umc.kkijuk.server.introduce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,6 +17,20 @@ import umc.kkijuk.server.introduce.domain.MasterIntroduce;
 import umc.kkijuk.server.introduce.domain.MasterIntroduceRepository;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.service.MasterIntroduceService;
+import umc.kkijuk.server.member.domain.MarketingAgree;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
+import umc.kkijuk.server.member.dto.MemberJoinDto;
+import umc.kkijuk.server.member.service.MemberService;
+import umc.kkijuk.server.recruit.domain.Recruit;
+import umc.kkijuk.server.recruit.domain.RecruitStatus;
+import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
+import umc.kkijuk.server.recruit.service.port.RecruitRepository;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -34,9 +49,21 @@ class MasterIntroduceControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private MasterIntroduceService masterIntroduceService;
+    private RecruitRepository recruitRepository;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private MemberService memberService;
+
+    private Member requestMember;
+
+    @BeforeEach
+    public void Init() {
+        MemberJoinDto memberJoinDto = new MemberJoinDto("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        requestMember = memberService.join(memberJoinDto);
+
+    }
 
     @Test
     @DisplayName("마스터 자기소개서 생성 테스트")
@@ -47,6 +74,8 @@ class MasterIntroduceControllerTest {
         final String prosAndCons="prosAndCons-test";
         final String jobSuitability="jobSuitability-test";
 
+        System.out.println(requestMember.getId());
+
         MasterIntroduceReqDto masterIntroduceReqDto= MasterIntroduceReqDto.builder()
                 .oneLiner(oneLiner)
                 .introduction(introduction)
@@ -54,7 +83,6 @@ class MasterIntroduceControllerTest {
                 .prosAndCons(prosAndCons)
                 .jobSuitability(jobSuitability)
                 .build();
-
 
         mockMvc.perform(post("/history/intro/master")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -77,6 +105,7 @@ class MasterIntroduceControllerTest {
         final String jobSuitability="jobSuitability-test";
 
         MasterIntroduce masterIntroduce = masterIntroduceRepository.save(MasterIntroduce.builder()
+                .member(requestMember)
                 .oneLiner(oneLiner)
                 .introduction(introduction)
                 .motive(motive)
@@ -97,7 +126,7 @@ class MasterIntroduceControllerTest {
                 .introduction(expectedIntroduce)
                 .motive(expectedMotivate)
                 .prosAndCons(expectedPnC)
-                .jobSuitability(jobSuitability)
+                .jobSuitability(expectedJS)
                 .build();
 
         mockMvc.perform(patch("/history/intro/master")
@@ -109,6 +138,6 @@ class MasterIntroduceControllerTest {
                 .andExpect(jsonPath("$.data.introduction").value(expectedIntroduce))
                 .andExpect(jsonPath("$.data.motive").value(expectedMotivate))
                 .andExpect(jsonPath("$.data.prosAndCons").value(expectedPnC))
-                .andExpect(jsonPath("$.data.jobSuitability").value(jobSuitability));
+                .andExpect(jsonPath("$.data.jobSuitability").value(expectedJS));
     }
 }
