@@ -1,6 +1,7 @@
 package umc.kkijuk.server.member.dto;
 
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,9 +12,11 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 public class MemberInfoChangeDto {
-    private Long id; //jwt토큰으로 받을땐 제거
+    @NotNull
     private String phoneNumber;
+    @NotNull
     private LocalDate birthDate;
+    @NotNull
     private MarketingAgree marketingAgree;
 
     @Builder

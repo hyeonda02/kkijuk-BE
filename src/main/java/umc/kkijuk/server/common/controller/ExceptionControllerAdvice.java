@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import umc.kkijuk.server.common.domian.exception.*;
 import umc.kkijuk.server.common.domian.response.ErrorResponse;
+import umc.kkijuk.server.common.domian.exception.ConfirmPasswordMismatchException;
 import umc.kkijuk.server.common.domian.response.ErrorResultResponse;
 
 @RestControllerAdvice
@@ -42,6 +43,36 @@ public class ExceptionControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ConfirmPasswordMismatchException.class)
+    public ErrorResponse ConfirmPasswordMismatchException(ConfirmPasswordMismatchException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FieldUpdateException.class)
+    public ErrorResponse FieldUpdateException(FieldUpdateException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidMemberDataException.class)
+    public ErrorResponse InvalidMemberDataException(InvalidMemberDataException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CurrentPasswordMismatchException.class)
+    public ErrorResponse CurrentPasswordMismatchException(CurrentPasswordMismatchException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmailNotFoundException.class)
+    public ErrorResponse EmailNotFoundException(EmailNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ExceptionHandler(CareerValidationException.class)
     public ErrorResponse CareerValidationException(CareerValidationException exception) {
         return new ErrorResponse(exception.getMessage());
