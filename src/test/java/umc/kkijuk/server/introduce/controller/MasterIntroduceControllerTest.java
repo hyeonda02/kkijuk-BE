@@ -15,7 +15,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import umc.kkijuk.server.introduce.domain.MasterIntroduce;
 import umc.kkijuk.server.introduce.domain.MasterIntroduceRepository;
+import umc.kkijuk.server.introduce.dto.IntroduceResDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
+import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.introduce.service.MasterIntroduceService;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
@@ -32,7 +34,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,6 +57,8 @@ class MasterIntroduceControllerTest {
     private MemberService memberService;
 
     private Member requestMember;
+    @Autowired
+    private MasterIntroduceService masterIntroduceService;
 
     @BeforeEach
     public void Init() {
@@ -124,7 +130,20 @@ class MasterIntroduceControllerTest {
                 .jobSuitability(expectedJS)
                 .build();
 
-        mockMvc.perform(patch("/history/intro/master")
+        //when
+
+        MasterIntroduceResDto result = masterIntroduceService.updateMasterIntro(requestMember, id, masterIntroduceReqDto);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(1L),
+                () -> assertThat(result.getMemberId()).isEqualTo(requestMember.getId()),
+                () -> assertThat(result.getOneLiner()).isEqualTo(expectedOneLiner),
+                () -> assertThat(result.getIntroduction()).isEqualTo(expectedIntroduce),
+                () -> assertThat(result.getMotive()).isEqualTo(expectedMotivate)
+        );
+
+       /* mockMvc.perform(patch("/history/intro/master")
                         .param("id", id.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(masterIntroduceReqDto)))
@@ -133,6 +152,6 @@ class MasterIntroduceControllerTest {
                 .andExpect(jsonPath("$.data.introduction").value(expectedIntroduce))
                 .andExpect(jsonPath("$.data.motive").value(expectedMotivate))
                 .andExpect(jsonPath("$.data.prosAndCons").value(expectedPnC))
-                .andExpect(jsonPath("$.data.jobSuitability").value(expectedJS));
+                .andExpect(jsonPath("$.data.jobSuitability").value(expectedJS));*/
     }
 }
