@@ -25,7 +25,7 @@ public class IntroduceListResDto {
     @Builder
     public IntroduceListResDto(Introduce introduce) {
         this.id = introduce.getId();
-        this.memberId = introduce.getMember().getId();
+        this.memberId = introduce.getMemberId();
         this.recruitId=introduce.getRecruit().toModel().getId();
         this.recruitTitle=introduce.getRecruit().toModel().getTitle();
         this.deadline=formatUpdatedAt(introduce.getRecruit().toModel().getEndTime());

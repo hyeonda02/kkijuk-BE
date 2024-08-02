@@ -32,7 +32,7 @@ public class IntroduceResDto {
     public IntroduceResDto(Introduce introduce, List<QuestionDto> questionList, List<String> introduceList) {
         this.id = introduce.getId();
         this.recruitId=introduce.getRecruit().toModel().getId();
-        this.memberId=introduce.getMember().getId();
+        this.memberId=introduce.getMemberId();
         this.recruitTitle=introduce.getRecruit().toModel().getTitle();
         this.questionList = questionList;
         this.deadline=formatUpdatedAt(introduce.getRecruit().toModel().getEndTime());

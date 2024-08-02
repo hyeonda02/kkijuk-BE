@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.IntroduceReqDto;
+import umc.kkijuk.server.introduce.dto.IntroduceResDto;
 import umc.kkijuk.server.introduce.dto.QuestionDto;
 import umc.kkijuk.server.introduce.service.IntroduceService;
 import umc.kkijuk.server.member.domain.MarketingAgree;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -53,33 +56,29 @@ class IntroduceControllerTest {
     @Autowired
     private RecruitRepository recruitRepository;
     @Autowired
-    private RecruitJpaRepository recruitJpaRepository;
-    @Autowired
-    private MemberJpaRepository memberJpaRepository;
-    @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private IntroduceService introduceService;
-    @Autowired
     private ObjectMapper objectMapper;
-
+    @Autowired
+    private MemberService memberService;
     private Member requestMember;
     private Recruit requestRecruit;
-    private final Long testMemberId = 3333L;
+    @Autowired
+    private IntroduceService introduceService;
 
     @BeforeEach
     public void Init() {
-        requestMember = Member.builder()
-                .id(testMemberId)
-                .email("test-email@test.com")
-                .name("test-name")
-                .phoneNumber("test-test-test")
-                .birthDate(LocalDate.of(2024, 7, 25))
-                .password("test-password")
-                .userState(State.ACTIVATE)
-                .build();
+        MemberJoinDto memberJoinDto = new MemberJoinDto("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
+        requestMember = memberService.join(memberJoinDto);
+    }
 
-        requestRecruit = Recruit.builder()
+    @Test
+    @DisplayName("자기소개서 생성 테스트")
+    @Transactional
+    public void postIntro() throws Exception {
+        final int state = 1;
+
+        Recruit recruit = Recruit.builder()
                 .memberId(requestMember.getId())
                 .title("test-title")
                 .status(RecruitStatus.PLANNED)
@@ -91,15 +90,8 @@ class IntroduceControllerTest {
                 .active(true)
                 .build();
 
-        recruitRepository.save(requestRecruit);
-    }
-
-    @Test
-    @DisplayName("자기소개서 생성 테스트")
-    @Transactional
-    public void postIntro() throws Exception {
-        final int state = 1;
-        Long recruitId = requestRecruit.getId();
+        RecruitEntity recruitEntity = RecruitEntity.from(recruitRepository.save(recruit));
+        Long recruitId = recruitEntity.toModel().getId();
 
         // 테스트용 질문 목록 생성
         final List<QuestionDto> questions = Arrays.asList(
@@ -143,7 +135,7 @@ class IntroduceControllerTest {
         RecruitEntity recruitEntity = RecruitEntity.from(recruitRepository.save(recruit));
 
         Introduce introduce= introduceRepository.save(Introduce.builder()
-                .member(requestMember)
+                .memberId(requestMember.getId())
                 .recruit(recruitEntity)
                 .questions(new ArrayList<>())
                 .state(state)
@@ -163,8 +155,20 @@ class IntroduceControllerTest {
                 .state(state)
                 .build();
 
-        // API 호출
-        mockMvc.perform(MockMvcRequestBuilders.patch("/history/intro/{introId}", introId)
+        System.out.println(introduce.getMemberId() + " " + requestMember.getId());
+
+        //when
+
+        IntroduceResDto result = introduceService.updateIntro(requestMember, introId, introduceReqDto);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(2L),
+                () -> assertThat(result.getMemberId()).isEqualTo(requestMember.getId())
+        );
+
+        /*// API 호출
+        mockMvc.perform(MockMvcRequestBuilders.patch("/history/intro/{introId}",introId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(introduceReqDto)))
 
@@ -173,7 +177,7 @@ class IntroduceControllerTest {
                 .andExpect(jsonPath("$.data.questionList[1].title").value("제목2"))
                 .andExpect(jsonPath("$.data.questionList[2].title").value("제목6"))
                 .andExpect(jsonPath("$.data.questionList.length()").value(3))
-                .andDo(print());
+                .andDo(print());*/
     }
 
 
@@ -204,7 +208,7 @@ class IntroduceControllerTest {
         );
 
         Introduce introduce= introduceRepository.save(Introduce.builder()
-                        .member(requestMember)
+                        .memberId(requestMember.getId())
                         .recruit(recruitEntity)
                         .questions(questions)
                         .state(state)

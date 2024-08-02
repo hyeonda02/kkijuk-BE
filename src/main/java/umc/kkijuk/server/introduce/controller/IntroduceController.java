@@ -21,7 +21,6 @@ import java.util.List;
 @RequestMapping("/history/intro/")
 public class IntroduceController {
     private final IntroduceService introduceService;
-
     private final Member requestMember = Member.builder()
             .id(LoginUser.get().getId())
             .build();

@@ -35,7 +35,7 @@ public class IntroduceService {
                 .collect(Collectors.toList());
 
         Introduce introduce=Introduce.builder()
-                .member(requestMember)
+                .memberId(requestMember.getId())
                 .recruit(recruit)
                 .questions(questions)
                 .state(introduceReqDto.getState())
@@ -50,7 +50,7 @@ public class IntroduceService {
     public IntroduceResDto getIntro(Member requestMember, Long introId){
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
-        if (!introduce.getMember().getId().equals(requestMember.getId())) {
+        if (!introduce.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -79,7 +79,7 @@ public class IntroduceService {
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
 
-        if (!introduce.getMember().getId().equals(requestMember.getId())) {
+        if (!introduce.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -143,7 +143,7 @@ public class IntroduceService {
     public Long deleteIntro(Member requestMember, Long introId){
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
-        if (!introduce.getMember().getId().equals(requestMember.getId())) {
+        if (!introduce.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 

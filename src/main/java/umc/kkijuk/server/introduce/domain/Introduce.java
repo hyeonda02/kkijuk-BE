@@ -24,10 +24,8 @@ public class Introduce extends BaseEntity {
     @NotNull
     private RecruitEntity recruit;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    @NotNull
-    private Member member;
+    @Column(nullable = false)
+    private Long memberId;
 
     @NotNull
     @OneToMany(mappedBy = "introduce", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -37,8 +35,8 @@ public class Introduce extends BaseEntity {
     private int state;
 
     @Builder
-    public Introduce(Member member, RecruitEntity recruit, List<Question> questions, int state) {
-        this.member = member;
+    public Introduce(Long memberId, RecruitEntity recruit, List<Question> questions, int state) {
+        this.memberId = memberId;
         this.recruit = recruit;
         this.questions = questions;
         this.state = state;
