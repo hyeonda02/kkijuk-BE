@@ -2,7 +2,6 @@ package umc.kkijuk.server.introduce.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,20 +13,16 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.IntroduceReqDto;
-import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.QuestionDto;
 import umc.kkijuk.server.introduce.service.IntroduceService;
-import umc.kkijuk.server.introduce.service.MasterIntroduceService;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
+import umc.kkijuk.server.member.repository.MemberJpaRepository;
 import umc.kkijuk.server.member.service.MemberService;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
@@ -41,10 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -63,31 +55,31 @@ class IntroduceControllerTest {
     @Autowired
     private RecruitJpaRepository recruitJpaRepository;
     @Autowired
+    private MemberJpaRepository memberJpaRepository;
+    @Autowired
     private MockMvc mockMvc;
     @Autowired
     private IntroduceService introduceService;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private QuestionRepository questionRepository;
-    @Autowired
-    private MemberService memberService;
 
     private Member requestMember;
+    private Recruit requestRecruit;
+    private final Long testMemberId = 3333L;
 
     @BeforeEach
     public void Init() {
-        MemberJoinDto memberJoinDto = new MemberJoinDto("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
-        requestMember = memberService.join(memberJoinDto);
-    }
+        requestMember = Member.builder()
+                .id(testMemberId)
+                .email("test-email@test.com")
+                .name("test-name")
+                .phoneNumber("test-test-test")
+                .birthDate(LocalDate.of(2024, 7, 25))
+                .password("test-password")
+                .userState(State.ACTIVATE)
+                .build();
 
-    @Test
-    @DisplayName("자기소개서 생성 테스트")
-    @Transactional
-    public void postIntro() throws Exception {
-        final int state = 1;
-
-        Recruit recruit = Recruit.builder()
+        requestRecruit = Recruit.builder()
                 .memberId(requestMember.getId())
                 .title("test-title")
                 .status(RecruitStatus.PLANNED)
@@ -99,8 +91,15 @@ class IntroduceControllerTest {
                 .active(true)
                 .build();
 
-        Recruit savedRecruit = recruitRepository.save(recruit);
-        Long recruitId = savedRecruit.getId();
+        recruitRepository.save(requestRecruit);
+    }
+
+    @Test
+    @DisplayName("자기소개서 생성 테스트")
+    @Transactional
+    public void postIntro() throws Exception {
+        final int state = 1;
+        Long recruitId = requestRecruit.getId();
 
         // 테스트용 질문 목록 생성
         final List<QuestionDto> questions = Arrays.asList(

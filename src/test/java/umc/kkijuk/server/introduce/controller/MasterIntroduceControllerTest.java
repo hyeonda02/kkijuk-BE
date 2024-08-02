@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,17 +43,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class MasterIntroduceControllerTest {
-    @LocalServerPort
-    private int port;
     @Autowired
     private MasterIntroduceRepository masterIntroduceRepository;
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private RecruitRepository recruitRepository;
-    @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private MemberService memberService;
 
@@ -62,19 +58,17 @@ class MasterIntroduceControllerTest {
     public void Init() {
         MemberJoinDto memberJoinDto = new MemberJoinDto("asd@naver.com", "홍길동", "010-7444-1768", LocalDate.parse("1999-03-31"), "passwordTest", "passwordTest", MarketingAgree.BOTH, State.ACTIVATE);
         requestMember = memberService.join(memberJoinDto);
-
     }
 
     @Test
     @DisplayName("마스터 자기소개서 생성 테스트")
+    @Transactional
     public void postMaster() throws Exception{
         final String oneLiner="one-liner-test";
         final String introduction="introduction-test";
         final String motive="motive-test";
         final String prosAndCons="prosAndCons-test";
         final String jobSuitability="jobSuitability-test";
-
-        System.out.println(requestMember.getId());
 
         MasterIntroduceReqDto masterIntroduceReqDto= MasterIntroduceReqDto.builder()
                 .oneLiner(oneLiner)
@@ -97,6 +91,7 @@ class MasterIntroduceControllerTest {
 
     @Test
     @DisplayName("마스터 자기소개서 수정 테스트")
+    @Transactional
     public void updateMaster() throws Exception {
         final String oneLiner="one-liner-test";
         final String introduction="introduction-test";
