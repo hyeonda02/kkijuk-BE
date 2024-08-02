@@ -1,5 +1,6 @@
 package umc.kkijuk.server.member.controller.response;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -14,6 +15,7 @@ public class MemberInfoResponse {
     public MemberInfoResponse() {
     }
 
+    @Builder
     public MemberInfoResponse(String email, String name, String phoneNumber, LocalDate birthDate) {
         this.email = email;
         this.name = name;
