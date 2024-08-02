@@ -30,7 +30,7 @@ public class CareerResponseDto {
         String careerName;
         String alias;
         String summary;
-        Boolean isCurrent;
+        Boolean isUnknown;
         LocalDate startDate;
         LocalDate endDate;
         int year;

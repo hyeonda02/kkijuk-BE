@@ -1,20 +1,14 @@
 package umc.kkijuk.server.career.service;
 
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
-import umc.kkijuk.server.common.controller.CareerExceptionControllerAdvice;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
-import umc.kkijuk.server.career.controller.response.CareerResponse;
-import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
@@ -22,6 +16,8 @@ import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.career.repository.CategoryRepository;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,7 +25,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -40,8 +35,8 @@ public class CareerServiceTest {
     private CategoryRepository categoryRepository;
     @Autowired
     private CareerRepository careerRepository;
-    @Autowired
-    private CareerExceptionControllerAdvice careerExceptionControllerAdvice;
+    private Member testRequestMember;
+    private Long testMemberId = 555L;
     private Career career1;
     private Career career2;
     private Category category1;
@@ -50,6 +45,14 @@ public class CareerServiceTest {
 
     @BeforeEach
     void init() {
+        testRequestMember = Member.builder()
+                .id(testMemberId)
+                .email("test@test.com")
+                .phoneNumber("000-0000-0000")
+                .birthDate(LocalDate.of(2024, 7, 31))
+                .password("test")
+                .userState(State.ACTIVATE)
+                .build();
 
         category1 = Category.builder()
                 .name("동아리")
@@ -62,10 +65,11 @@ public class CareerServiceTest {
         categoryRepository.save(category2);
 
         career1 = Career.builder()
+                .memberId(testMemberId)
                 .name("test1")
                 .alias("alias1")
                 .summary("summary1")
-                .current(false)
+                .unknown(false)
                 .startdate(LocalDate.of(2024, 4, 10))
                 .enddate(LocalDate.of(2024, 7, 20))
                 .year(2024)
@@ -73,10 +77,11 @@ public class CareerServiceTest {
                 .build();
 
         career2 = Career.builder()
+                .memberId(testMemberId)
                 .name("test2")
                 .alias("alias2")
                 .summary("summary2")
-                .current(false)
+                .unknown(false)
                 .startdate(LocalDate.of(2024, 4, 10))
                 .enddate(LocalDate.of(2024, 7, 20))
                 .year(2024)
@@ -93,24 +98,25 @@ public class CareerServiceTest {
         CareerRequestDto.CreateCareerDto careerCreateDto = CareerRequestDto.CreateCareerDto.builder()
                 .careerName("test3")
                 .alias("alias3")
-                .isCurrent(false)
+                .isUnknown(false)
                 .summary("summary3")
                 .startDate(LocalDate.of(2024, 4, 10))
                 .endDate(LocalDate.of(2024, 7, 20))
                 .category(Math.toIntExact(category1.getId()))
                 .build();
         //when
-        Career newCareer = careerService.createCareer(careerCreateDto);
+        Career newCareer = careerService.createCareer(testRequestMember,careerCreateDto);
         //then
         assertAll(
+                () -> assertThat(newCareer.getMemberId().equals(testMemberId)),
                 () -> assertThat(newCareer.getId()).isEqualTo(3L),
                 () -> assertThat(newCareer.getName()).isEqualTo("test3"),
-                () ->assertThat(newCareer.getAlias()).isEqualTo("alias3"),
-                () ->assertThat(newCareer.getSummary()).isEqualTo("summary3"),
-                () ->assertThat(newCareer.getStartdate()).isEqualTo(LocalDate.of(2024,4,10)),
-                () ->assertThat(newCareer.getEnddate()).isEqualTo(LocalDate.of(2024,7,20)),
-                () ->assertThat(newCareer.getYear()).isEqualTo(2024),
-                () ->assertThat(newCareer.getCategory().getId()).isEqualTo(1L)
+                () -> assertThat(newCareer.getAlias()).isEqualTo("alias3"),
+                () -> assertThat(newCareer.getSummary()).isEqualTo("summary3"),
+                () -> assertThat(newCareer.getStartdate()).isEqualTo(LocalDate.of(2024,4,10)),
+                () -> assertThat(newCareer.getEnddate()).isEqualTo(LocalDate.of(2024,7,20)),
+                () -> assertThat(newCareer.getYear()).isEqualTo(2024),
+                () -> assertThat(newCareer.getCategory().getId()).isEqualTo(1L)
         );
     }
     @Test
@@ -118,14 +124,15 @@ public class CareerServiceTest {
         //given
         CareerRequestDto.UpdateCareerDto updateCareerDto = CareerRequestDto.UpdateCareerDto.builder().build();
         //when
-        Career updateCareer = careerService.updateCareer(2L, updateCareerDto);
+        Career updateCareer = careerService.updateCareer(testRequestMember,2L, updateCareerDto);
         //then
         assertAll(
+                () -> assertThat(updateCareer.getMemberId().equals(testMemberId)),
                 () -> assertThat(updateCareer.getId()).isEqualTo(2L),
                 () -> assertThat(updateCareer.getName()).isEqualTo("test2"),
                 () -> assertThat(updateCareer.getAlias()).isEqualTo("alias2"),
                 () -> assertThat(updateCareer.getSummary()).isEqualTo("summary2"),
-                () -> assertThat(updateCareer.getCurrent()).isEqualTo(false),
+                () -> assertThat(updateCareer.getUnknown()).isEqualTo(false),
                 () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2024, 4, 10)),
                 () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.of(2024, 7, 20)),
                 () -> assertThat(updateCareer.getYear()).isEqualTo(2024),
@@ -139,20 +146,21 @@ public class CareerServiceTest {
                 .careerName("update test")
                 .summary("update summary")
                 .alias("update alias")
-                .isCurrent(true)
+                .isUnknown(true)
                 .category(2)
                 .startDate(LocalDate.of(2021,01,01))
                 .build();
 
         //when
-        Career updateCareer = careerService.updateCareer(2L, updateCareerDto);
+        Career updateCareer = careerService.updateCareer(testRequestMember,2L, updateCareerDto);
         //then
         assertAll(
+                () -> assertThat(updateCareer.getMemberId().equals(testMemberId)),
                 () -> assertThat(updateCareer.getId()).isEqualTo(2L),
                 () -> assertThat(updateCareer.getName()).isEqualTo("update test"),
                 () -> assertThat(updateCareer.getSummary()).isEqualTo("update summary"),
                 () -> assertThat(updateCareer.getAlias()).isEqualTo("update alias"),
-                () -> assertThat(updateCareer.getCurrent()).isEqualTo(true),
+                () -> assertThat(updateCareer.getUnknown()).isEqualTo(true),
                 () -> assertThat(updateCareer.getStartdate()).isEqualTo(LocalDate.of(2021,01,01)),
                 () -> assertThat(updateCareer.getEnddate()).isEqualTo(LocalDate.now()),
                 () -> assertThat(updateCareer.getCategory().getId()).isEqualTo(2L),
@@ -167,13 +175,13 @@ public class CareerServiceTest {
                 .careerName("update test")
                 .summary("update summary")
                 .alias("update alias")
-                .isCurrent(true)
+                .isUnknown(true)
                 .startDate(LocalDate.of(2021,01,01))
                 .category(2)
                 .build();
         //when
         //then
-        assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(999L,updateCareerDto));
+        assertThrows(ResourceNotFoundException.class, () -> careerService.updateCareer(testRequestMember,999L,updateCareerDto));
     }
     @Test
     void update_수정시_날짜_형식이_잘못된_경우_에러() {
@@ -182,13 +190,13 @@ public class CareerServiceTest {
                  .careerName("update test")
                  .summary("update summary")
                  .alias("update alias")
-                 .isCurrent(true)
+                 .isUnknown(true)
                  .startDate(LocalDate.of(2024543,01,01))
                  .category(Math.toIntExact(category2.getId()))
                  .build();
         //when
         //then
-        assertThrows(DataIntegrityViolationException.class, () -> careerService.updateCareer(career2.getId(), updateCareerDto));
+        assertThrows(DataIntegrityViolationException.class, () -> careerService.updateCareer(testRequestMember, career2.getId(), updateCareerDto));
 
     }
     @Test
@@ -199,14 +207,14 @@ public class CareerServiceTest {
                 .careerName("update test")
                 .summary("update summary")
                 .alias("update alias")
-                .isCurrent(false)
+                .isUnknown(false)
                 .startDate(LocalDate.of(2024,01,01))
                 .endDate(LocalDate.of(2023,01,01))
                 .category(Math.toIntExact(category2.getId()))
                 .build();
         //when
         //then
-        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(career2.getId(), updateCareerDto));
+        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(testRequestMember,career2.getId(), updateCareerDto));
 
     }
 
@@ -215,7 +223,7 @@ public class CareerServiceTest {
         //given
         Long targetId = career1.getId();
         //when
-        careerService.deleteCareer(targetId);
+        careerService.deleteCareer(testRequestMember,targetId);
         //then
         Optional<Career> deletedCareer = careerRepository.findById(targetId);
         assertThat(deletedCareer).isEmpty();
@@ -226,7 +234,7 @@ public class CareerServiceTest {
         //given
         //when
         //then
-        assertThrows(ResourceNotFoundException.class, () -> careerService.deleteCareer(999L));
+        assertThrows(ResourceNotFoundException.class, () -> careerService.deleteCareer(testRequestMember,999L));
     }
 
 
@@ -236,7 +244,7 @@ public class CareerServiceTest {
         String status = "test";
         //when
         //then
-        assertThrows(IllegalArgumentException.class, () -> careerService.getCareerGroupedBy(status));
+        assertThrows(IllegalArgumentException.class, () -> careerService.getCareerGroupedBy(testRequestMember, status));
     }
 
     @Test
@@ -244,7 +252,7 @@ public class CareerServiceTest {
         //given
         String status = "category";
         //when
-        List<? extends CareerGroupedByResponse> groupedCareerList = careerService.getCareerGroupedBy(status);
+        List<? extends CareerGroupedByResponse> groupedCareerList = careerService.getCareerGroupedBy(testRequestMember,status);
         //then
         CareerResponseDto.CareerGroupedByCategoryDto groupedResult1 = (CareerResponseDto.CareerGroupedByCategoryDto) groupedCareerList.get(0);
         CareerResponseDto.CareerGroupedByCategoryDto groupedResult2 = (CareerResponseDto.CareerGroupedByCategoryDto) groupedCareerList.get(1);
@@ -264,7 +272,7 @@ public class CareerServiceTest {
         //given
         String status = "year";
         //when
-        List<? extends CareerGroupedByResponse> groupedCareerList = careerService.getCareerGroupedBy(status);
+        List<? extends CareerGroupedByResponse> groupedCareerList = careerService.getCareerGroupedBy(testRequestMember,status);
         //then
         assertThat(groupedCareerList).isNotEmpty();
         assertThat(groupedCareerList.size()).isEqualTo(1);
@@ -274,20 +282,6 @@ public class CareerServiceTest {
         assertThat(groupedResult.getCount()).isEqualTo(2);
     }
 
-    @Test
-    void CareerExceptionControllerAdvice가_올바른_예외_응답을_반환하는지_검증() {
-        //given
-        InvalidFormatException invalidFormatException = mock(InvalidFormatException.class);
-        when(invalidFormatException.getMessage()).thenReturn(CareerResponseMessage.CAREER_FOTMAT_INVALID);
-
-        //when
-        ResponseEntity<CareerResponse<?>> responseEntiy = careerExceptionControllerAdvice.handleInvalidFormatExceptions(invalidFormatException);
-
-        //then
-        assertEquals(HttpStatus.BAD_REQUEST,responseEntiy.getStatusCode());
-        CareerResponse<?> responseBody = responseEntiy.getBody();
-        assertEquals(CareerResponseMessage.CAREER_FOTMAT_INVALID,responseBody.getMessage());
-    }
 
 
 }

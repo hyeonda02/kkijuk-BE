@@ -2,20 +2,10 @@ package umc.kkijuk.server.career.controller.response;
 
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
-import org.hibernate.annotations.AnyKeyJavaClass;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Builder
 @Getter
@@ -33,21 +23,4 @@ public class CareerResponse<T> {
     public static <T> CareerResponse<T> success(HttpStatus status, String message, T data){
         return new CareerResponse<>(status.value(),message,data);
     }
-    public static CareerResponse<?> createFail (BindingResult bindingResult){
-        Map<String, String> errors = new HashMap<>();
-        List<ObjectError> allErrors = bindingResult.getAllErrors();
-        for ( ObjectError error: allErrors ) {
-            if( error instanceof FieldError) {
-                errors.put(((FieldError)error).getField(),error.getDefaultMessage());
-            }else{
-                errors.put(error.getObjectName(),error.getDefaultMessage());
-            }
-        }
-        return new CareerResponse<>(HttpStatus.BAD_REQUEST.value(), CareerResponseMessage.CAREER_CREATE_FAIL,errors);
-    }
-    public static CareerResponse<?> createError(String message){
-        return new CareerResponse<>(HttpStatus.BAD_REQUEST.value(), message, null);
-    }
-
-
 }

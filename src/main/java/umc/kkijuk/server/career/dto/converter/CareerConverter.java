@@ -10,14 +10,15 @@ import java.util.stream.Collectors;
 
 public class CareerConverter {
 
-    public static Career toCareer(CareerRequestDto.CreateCareerDto request){
+    public static Career toCareer(CareerRequestDto.CreateCareerDto request, Long memberId){
         return Career.builder()
+                .memberId(memberId)
                 .name(request.getCareerName())
                 .alias(request.getAlias())
                 .summary(request.getSummary())
                 .startdate(request.getStartDate())
                 .enddate(request.getEndDate())
-                .current(request.getIsCurrent())
+                .unknown(request.getIsUnknown())
                 .enddate(request.getEndDate())
                 .build();
     }
@@ -32,7 +33,7 @@ public class CareerConverter {
                 .careerName(career.getName())
                 .alias(career.getAlias())
                 .summary(career.getSummary())
-                .isCurrent(career.getCurrent())
+                .isUnknown(career.getUnknown())
                 .startDate(career.getStartdate())
                 .endDate(career.getEnddate())
                 .year(career.getYear())
@@ -55,7 +56,7 @@ public class CareerConverter {
                                         .year(career.getYear())
                                         .startDate(career.getStartdate())
                                         .endDate(career.getEnddate())
-                                        .isCurrent(career.getCurrent())
+                                        .isUnknown(career.getUnknown())
                                         .categoryId(Math.toIntExact(career.getCategory().getId()))
                                         .categoryName(career.getCategory().getName())
                                         .build())
@@ -78,7 +79,7 @@ public class CareerConverter {
                                         .year(career.getYear())
                                         .startDate(career.getStartdate())
                                         .endDate(career.getEnddate())
-                                        .isCurrent(career.getCurrent())
+                                        .isUnknown(career.getUnknown())
                                         .categoryId(Math.toIntExact(career.getCategory().getId()))
                                         .categoryName(career.getCategory().getName())
                                         .build())

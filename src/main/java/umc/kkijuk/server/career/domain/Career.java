@@ -3,8 +3,11 @@ package umc.kkijuk.server.career.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,8 +25,8 @@ public class Career extends BaseEntity {
     @Column(name="career_alias", length = 20)
     private String alias;
 
-    @Column(name="career_current")
-    private Boolean current;
+    @Column(name="career_unknown")
+    private Boolean unknown;
 
     @Column(name="career_summary",length = 50)
     private String summary;
@@ -41,6 +44,14 @@ public class Career extends BaseEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
+
+    @OneToMany(mappedBy = "career", cascade = CascadeType.ALL)
+    private List<CareerDetail> careerDetailList = new ArrayList<>();
+
+
+    @Column(nullable = false)
+    private Long memberId;
+
     public void setName(String name) {
         this.name = name;
     }
@@ -49,8 +60,8 @@ public class Career extends BaseEntity {
         this.alias = alias;
     }
 
-    public void setCurrent(Boolean current) {
-        this.current = current;
+    public void setUnknown(Boolean unknown) {
+        this.unknown = unknown;
     }
 
     public void setSummary(String summary) {
