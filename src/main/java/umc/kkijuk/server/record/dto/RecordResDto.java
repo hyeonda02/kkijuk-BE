@@ -45,17 +45,17 @@ public class RecordResDto {
 
     // 이력서 있을 때
     @Builder
-    public RecordResDto(Record record,
+    public RecordResDto(Record record, Member member,
                         List<RecordListResDto> activitiesAndExperiences,
                         List<RecordListResDto> jobs) {
         this.address = record.getAddress();
         this.profileImageUrl=record.getProfileImageUrl();
         this.activitiesAndExperiences=activitiesAndExperiences;
         this.jobs=jobs;
-        this.name = record.getMember().getName();
-        this.birthday=record.getMember().getBirthDate();
-        this.phone=record.getMember().getPhoneNumber();
-        this.email=record.getMember().getEmail();
+        this.name = member.getName();
+        this.birthday=member.getBirthDate();
+        this.phone=member.getPhoneNumber();
+        this.email=member.getEmail();
         this.updatedAt = formatUpdatedAt(record.getUpdatedAt());
     }
 

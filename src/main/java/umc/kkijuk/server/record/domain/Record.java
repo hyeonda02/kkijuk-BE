@@ -23,18 +23,16 @@ public class Record extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    @NotNull
-    private Member member;
+    @Column(nullable = false)
+    private Long memberId;
 
     private String address;
 
     private String profileImageUrl;
 
     @Builder
-    public Record(Member member, String address, String profileImageUrl) {
-        this.member = member;
+    public Record(Long memberId, String address, String profileImageUrl) {
+        this.memberId = memberId;
         this.address = address;
         this.profileImageUrl = profileImageUrl;
     }

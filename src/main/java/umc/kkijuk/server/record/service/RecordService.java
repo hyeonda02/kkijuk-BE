@@ -33,7 +33,7 @@ public class RecordService {
         }
 
         Record record=Record.builder()
-                .member(requestMember)
+                .memberId(requestMember.getId())
                 .address(recordReqDto.getAddress())
                 .profileImageUrl(recordReqDto.getProfileImageUrl())
                 .build();
@@ -49,7 +49,7 @@ public class RecordService {
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
         List<Record> records = recordRepository.findAll();
-        List<Career> careers = careerRepository.findAll(); // null 처리 필요
+        List<Career> careers = careerRepository.findAll();
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
         List<RecordListResDto> activitiesAndExperiences = careers.stream()
@@ -71,7 +71,7 @@ public class RecordService {
         // 이력서 있을 때
         if (!records.isEmpty()) {
             Record record = records.get(0);
-            return new RecordResDto(record, activitiesAndExperiences, jobs);
+            return new RecordResDto(record, member, activitiesAndExperiences, jobs);
         }
 
         // 이력서 없을 때
@@ -83,11 +83,14 @@ public class RecordService {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("record ", recordId));
 
-        if (!record.getMember().getId().equals(requestMember.getId())) {
+        if (!record.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
-        List<Career> careers = careerRepository.findAll(); // null 처리 필요
+        Member member=memberJpaRepository.findById(requestMember.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
+
+        List<Career> careers = careerRepository.findAll();
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
         List<RecordListResDto> activitiesAndExperiences = careers.stream()
@@ -109,7 +112,7 @@ public class RecordService {
                 recordReqDto.getAddress(),
                 recordReqDto.getProfileImageUrl());
 
-        return new RecordResDto(record, activitiesAndExperiences, jobs);
+        return new RecordResDto(record, member, activitiesAndExperiences, jobs);
     }
 
 }
