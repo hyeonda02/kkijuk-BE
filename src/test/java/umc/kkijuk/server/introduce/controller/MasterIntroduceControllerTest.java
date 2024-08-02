@@ -100,7 +100,7 @@ class MasterIntroduceControllerTest {
         final String jobSuitability="jobSuitability-test";
 
         MasterIntroduce masterIntroduce = masterIntroduceRepository.save(MasterIntroduce.builder()
-                .member(requestMember)
+                .memberId(requestMember.getId())
                 .oneLiner(oneLiner)
                 .introduction(introduction)
                 .motive(motive)

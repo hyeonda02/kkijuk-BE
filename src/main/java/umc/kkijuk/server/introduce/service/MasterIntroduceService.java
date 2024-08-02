@@ -35,7 +35,7 @@ public class MasterIntroduceService{
         }
 
         MasterIntroduce masterIntroduce=MasterIntroduce.builder()
-                .member(requestMember)
+                .memberId(requestMember.getId())
                 .oneLiner(masterIntroduceReqDto.getOneLiner())
                 .motive(masterIntroduceReqDto.getMotive())
                 .introduction(masterIntroduceReqDto.getIntroduction())
@@ -66,7 +66,7 @@ public class MasterIntroduceService{
     public MasterIntroduceResDto updateMasterIntro(Member requestMember, Long id, MasterIntroduceReqDto masterIntroduceReqDto) throws Exception{
         MasterIntroduce masterIntroduce = masterIntroduceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("masterIntroduce ", id));
-        if (!masterIntroduce.getMember().getId().equals(requestMember.getId())) {
+        if (!masterIntroduce.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
         masterIntroduce.update(

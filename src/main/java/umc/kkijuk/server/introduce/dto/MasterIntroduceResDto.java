@@ -33,7 +33,7 @@ public class MasterIntroduceResDto {
 
     public MasterIntroduceResDto(MasterIntroduce masterIntroduce/*, List<String> introduceList*/) {
         this.id = masterIntroduce.getId();
-        this.memberId=masterIntroduce.getMember().getId();
+        this.memberId=masterIntroduce.getMemberId();
         this.oneLiner = masterIntroduce.getOneLiner();
         this.introduction = masterIntroduce.getIntroduction();
         this.motive = masterIntroduce.getMotive();

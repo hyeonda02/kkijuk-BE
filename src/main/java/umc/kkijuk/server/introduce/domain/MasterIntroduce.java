@@ -23,10 +23,13 @@ public class MasterIntroduce extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
+    /*@OneToOne
     @JoinColumn(name = "member_id", nullable = false)
     @NotNull
-    private Member member;
+    private Member member;*/
+
+    @Column(nullable = false)
+    private Long memberId;
 
     @Size(max = 24)
     private String oneLiner;
@@ -37,8 +40,8 @@ public class MasterIntroduce extends BaseEntity {
 
 
     @Builder
-    public MasterIntroduce(Member member, String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
-        this.member = member;
+    public MasterIntroduce(Long memberId, String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
+        this.memberId = memberId;
         this.oneLiner = oneLiner;
         this.introduction = introduction;
         this.motive = motive;
