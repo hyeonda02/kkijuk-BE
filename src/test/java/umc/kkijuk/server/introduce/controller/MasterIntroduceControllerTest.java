@@ -45,12 +45,14 @@ class MasterIntroduceControllerTest {
         final String introduction="introduction-test";
         final String motive="motive-test";
         final String prosAndCons="prosAndCons-test";
+        final String jobSuitability="jobSuitability-test";
 
         MasterIntroduceReqDto masterIntroduceReqDto= MasterIntroduceReqDto.builder()
                 .oneLiner(oneLiner)
                 .introduction(introduction)
                 .motive(motive)
                 .prosAndCons(prosAndCons)
+                .jobSuitability(jobSuitability)
                 .build();
 
 
@@ -61,7 +63,8 @@ class MasterIntroduceControllerTest {
                 .andExpect(jsonPath("$.data.oneLiner").value("one-liner-test"))
                 .andExpect(jsonPath("$.data.introduction").value("introduction-test"))
                 .andExpect(jsonPath("$.data.motive").value("motive-test"))
-                .andExpect(jsonPath("$.data.prosAndCons").value("prosAndCons-test"));
+                .andExpect(jsonPath("$.data.prosAndCons").value("prosAndCons-test"))
+                .andExpect(jsonPath("$.data.jobSuitability").value("jobSuitability-test"));
     }
 
     @Test
@@ -71,12 +74,14 @@ class MasterIntroduceControllerTest {
         final String introduction="introduction-test";
         final String motive="motive-test";
         final String prosAndCons="prosAndCons-test";
+        final String jobSuitability="jobSuitability-test";
 
         MasterIntroduce masterIntroduce = masterIntroduceRepository.save(MasterIntroduce.builder()
                 .oneLiner(oneLiner)
                 .introduction(introduction)
                 .motive(motive)
                 .prosAndCons(prosAndCons)
+                .jobSuitability(jobSuitability)
                 .build());
 
         Long id = masterIntroduce.getId();
@@ -85,12 +90,14 @@ class MasterIntroduceControllerTest {
         String expectedIntroduce = "introduction-test2";
         String expectedMotivate = "motive-test2";
         String expectedPnC = "prosAndCons-test2";
+        String expectedJS = "jobSuitability-test2";
 
         MasterIntroduceReqDto masterIntroduceReqDto = MasterIntroduceReqDto.builder()
                 .oneLiner(expectedOneLiner)
                 .introduction(expectedIntroduce)
                 .motive(expectedMotivate)
                 .prosAndCons(expectedPnC)
+                .jobSuitability(jobSuitability)
                 .build();
 
         mockMvc.perform(patch("/history/intro/master")
@@ -101,6 +108,7 @@ class MasterIntroduceControllerTest {
                 .andExpect(jsonPath("$.data.oneLiner").value(expectedOneLiner))
                 .andExpect(jsonPath("$.data.introduction").value(expectedIntroduce))
                 .andExpect(jsonPath("$.data.motive").value(expectedMotivate))
-                .andExpect(jsonPath("$.data.prosAndCons").value(expectedPnC));
+                .andExpect(jsonPath("$.data.prosAndCons").value(expectedPnC))
+                .andExpect(jsonPath("$.data.jobSuitability").value(jobSuitability));
     }
 }
