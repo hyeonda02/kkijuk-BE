@@ -29,7 +29,7 @@ public class MasterIntroduceService{
     private final RecruitJpaRepository recruitJpaRepository;
 
     @Transactional
-    public MasterIntroduceResDto saveMasterIntro(Member requestMember, MasterIntroduceReqDto masterIntroduceReqDto) throws Exception{
+    public MasterIntroduceResDto saveMasterIntro(Member requestMember, MasterIntroduceReqDto masterIntroduceReqDto){
         if(masterIntroduceRepository.findAll().stream().count()>0 ){
             throw new IntroFoundException("이미 마스터 자기소개가 존재합니다");
         }
@@ -40,6 +40,7 @@ public class MasterIntroduceService{
                 .motive(masterIntroduceReqDto.getMotive())
                 .introduction(masterIntroduceReqDto.getIntroduction())
                 .prosAndCons(masterIntroduceReqDto.getProsAndCons())
+                .jobSuitability(masterIntroduceReqDto.getJobSuitability())
                 .build();
 
 
@@ -51,7 +52,6 @@ public class MasterIntroduceService{
     @Transactional
     public List<MasterIntroduceResDto> getMasterIntro(Member requestMember){
         List<MasterIntroduce> masterIntroduces =masterIntroduceRepository.findAll();
-        masterIntroduces = masterIntroduces != null ? masterIntroduces : Collections.emptyList();
 
         List<String> introduceList=getIntroduceTitles();
 
@@ -71,7 +71,8 @@ public class MasterIntroduceService{
                 masterIntroduceReqDto.getOneLiner(),
                 masterIntroduceReqDto.getIntroduction(),
                 masterIntroduceReqDto.getMotive(),
-                masterIntroduceReqDto.getProsAndCons());
+                masterIntroduceReqDto.getProsAndCons(),
+                masterIntroduceReqDto.getJobSuitability());
         List<String> introduceList=getIntroduceTitles();
         return new MasterIntroduceResDto(masterIntroduce, introduceList);
     }

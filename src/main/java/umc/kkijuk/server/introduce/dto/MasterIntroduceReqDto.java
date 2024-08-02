@@ -12,4 +12,5 @@ public class MasterIntroduceReqDto {
     private String introduction;
     private String motive;
     private String prosAndCons;
+    private String jobSuitability;
 }

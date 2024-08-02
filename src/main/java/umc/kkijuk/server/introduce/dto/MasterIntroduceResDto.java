@@ -25,6 +25,7 @@ public class MasterIntroduceResDto {
     private String introduction;
     private String motive;
     private String prosAndCons;
+    private String jobSuitability;
     private String updatedAt;
     private List<String> introduceList;
 
@@ -35,6 +36,7 @@ public class MasterIntroduceResDto {
         this.introduction = masterIntroduce.getIntroduction();
         this.motive = masterIntroduce.getMotive();
         this.prosAndCons = masterIntroduce.getProsAndCons();
+        this.jobSuitability = masterIntroduce.getJobSuitability();
         this.updatedAt = formatUpdatedAt(masterIntroduce.getUpdatedAt());
         this.introduceList = introduceList;
     }

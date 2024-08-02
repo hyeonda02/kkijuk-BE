@@ -33,21 +33,25 @@ public class MasterIntroduce extends BaseEntity {
     private String introduction;
     private String motive;
     private String prosAndCons;
+    private String jobSuitability;
+
 
     @Builder
-    public MasterIntroduce(Member member, String oneLiner, String introduction, String motive, String prosAndCons) {
+    public MasterIntroduce(Member member, String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
         this.member = member;
         this.oneLiner = oneLiner;
         this.introduction = introduction;
         this.motive = motive;
         this.prosAndCons = prosAndCons;
+        this.jobSuitability = jobSuitability;
     }
 
-    public void update(String oneLiner, String introduction, String motive, String prosAndCons) {
+    public void update(String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
         this.oneLiner = oneLiner;
         this.introduction = introduction;
         this.motive = motive;
         this.prosAndCons = prosAndCons;
+        this.jobSuitability = jobSuitability;
     }
 
 }

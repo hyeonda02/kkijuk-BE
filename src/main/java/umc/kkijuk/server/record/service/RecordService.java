@@ -54,7 +54,7 @@ public class RecordService {
         List<Record> records = recordRepository.findAll();
         records = records != null ? records : Collections.emptyList();
 
-        List<Career> careers = careerRepository.findAll();
+        List<Career> careers = careerRepository.findAll(); // null 처리 필요
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
         List<RecordListResDto> activitiesAndExperiences = careers.stream()
@@ -92,7 +92,7 @@ public class RecordService {
             throw new IntroOwnerMismatchException();
         }
 
-        List<Career> careers = careerRepository.findAll();
+        List<Career> careers = careerRepository.findAll(); // null 처리 필요
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
         List<RecordListResDto> activitiesAndExperiences = careers.stream()
