@@ -42,6 +42,9 @@ public class IntroduceListResDto {
     private String calculateTimeUntilDeadline(LocalDateTime updatedAt, LocalDateTime deadline) {
         Duration duration = Duration.between(updatedAt, deadline);
         long days = duration.toDays();
-        return days > 0 ? "D-" + days : "공고 기한 마감";
+        if (days < 8 && days > 0) {
+            return "D-" + days;
+        }
+        else return null;
     }
 }
