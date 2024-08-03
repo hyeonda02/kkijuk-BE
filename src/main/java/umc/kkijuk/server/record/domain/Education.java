@@ -8,6 +8,7 @@ import umc.kkijuk.server.career.domain.base.BaseEntity;
 import umc.kkijuk.server.introduce.domain.Introduce;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 
 @Entity
 @Table(name="education")
@@ -26,12 +27,12 @@ public class Education extends BaseEntity {
     private String schoolName;
     private String major;
     private String state;
-    private LocalDateTime admissionDate;
-    private LocalDateTime graduationDate;
+    private YearMonth  admissionDate;
+    private YearMonth graduationDate;
 
     @Builder
     public Education(String category, String schoolName, String major
-    , String state, LocalDateTime admissionDate, LocalDateTime graduationDate) {
+    , String state, YearMonth admissionDate, YearMonth graduationDate) {
         this.category = category;
         this.schoolName = schoolName;
         this.major = major;
@@ -45,7 +46,7 @@ public class Education extends BaseEntity {
     }
 
     public void update(String category, String schoolName, String major
-            , String state, LocalDateTime admissionDate, LocalDateTime graduationDate) {
+            , String state, YearMonth admissionDate, YearMonth graduationDate) {
         this.category = category;
         this.schoolName = schoolName;
         this.major = major;

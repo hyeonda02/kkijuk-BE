@@ -23,7 +23,6 @@ public class Record extends BaseEntity {
     private String address;
     private String profileImageUrl;
 
-    @NotNull
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Education> educations;
 
@@ -33,11 +32,13 @@ public class Record extends BaseEntity {
         this.address = address;
         this.profileImageUrl = profileImageUrl;
         this.educations = educations;
-        setEducations(educations);
+        if (educations != null) {
+            setEducations(educations);
+        }
     }
 
     public void setEducations(List<Education> educations) {
-        this.educations= educations;
+        this.educations = educations;
         for (Education education : educations) {
             education.setRecord(this);
         }

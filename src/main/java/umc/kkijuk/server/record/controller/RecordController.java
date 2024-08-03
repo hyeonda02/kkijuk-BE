@@ -8,11 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.introduce.common.BaseResponse;
-import umc.kkijuk.server.introduce.dto.IntroduceReqDto;
-import umc.kkijuk.server.introduce.dto.IntroduceResDto;
 import umc.kkijuk.server.member.domain.Member;
-import umc.kkijuk.server.record.domain.Record;
-import umc.kkijuk.server.record.dto.RecordListResDto;
+import umc.kkijuk.server.record.dto.EducationReqDto;
+import umc.kkijuk.server.record.dto.EducationResDto;
 import umc.kkijuk.server.record.dto.RecordReqDto;
 import umc.kkijuk.server.record.dto.RecordResDto;
 import umc.kkijuk.server.record.service.RecordService;
@@ -34,7 +32,7 @@ public class RecordController {
         Long id = recordService.saveRecord(requestMember, recordReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료", id));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료","id: "+id));
     }
 
     @GetMapping
@@ -53,5 +51,14 @@ public class RecordController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 수정 완료", recordResDto));
+    }
+
+    @PostMapping("/education")
+    @Operation(summary = "학력 생성")
+    public ResponseEntity<Object> saveEducation(Long recordId, @RequestBody EducationReqDto educationReqDto){
+        Long id = recordService.saveEducation(recordId, educationReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", "id: "+id));
     }
 }
