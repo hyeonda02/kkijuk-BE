@@ -39,4 +39,28 @@ public class CareerDetailRequestDto {
         @Schema(description = "태그 리스트")
         List<Long> tagList;
     }
+
+    @Getter
+    @Builder
+    public static class CareerDetailUpdate {
+        @Size(max = 30)
+        @Schema(description = "활동 기록 제목", example = "수정된 아이디어톤", type="string")
+        String title;
+
+        @Size(max = 800)
+        @Schema(description = "활동 기록 내용", example = "수정된 기획한 웹/앱 서비스를 발표하고 피드백을 교환함 투표 결과 우수상 수상", type="string")
+        String content;
+
+        @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        @Schema(description = "활동 기록 시작 날짜", example = "2024-01-12", type="string")
+        LocalDate startDate;
+
+        @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        @Schema(description = "활동 기록 종료 날짜", example = "2024-02-22", type="string")
+        LocalDate endDate;
+
+        @Schema(description = "태그 리스트")
+        List<Long> tagList;
+    }
+
 }
