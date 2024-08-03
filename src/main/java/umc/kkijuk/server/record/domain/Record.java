@@ -5,13 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
-import umc.kkijuk.server.introduce.domain.Question;
-import umc.kkijuk.server.member.domain.Member;
-import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -27,14 +21,26 @@ public class Record extends BaseEntity {
     private Long memberId;
 
     private String address;
-
     private String profileImageUrl;
 
+    @NotNull
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Education> educations;
+
     @Builder
-    public Record(Long memberId, String address, String profileImageUrl) {
+    public Record(Long memberId, String address, String profileImageUrl, List<Education> educations) {
         this.memberId = memberId;
         this.address = address;
         this.profileImageUrl = profileImageUrl;
+        this.educations = educations;
+        setEducations(educations);
+    }
+
+    public void setEducations(List<Education> educations) {
+        this.educations= educations;
+        for (Education education : educations) {
+            education.setRecord(this);
+        }
     }
 
     public void update(String address, String profileImageUrl) {
