@@ -8,6 +8,7 @@ import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.introduce.domain.Introduce;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
 import umc.kkijuk.server.record.domain.Education;
@@ -61,6 +62,19 @@ public class RecordService {
         education.setRecord(record);
 
         educationRepository.save(education);
+
+        return education.getId();
+    }
+
+    @Transactional
+    public Long deleteEducation(Member requestMember, Long educationId){
+        Education education=educationRepository.findById(educationId)
+                .orElseThrow(()-> new ResourceNotFoundException("education ", educationId));
+        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        educationRepository.delete(education);
 
         return education.getId();
     }

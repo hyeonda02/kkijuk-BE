@@ -61,4 +61,13 @@ public class RecordController {
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", "id: "+id));
     }
+
+    @DeleteMapping("/education")
+    @Operation(summary = "학력 삭제")
+    public ResponseEntity<Object> deleteEducation(Member requestMember, Long educationId){
+        Long id = recordService.deleteEducation(requestMember, educationId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 삭제 완료", "id: "+id));
+    }
 }
