@@ -10,7 +10,6 @@ import umc.kkijuk.server.careerdetail.dto.CareerDetailResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
-
 public class CareerResponseDto {
 
     @Getter

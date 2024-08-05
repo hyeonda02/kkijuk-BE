@@ -1,5 +1,6 @@
 package umc.kkijuk.server.member.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,13 +14,21 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class MemberJoinDto {
 
+    @NotNull
     private String email;
+    @NotNull
     private String name;
+    @NotNull
     private String phoneNumber;
+    @NotNull
     private LocalDate birthDate;
+    @NotNull
     private String password;
+    @NotNull
     private String passwordConfirm;
+    @NotNull
     private MarketingAgree marketingAgree;
+    @NotNull
     private State userState;
 
 //    @Builder

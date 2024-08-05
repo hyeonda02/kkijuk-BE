@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import umc.kkijuk.server.introduce.domain.Introduce;
+import umc.kkijuk.server.member.domain.Member;
 
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -13,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 @Setter
 public class IntroduceListResDto {
     private Long id;
+    private Long memberId;
     private Long recruitId;
     private String recruitTitle;
     private String deadline;
@@ -23,11 +25,12 @@ public class IntroduceListResDto {
     @Builder
     public IntroduceListResDto(Introduce introduce) {
         this.id = introduce.getId();
+        this.memberId = introduce.getMemberId();
         this.recruitId=introduce.getRecruit().toModel().getId();
         this.recruitTitle=introduce.getRecruit().toModel().getTitle();
         this.deadline=formatUpdatedAt(introduce.getRecruit().toModel().getEndTime());
-        this.updatedAt = formatUpdatedAt(introduce.getUpdated_at());
-        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdated_at());
+        this.updatedAt = formatUpdatedAt(introduce.getUpdatedAt());
+        this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdatedAt(), introduce.getRecruit().toModel().getEndTime());
         this.state=introduce.getState();
     }
 
@@ -36,9 +39,12 @@ public class IntroduceListResDto {
         return updatedAt != null ? updatedAt.format(formatter) : null;
     }
 
-    private String calculateTimeUntilDeadline(LocalDateTime deadline) {
-        Duration duration = Duration.between(LocalDateTime.now(), deadline);
+    private String calculateTimeUntilDeadline(LocalDateTime updatedAt, LocalDateTime deadline) {
+        Duration duration = Duration.between(updatedAt, deadline);
         long days = duration.toDays();
-        return days > 0 ? "D-" + days : "공고 기한 마감";
+        if (days < 8 && days > 0) {
+            return "D-" + days;
+        }
+        else return null;
     }
 }

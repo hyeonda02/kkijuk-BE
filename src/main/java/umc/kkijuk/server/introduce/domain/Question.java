@@ -6,13 +6,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import umc.kkijuk.server.career.domain.base.BaseEntity;
 
 @Entity
 @Table(name="question")
 @Getter
 @Setter
 @NoArgsConstructor
-public class Question {
+public class Question extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

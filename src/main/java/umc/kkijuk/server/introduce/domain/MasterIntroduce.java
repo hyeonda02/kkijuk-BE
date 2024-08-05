@@ -6,54 +6,55 @@ import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
+import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 @Entity
 @Table(name = "master_introduce")
 @Getter
 @NoArgsConstructor
-public class MasterIntroduce {
+public class MasterIntroduce extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    /*@OneToOne
+    @JoinColumn(name = "member_id", nullable = false)
+    @NotNull
+    private Member member;*/
+
+    @Column(nullable = false)
+    private Long memberId;
 
     @Size(max = 24)
     private String oneLiner;
     private String introduction;
     private String motive;
     private String prosAndCons;
+    private String jobSuitability;
 
-    @CreationTimestamp
-    private LocalDateTime created_at;
-
-    @UpdateTimestamp
-    private LocalDateTime updated_at;
 
     @Builder
-    public MasterIntroduce(String oneLiner, String introduction, String motive, String prosAndCons) {
+    public MasterIntroduce(Long memberId, String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
+        this.memberId = memberId;
         this.oneLiner = oneLiner;
         this.introduction = introduction;
         this.motive = motive;
         this.prosAndCons = prosAndCons;
+        this.jobSuitability = jobSuitability;
     }
 
-    public String getUpdated_at() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return updated_at != null ? updated_at.format(formatter) : null;
-    }
-
-    public void update(String oneLiner, String introduction, String motive, String prosAndCons) {
+    public void update(String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
         this.oneLiner = oneLiner;
         this.introduction = introduction;
         this.motive = motive;
         this.prosAndCons = prosAndCons;
+        this.jobSuitability = jobSuitability;
     }
 
 }
