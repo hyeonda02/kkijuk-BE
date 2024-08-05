@@ -196,7 +196,7 @@ public class CareerServiceTest {
                  .build();
         //when
         //then
-        assertThrows(DataIntegrityViolationException.class, () -> careerService.updateCareer(testRequestMember, career2.getId(), updateCareerDto));
+        assertThrows(CareerValidationException.class, () -> careerService.updateCareer(testRequestMember, career2.getId(), updateCareerDto));
 
     }
     @Test

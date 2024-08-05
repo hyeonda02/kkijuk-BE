@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class CareerDetailConverter {
-    public static CareerDetail toCareerDetail(CareerDetailRequestDto.CareerDetailCreate request) {
+    public static CareerDetail toCareerDetail(Long requestMemberId ,CareerDetailRequestDto.CareerDetailCreate request) {
         return CareerDetail.builder()
+                .memberId(requestMemberId)
                 .title(request.getTitle())
                 .content(request.getContent())
                 .startDate(request.getStartDate())

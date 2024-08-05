@@ -60,6 +60,7 @@ public class Career extends BaseEntity {
         this.alias = alias;
     }
 
+
     public void setUnknown(Boolean unknown) {
         this.unknown = unknown;
     }

@@ -13,5 +13,6 @@ public interface CareerService {
     void deleteCareer(Member member, Long careerId);
     Optional<Career> findCareer(Long value);
     Career updateCareer(Member member, Long careerId, CareerRequestDto.UpdateCareerDto request);
+    Career findCareerDetail(Member requestMember, Long careerId);
     List<? extends CareerGroupedByResponse> getCareerGroupedBy(Member member, String value);
 }
