@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.member.controller.response.CreateMemberResponse;
+import umc.kkijuk.server.member.controller.response.MemberEmailResponse;
 import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
 import umc.kkijuk.server.member.domain.Member;
@@ -92,15 +93,26 @@ public class MemberController {
     }
 
     @Operation(
+            summary = "내정보 조회 인증 화면 이메일 가져오기",
+            description = "내 정보를 조회 인증 화면에서 이메일을 가져옵니다.")
+    @GetMapping("/myPage")
+    public ResponseEntity<MemberEmailResponse> getEmail() {
+        Long loginUser = LoginUser.get().getId();
+        MemberEmailResponse memberEmailResponse = memberService.getMemberEmail(loginUser);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberEmailResponse);
+    }
+
+
+    @Operation(
             summary = "내정보 조회용 비밀번호 인증",
             description = "내 정보를 조회하기 위해 비밀번호를 인증합니다.")
     @PostMapping("/myPage")
-    public ResponseEntity<Boolean> myPagePasswordAuth(@RequestBody @Valid MyPagePasswordAuthDto myPagePasswordAuthDto){{
+    public ResponseEntity<Boolean> myPagePasswordAuth(@RequestBody @Valid MyPagePasswordAuthDto myPagePasswordAuthDto){
         Long loginUser = LoginUser.get().getId();
         memberService.myPagePasswordAuth(loginUser, myPagePasswordAuthDto);
         return ResponseEntity.ok(Boolean.TRUE);
-    }
-
     }
 
 

@@ -5,6 +5,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.common.domian.exception.*;
+import umc.kkijuk.server.member.controller.response.MemberEmailResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.*;
@@ -60,6 +61,17 @@ public class MemberServiceImpl implements MemberService {
     public List<String> getMemberField(Long memberId){
         Member member = this.getById(memberId);
         return member.getField();
+    }
+
+    @Override
+    public MemberEmailResponse getMemberEmail(Long memberId) {
+        Member member = this.getById(memberId);
+        if(member.getEmail() == null){
+            throw new InvalidMemberDataException();
+        }
+        return MemberEmailResponse.builder()
+                .email(member.getEmail())
+                .build();
     }
 
     @Override

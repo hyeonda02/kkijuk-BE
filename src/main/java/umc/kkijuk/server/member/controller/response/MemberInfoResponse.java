@@ -14,7 +14,6 @@ public class MemberInfoResponse {
 
     public MemberInfoResponse() {
     }
-
     @Builder
     public MemberInfoResponse(String email, String name, String phoneNumber, LocalDate birthDate) {
         this.email = email;
