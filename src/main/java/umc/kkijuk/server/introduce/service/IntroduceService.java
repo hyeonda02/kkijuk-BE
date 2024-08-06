@@ -42,8 +42,8 @@ public class IntroduceService {
                 .build();
 
         introduceRepository.save(introduce);
-        List<String> introduceList=getIntroduceTitles();
-        return new IntroduceResDto(introduce, introduceReqDto.getQuestionList(),introduceList);
+        /*List<String> introduceList=getIntroduceTitles();*/
+        return new IntroduceResDto(introduce, introduceReqDto.getQuestionList()/*,introduceList*/);
     }
 
     @Transactional
@@ -59,9 +59,9 @@ public class IntroduceService {
                 .map(question -> new QuestionDto(question.getTitle(), question.getContent(), question.getNumber()))
                 .collect(Collectors.toList());
 
-        List<String> introduceList=getIntroduceTitles();
+        /*List<String> introduceList=getIntroduceTitles();*/
 
-        return new IntroduceResDto(introduce, questionList, introduceList);
+        return new IntroduceResDto(introduce, questionList/*, introduceList*/);
     }
 
     @Transactional
@@ -152,7 +152,7 @@ public class IntroduceService {
         return introduce.getId();
     }
 
-    @Transactional
+   /* @Transactional
     public List<String> getIntroduceTitles() {
         // Fetch all Introduce entities
         List<Introduce> introduces = introduceRepository.findAll();
@@ -163,5 +163,5 @@ public class IntroduceService {
                 .filter(Optional::isPresent) // Filter out any empty results
                 .map(opt -> opt.get().toModel().getTitle()) // Get the title of the Recruit
                 .collect(Collectors.toList()); // Collect titles into a List
-    }
+    }*/
 }
