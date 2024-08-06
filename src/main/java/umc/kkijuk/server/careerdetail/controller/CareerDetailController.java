@@ -43,7 +43,7 @@ public class CareerDetailController {
             @Parameter(name = "detailId", description = "활동 기록 Id, path variable 입니다.")
     })
     public CareerDetailResponse<Object> delete(@PathVariable Long careerId, @PathVariable Long detailId) {
-        careerDetailService.delete(requestMember, detailId);
+        careerDetailService.delete(requestMember, careerId ,detailId);
         return CareerDetailResponse.success(HttpStatus.OK, "활동 기록을 성공적으로 삭제했습니다.",null);
     }
     @PutMapping("/{careerId}/{detailId}")
