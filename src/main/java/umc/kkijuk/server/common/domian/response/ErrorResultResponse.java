@@ -16,13 +16,11 @@ import java.util.Map;
 @Getter
 @Builder
 public class ErrorResultResponse<T> {
-    private int status;
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
-    public ErrorResultResponse(final int status, final String message, T data) {
-        this.status = status;
+    public ErrorResultResponse(final String message, T data) {
         this.message = message;
         this.data = data;
     }
@@ -37,7 +35,7 @@ public class ErrorResultResponse<T> {
                 errors.put(o.getObjectName(),o.getDefaultMessage());
             }
         }
-        return new ErrorResultResponse<>(HttpStatus.BAD_REQUEST.value(), "요청에 실패했습니다. ", errors);
+        return new ErrorResultResponse<>("요청에 실패했습니다. ", errors);
     }
 
 }

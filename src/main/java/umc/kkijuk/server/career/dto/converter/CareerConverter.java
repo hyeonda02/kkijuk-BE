@@ -1,8 +1,10 @@
 package umc.kkijuk.server.career.dto.converter;
 
+import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.CareerResponseDto;
+import umc.kkijuk.server.careerdetail.dto.CareerDetailResponseDto;
 
 import java.util.List;
 import java.util.Map;
@@ -86,6 +88,36 @@ public class CareerConverter {
                                 .collect(Collectors.toList()))
                         .build())
                 .collect(Collectors.toList());
+    }
+    public static CareerResponseDto.CareerDetailDto toCareerDetailDto(Career career){
+        return CareerResponseDto.CareerDetailDto.builder()
+                .id(career.getId())
+                .memberId(career.getMemberId())
+                .careerName(career.getName())
+                .alias(career.getAlias())
+                .summary(career.getSummary())
+                .isUnknown(career.getUnknown())
+                .startDate(career.getStartdate())
+                .endDate(career.getEnddate())
+                .year(career.getYear())
+                .categoryId(Math.toIntExact(career.getCategory().getId()))
+                .categoryName(career.getCategory().getName())
+                .totalDetailCount(career.getCareerDetailList().size())
+                .details(career.getCareerDetailList().stream().map(careerDetail -> CareerDetailResponseDto.CareerDetailResult.builder()
+                                .id(careerDetail.getId())
+                                .careerId(careerDetail.getCareer().getId())
+                                .title(careerDetail.getTitle())
+                                .content(careerDetail.getContent())
+                                .startDate(careerDetail.getStartDate())
+                                .endDate(careerDetail.getEndDate())
+                                .careerTagList(careerDetail.getCareerTagList().stream().map(careerTag -> CareerDetailResponseDto.CareerTag.builder()
+                                                    .id(careerTag.getTag().getId())
+                                                    .tagName(careerTag.getTag().getName())
+                                                    .build()).collect(Collectors.toList())
+                                )
+                                .build()).collect(Collectors.toList()))
+                .build();
+
     }
 
 
