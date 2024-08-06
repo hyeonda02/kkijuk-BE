@@ -7,12 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
-import umc.kkijuk.server.member.controller.response.CreateMemberResponse;
-import umc.kkijuk.server.member.controller.response.MemberEmailResponse;
-import umc.kkijuk.server.member.controller.response.MemberFieldResponse;
-import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
+import umc.kkijuk.server.member.controller.response.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.*;
+//import umc.kkijuk.server.member.emailauth.MailService;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +24,8 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+//    private final MailService mailService;
+    private int authRandomNumber; // 이메일 인증 숫자를 저장하는 변수
 
     @Operation(
             summary = "회원가입 요청",
@@ -115,7 +115,17 @@ public class MemberController {
         return ResponseEntity.ok(Boolean.TRUE);
     }
 
-
+    @Operation(
+            summary = "회원 탈퇴",
+            description = "회원의 상태를 비활성화로 바꿉니다.")
+    @PatchMapping("/inactive")
+    public ResponseEntity<MemberStateResponse> memberInactivate(){
+        Long loginUser = LoginUser.get().getId();
+        MemberStateResponse memberStateResponse = memberService.changeMemberState(loginUser);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(memberStateResponse);
+    }
 
 }
 

@@ -16,7 +16,7 @@ import umc.kkijuk.server.common.converter.StringListToStringConverter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Member {
+public class Member extends BaseEntity{
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
@@ -37,7 +37,6 @@ public class Member {
     @NotNull
     private String password;
 
-
     @Convert(converter = StringListToStringConverter.class)
     private List<String> field;
 
@@ -52,7 +51,7 @@ public class Member {
     private LocalDate deleteDate;
 
 
-    public Member( String email, String name, String phoneNumber, LocalDate birthDate, String password, MarketingAgree marketingAgree, State userState) {
+    public Member(String email, String name, String phoneNumber, LocalDate birthDate, String password, MarketingAgree marketingAgree, State userState) {
         this.email = email;
         this.name = name;
         this.phoneNumber = phoneNumber;
@@ -74,6 +73,16 @@ public class Member {
 
     public void changeMemberPassword(String password){
         this.password = password;
+    }
+
+    public void inactivate() {
+        this.userState = State.INACTIVATE;
+        this.deleteDate = LocalDate.now();
+    }
+
+    public void activate() {
+        this.userState = State.ACTIVATE;
+        this.deleteDate = null;
     }
 
 }

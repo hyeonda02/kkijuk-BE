@@ -5,9 +5,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.common.domian.exception.*;
+import umc.kkijuk.server.member.controller.response.EmailAuthResponse;
 import umc.kkijuk.server.member.controller.response.MemberEmailResponse;
 import umc.kkijuk.server.member.controller.response.MemberInfoResponse;
+import umc.kkijuk.server.member.controller.response.MemberStateResponse;
 import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.*;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
 
@@ -107,7 +110,6 @@ public class MemberServiceImpl implements MemberService {
             throw new CurrentPasswordMismatchException();
         }
 
-
         String encodedPassword = passwordEncoder.encode(memberPasswordChangeDto.getNewPassword());
         member.changeMemberPassword(encodedPassword);
 
@@ -125,6 +127,33 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return member;
+    }
+
+    @Override
+    @Transactional
+    public EmailAuthResponse getEmailAuth(EmailAddressDto emailAddressDto, int authRandomNumber){
+        return EmailAuthResponse.builder()
+                .email(emailAddressDto.getEmail())
+                .authNumber(authRandomNumber)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public MemberStateResponse changeMemberState(Long memberId){
+        Member member = this.getById(memberId);
+        if(member.getUserState().equals(State.INACTIVATE)){
+            member.activate();
+        }
+        else if(member.getUserState().equals(State.ACTIVATE)){
+            member.inactivate();
+        }
+
+        memberJpaRepository.save(member);
+
+        return MemberStateResponse.builder()
+                .deleteDate(member.getDeleteDate())
+                .build();
     }
 
 }
