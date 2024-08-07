@@ -9,8 +9,10 @@ import lombok.Getter;
 @Getter
 public class MasterIntroduceReqDto {
     private String oneLiner;
-    private String introduction;
+    private String motiveTitle;
     private String motive;
+    private String prosAndConsTitle;
     private String prosAndCons;
+    private String jobSuitabilityTitle;
     private String jobSuitability;
 }

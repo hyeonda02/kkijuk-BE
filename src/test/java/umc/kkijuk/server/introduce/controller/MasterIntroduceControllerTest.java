@@ -74,16 +74,20 @@ class MasterIntroduceControllerTest {
     @Transactional
     public void postMaster() throws Exception{
         final String oneLiner="one-liner-test";
-        final String introduction="introduction-test";
+        final String motiveTitle="motive-title-test";
         final String motive="motive-test";
+        final String prosAndConsTitle="prosAndCons-title-test";
         final String prosAndCons="prosAndCons-test";
         final String jobSuitability="jobSuitability-test";
+        final String jobSuitabilityTitle="jobSuitability-title-test";
 
         MasterIntroduceReqDto masterIntroduceReqDto= MasterIntroduceReqDto.builder()
                 .oneLiner(oneLiner)
-                .introduction(introduction)
+                .motiveTitle(motiveTitle)
                 .motive(motive)
+                .prosAndConsTitle(prosAndConsTitle)
                 .prosAndCons(prosAndCons)
+                .jobSuitabilityTitle(jobSuitabilityTitle)
                 .jobSuitability(jobSuitability)
                 .build();
 
@@ -97,7 +101,7 @@ class MasterIntroduceControllerTest {
                         .content(objectMapper.writeValueAsString(masterIntroduceReqDto)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.oneLiner").value("one-liner-test"))
-                .andExpect(jsonPath("$.data.introduction").value("introduction-test"))
+                .andExpect(jsonPath("$.data.motiveTitle").value("motive-title-test"))
                 .andExpect(jsonPath("$.data.motive").value("motive-test"))
                 .andExpect(jsonPath("$.data.prosAndCons").value("prosAndCons-test"))
                 .andExpect(jsonPath("$.data.jobSuitability").value("jobSuitability-test"));
@@ -108,33 +112,43 @@ class MasterIntroduceControllerTest {
     @Transactional
     public void updateMaster() throws Exception {
         final String oneLiner="one-liner-test";
-        final String introduction="introduction-test";
+        final String motiveTitle="motive-title-test";
         final String motive="motive-test";
+        final String prosAndConsTitle="prosAndCons-title-test";
         final String prosAndCons="prosAndCons-test";
         final String jobSuitability="jobSuitability-test";
+        final String jobSuitabilityTitle="jobSuitability-title-test";
 
         MasterIntroduce masterIntroduce = masterIntroduceRepository.save(MasterIntroduce.builder()
                 .memberId(requestMember.getId())
                 .oneLiner(oneLiner)
-                .introduction(introduction)
+                .motiveTitle(motiveTitle)
                 .motive(motive)
+                .prosAndConsTitle(prosAndConsTitle)
                 .prosAndCons(prosAndCons)
+                .jobSuitabilityTitle(jobSuitabilityTitle)
                 .jobSuitability(jobSuitability)
                 .build());
 
         Long id = masterIntroduce.getId();
 
+
+
         String expectedOneLiner = "one-liner-test2";
-        String expectedIntroduce = "introduction-test2";
-        String expectedMotivate = "motive-test2";
+        String expectedMotiveTitle = "motiveTitle-test2";
+        String expectedMotive = "motive-test2";
+        String expectedPncTitle = "pncTitle-test2";
         String expectedPnC = "prosAndCons-test2";
         String expectedJS = "jobSuitability-test2";
+        String expectedJSTitle = "jobSuitabilityTitle-test2";
 
         MasterIntroduceReqDto masterIntroduceReqDto = MasterIntroduceReqDto.builder()
                 .oneLiner(expectedOneLiner)
-                .introduction(expectedIntroduce)
-                .motive(expectedMotivate)
+                .motiveTitle(expectedMotiveTitle)
+                .motive(expectedMotive)
+                .prosAndConsTitle(expectedPncTitle)
                 .prosAndCons(expectedPnC)
+                .jobSuitabilityTitle(expectedJSTitle)
                 .jobSuitability(expectedJS)
                 .build();
 
@@ -147,8 +161,8 @@ class MasterIntroduceControllerTest {
                 () -> assertThat(result.getId()).isEqualTo(1L),
                 () -> assertThat(result.getMemberId()).isEqualTo(requestMember.getId()),
                 () -> assertThat(result.getOneLiner()).isEqualTo(expectedOneLiner),
-                () -> assertThat(result.getIntroduction()).isEqualTo(expectedIntroduce),
-                () -> assertThat(result.getMotive()).isEqualTo(expectedMotivate)
+                () -> assertThat(result.getJobSuitabilityTitle()).isEqualTo(expectedJSTitle),
+                () -> assertThat(result.getMotive()).isEqualTo(expectedMotive)
         );
 
        /* mockMvc.perform(patch("/history/intro/master")

@@ -50,8 +50,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Transactional
 class IntroduceControllerTest {
-    @LocalServerPort
-    private int port;
     @Autowired
     private IntroduceRepository introduceRepository;
     @Autowired

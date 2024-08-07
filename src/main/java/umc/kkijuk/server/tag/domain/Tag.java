@@ -3,6 +3,10 @@ package umc.kkijuk.server.tag.domain;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import umc.kkijuk.server.careerdetail.domain.mapping.CareerTag;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -18,5 +22,8 @@ public class Tag {
     private String name;
     @Column(nullable = false)
     private Long memberId;
+
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<CareerTag> careerTagList = new ArrayList<>();
 
 }

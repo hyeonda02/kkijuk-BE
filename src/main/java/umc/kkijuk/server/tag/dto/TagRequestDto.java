@@ -15,7 +15,7 @@ public class TagRequestDto {
     @NoArgsConstructor
     public static class CreateTagDto{
         @Size(max = 30)
-        @Schema(description = "태그 이름", example = "역량 키워드", type="string")
+        @Schema(description = "태그 이름", example = "피그마 활용 능력", type="string")
         String tagName;
     }
 }

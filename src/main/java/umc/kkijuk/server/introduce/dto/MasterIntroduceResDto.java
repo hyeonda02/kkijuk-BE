@@ -1,18 +1,9 @@
 package umc.kkijuk.server.introduce.dto;
 
-import jakarta.transaction.Transactional;
 import lombok.*;
-import umc.kkijuk.server.introduce.domain.Introduce;
-import umc.kkijuk.server.introduce.domain.IntroduceRepository;
 import umc.kkijuk.server.introduce.domain.MasterIntroduce;
-import umc.kkijuk.server.introduce.domain.MasterIntroduceRepository;
-import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -22,27 +13,25 @@ public class MasterIntroduceResDto {
     private Long id;
     private Long memberId;
     private String oneLiner;
-    private String introduction;
+    private String motiveTitle;
     private String motive;
+    private String prosAndConsTitle;
     private String prosAndCons;
+    private String jobSuitabilityTitle;
     private String jobSuitability;
     private String updatedAt;
-/*
-    private List<String> introduceList;
-*/
 
-    public MasterIntroduceResDto(MasterIntroduce masterIntroduce/*, List<String> introduceList*/) {
+    public MasterIntroduceResDto(MasterIntroduce masterIntroduce) {
         this.id = masterIntroduce.getId();
         this.memberId=masterIntroduce.getMemberId();
         this.oneLiner = masterIntroduce.getOneLiner();
-        this.introduction = masterIntroduce.getIntroduction();
+        this.motiveTitle = masterIntroduce.getMotiveTitle();
         this.motive = masterIntroduce.getMotive();
+        this.prosAndConsTitle = masterIntroduce.getProsAndConsTitle();
         this.prosAndCons = masterIntroduce.getProsAndCons();
+        this.jobSuitabilityTitle = masterIntroduce.getJobSuitabilityTitle();
         this.jobSuitability = masterIntroduce.getJobSuitability();
         this.updatedAt = formatUpdatedAt(masterIntroduce.getUpdatedAt());
-/*
-        this.introduceList = introduceList;
-*/
     }
 
 

@@ -33,27 +33,35 @@ public class MasterIntroduce extends BaseEntity {
 
     @Size(max = 24)
     private String oneLiner;
-    private String introduction;
+    private String motiveTitle;
     private String motive;
+    private String prosAndConsTitle;
     private String prosAndCons;
+    private String jobSuitabilityTitle;
     private String jobSuitability;
 
 
     @Builder
-    public MasterIntroduce(Long memberId, String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
+    public MasterIntroduce(Long memberId, String oneLiner, String motiveTitle, String motive, String prosAndConsTitle, String prosAndCons
+    , String jobSuitabilityTitle, String jobSuitability) {
         this.memberId = memberId;
         this.oneLiner = oneLiner;
-        this.introduction = introduction;
+        this.motiveTitle = motiveTitle;
         this.motive = motive;
+        this.prosAndConsTitle=prosAndConsTitle;
         this.prosAndCons = prosAndCons;
+        this.jobSuitabilityTitle = jobSuitabilityTitle;
         this.jobSuitability = jobSuitability;
     }
 
-    public void update(String oneLiner, String introduction, String motive, String prosAndCons, String jobSuitability) {
+    public void update( String oneLiner, String motiveTitle, String motive, String prosAndConsTitle, String prosAndCons
+            , String jobSuitabilityTitle, String jobSuitability) {
         this.oneLiner = oneLiner;
-        this.introduction = introduction;
+        this.motiveTitle = motiveTitle;
         this.motive = motive;
+        this.prosAndConsTitle=prosAndConsTitle;
         this.prosAndCons = prosAndCons;
+        this.jobSuitabilityTitle = jobSuitabilityTitle;
         this.jobSuitability = jobSuitability;
     }
 
