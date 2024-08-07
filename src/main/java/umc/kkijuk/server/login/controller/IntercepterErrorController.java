@@ -10,8 +10,7 @@ import umc.kkijuk.server.login.exception.UnauthorizedException;
 public class IntercepterErrorController {
 
     @RequestMapping("/api/error")
-    public void error(HttpServletRequest request, HttpServletResponse response){
-        System.out.println("error 도착");
+    public void error(HttpServletRequest request, HttpServletResponse response) throws Exception {
         throw new UnauthorizedException();
     }
 }

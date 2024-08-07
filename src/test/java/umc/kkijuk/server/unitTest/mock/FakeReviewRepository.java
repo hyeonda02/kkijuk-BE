@@ -1,4 +1,4 @@
-package umc.kkijuk.server.review.mock;
+package umc.kkijuk.server.unitTest.mock;
 
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.review.domain.Review;

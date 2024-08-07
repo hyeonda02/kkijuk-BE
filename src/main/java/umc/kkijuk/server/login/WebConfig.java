@@ -5,7 +5,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import umc.kkijuk.server.login.argumentresolver.LoginMemberArgumentResolver;
-import umc.kkijuk.server.login.intercepter.LoginCheckIntercepter;
+import umc.kkijuk.server.login.interceptor.LoginCheckInterceptor;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginCheckIntercepter())
+        registry.addInterceptor(new LoginCheckInterceptor())
                 .order(1)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/swagger-ui/**", "/v3/api-docs/**") // 스웨거 관련

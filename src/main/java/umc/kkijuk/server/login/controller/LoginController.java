@@ -1,7 +1,6 @@
 package umc.kkijuk.server.login.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,8 +23,7 @@ public class LoginController {
             @RequestBody LoginRequestDto loginRequestDto) {
         LoginInfo loginInfo = loginService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
-        HttpSession session = request.getSession(true); // 있으면 기존 세션 사용, 없으면 세션을 새로 만듬
-        session.setAttribute(SessionConst.LOGIN_MEMBER_INFO, loginInfo);
+        loginService.makeLoginSession(loginInfo, request);
 
         return ResponseEntity
                 .ok()

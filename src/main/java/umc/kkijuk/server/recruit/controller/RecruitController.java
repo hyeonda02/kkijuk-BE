@@ -5,13 +5,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.*;
-import org.springframework.data.repository.query.Param;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.login.argumentresolver.Login;
+import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.service.MemberService;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.controller.response.*;
 import umc.kkijuk.server.recruit.domain.*;
@@ -23,12 +26,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name = "recruit", description = "모집 공고 API")
+@Slf4j
+@Builder
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/recruit")
 public class RecruitController {
     private final RecruitService recruitService;
     private final ReviewService reviewService;
+    private final MemberService memberService;
 
     private final Member requestMember = Member.builder()
             .id(LoginUser.get().getId())
@@ -38,9 +44,13 @@ public class RecruitController {
             summary = "지원 공고 생성",
             description = "주어진 정보를 바탕으로 지원 공고 데이터를 생성합니다.")
     @PostMapping
-    public ResponseEntity<RecruitIdResponse> create(@RequestBody @Valid RecruitCreate recruitCreate) {
-//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+    public ResponseEntity<RecruitIdResponse> create(
+            @Login LoginInfo loginInfo,
+            @RequestBody @Valid RecruitCreate recruitCreate
+    ) {
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
         Recruit recruit = recruitService.create(requestMember, recruitCreate);
+
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(RecruitIdResponse.from(recruit));

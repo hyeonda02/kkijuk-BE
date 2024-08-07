@@ -1,4 +1,4 @@
-package umc.kkijuk.server.review.service;
+package umc.kkijuk.server.unitTest.review.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,8 @@ import umc.kkijuk.server.review.controller.port.ReviewService;
 import umc.kkijuk.server.review.domain.Review;
 import umc.kkijuk.server.review.domain.ReviewCreate;
 import umc.kkijuk.server.review.domain.ReviewUpdate;
-import umc.kkijuk.server.review.mock.FakeReviewRepository;
+import umc.kkijuk.server.review.service.ReviewServiceImpl;
+import umc.kkijuk.server.unitTest.mock.FakeReviewRepository;
 import umc.kkijuk.server.review.service.port.ReviewRepository;
 
 import java.time.LocalDate;

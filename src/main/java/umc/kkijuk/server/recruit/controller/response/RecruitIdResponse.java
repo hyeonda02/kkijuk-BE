@@ -1,13 +1,20 @@
 package umc.kkijuk.server.recruit.controller.response;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 import umc.kkijuk.server.recruit.domain.Recruit;
 
 @Getter
-@Builder
 public class RecruitIdResponse {
-    private final Long id;
+    private Long id;
+
+    private RecruitIdResponse() {
+    }
+
+    @Builder
+    public RecruitIdResponse(Long id) {
+        this.id = id;
+    }
+
     public static RecruitIdResponse from(Recruit recruit) {
         return RecruitIdResponse.builder()
                 .id(recruit.getId())

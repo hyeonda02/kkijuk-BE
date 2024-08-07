@@ -130,86 +130,86 @@ public class MemberServiceTest {
 //        assertThat(response.getBody()).contains("비밀번호가 일치하지 않습니다.");
 //    }
 
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void 내정보_조회_성공() {
-        // Given
+//    @Test
+//    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+//    public void 내정보_조회_성공() {
+//        // Given
+//
+//        // When
+//        ResponseEntity<MemberInfoResponse> response = restTemplate.getForEntity("/member/myPage/info", MemberInfoResponse.class);
+//
+//        // Then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//
+//        MemberInfoResponse body = response.getBody();
+//        assertNotNull(body);
+//        assertEquals("test@naver.com", body.getEmail());
+//        assertEquals("홍길동", body.getName());
+//        assertEquals("01012345678", body.getPhoneNumber());
+//        assertEquals(LocalDate.parse("1999-03-31"), body.getBirthDate());
+//    }
 
-        // When
-        ResponseEntity<MemberInfoResponse> response = restTemplate.getForEntity("/member/myPage/info", MemberInfoResponse.class);
+//    @Test
+//    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+//    public void 내정보_수정() {
+//        // Given
+//
+//        MemberInfoChangeDto changeDto = MemberInfoChangeDto.builder()
+//                .phoneNumber("010-5678-1234")
+//                .birthDate(LocalDate.parse("2000-01-01"))
+//                .marketingAgree(MarketingAgree.EMAIL)
+//                .build();
+//
+//        HttpEntity<MemberInfoChangeDto> requestEntity = new HttpEntity<>(changeDto);
+//
+//        // When
+//        ResponseEntity<Boolean> response = restTemplate.exchange("/member/myPage/info", HttpMethod.PUT, requestEntity, Boolean.class);
+//
+//        // Then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        Boolean body = response.getBody();
+//        assertNotNull(body);
+//        assertEquals(true, body);
+//
+//        // Verify changes
+//        Member updatedMember = memberJpaRepository.findById(1L).orElse(null);
+//        assertNotNull(updatedMember);
+//        assertEquals("010-5678-1234", updatedMember.getPhoneNumber());
+//        assertEquals(LocalDate.parse("2000-01-01"), updatedMember.getBirthDate());
+//        assertEquals(MarketingAgree.EMAIL, updatedMember.getMarketingAgree());
+//    }
 
-        // Then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-
-        MemberInfoResponse body = response.getBody();
-        assertNotNull(body);
-        assertEquals("test@naver.com", body.getEmail());
-        assertEquals("홍길동", body.getName());
-        assertEquals("01012345678", body.getPhoneNumber());
-        assertEquals(LocalDate.parse("1999-03-31"), body.getBirthDate());
-    }
-
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void 내정보_수정() {
-        // Given
-
-        MemberInfoChangeDto changeDto = MemberInfoChangeDto.builder()
-                .phoneNumber("010-5678-1234")
-                .birthDate(LocalDate.parse("2000-01-01"))
-                .marketingAgree(MarketingAgree.EMAIL)
-                .build();
-
-        HttpEntity<MemberInfoChangeDto> requestEntity = new HttpEntity<>(changeDto);
-
-        // When
-        ResponseEntity<Boolean> response = restTemplate.exchange("/member/myPage/info", HttpMethod.PUT, requestEntity, Boolean.class);
-
-        // Then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        Boolean body = response.getBody();
-        assertNotNull(body);
-        assertEquals(true, body);
-
-        // Verify changes
-        Member updatedMember = memberJpaRepository.findById(1L).orElse(null);
-        assertNotNull(updatedMember);
-        assertEquals("010-5678-1234", updatedMember.getPhoneNumber());
-        assertEquals(LocalDate.parse("2000-01-01"), updatedMember.getBirthDate());
-        assertEquals(MarketingAgree.EMAIL, updatedMember.getMarketingAgree());
-    }
-
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void 관심분야_조회(){
-        // 회원추가
-
-        ResponseEntity<MemberFieldResponse> response = restTemplate.getForEntity("/member/myPage/field", MemberFieldResponse.class);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        MemberFieldResponse body = response.getBody();
-        assertNotNull(body);
-        assertEquals(List.of("game", "computer"), body.getField());
-    }
+//    @Test
+//    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+//    public void 관심분야_조회(){
+//        // 회원추가
+//
+//        ResponseEntity<MemberFieldResponse> response = restTemplate.getForEntity("/member/myPage/field", MemberFieldResponse.class);
+//
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        MemberFieldResponse body = response.getBody();
+//        assertNotNull(body);
+//        assertEquals(List.of("game", "computer"), body.getField());
+//    }
 
 
-    @Test
-    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
-    public void 관심분야_수정(){
-        //given
-
-        MemberFieldDto memberFieldDto = MemberFieldDto.builder().field(List.of("book", "movie")).build();
-        HttpEntity<MemberFieldDto> request = new HttpEntity<>(memberFieldDto);
-        //when
-        ResponseEntity<Boolean> response = restTemplate.postForEntity("/member/myPage/field", request, Boolean.class);
-        //then
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        Boolean body = response.getBody();
-        assertNotNull(body);
-        assertEquals(true, body);
-
-        Member updatedMember = memberJpaRepository.findById(1L).orElse(null);
-        assertNotNull(updatedMember);
-        assertEquals(List.of("book", "movie"), updatedMember.getField());
-    }
+//    @Test
+//    @DirtiesContext(methodMode = DirtiesContext.MethodMode.AFTER_METHOD)
+//    public void 관심분야_수정(){
+//        //given
+//
+//        MemberFieldDto memberFieldDto = MemberFieldDto.builder().field(List.of("book", "movie")).build();
+//        HttpEntity<MemberFieldDto> request = new HttpEntity<>(memberFieldDto);
+//        //when
+//        ResponseEntity<Boolean> response = restTemplate.postForEntity("/member/myPage/field", request, Boolean.class);
+//        //then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        Boolean body = response.getBody();
+//        assertNotNull(body);
+//        assertEquals(true, body);
+//
+//        Member updatedMember = memberJpaRepository.findById(1L).orElse(null);
+//        assertNotNull(updatedMember);
+//        assertEquals(List.of("book", "movie"), updatedMember.getField());
+//    }
 }

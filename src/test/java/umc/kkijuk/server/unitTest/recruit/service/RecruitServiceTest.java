@@ -1,6 +1,7 @@
-package umc.kkijuk.server.recruit.service;
+package umc.kkijuk.server.unitTest.recruit.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
@@ -8,7 +9,8 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.*;
-import umc.kkijuk.server.recruit.mock.FakeRecruitRepository;
+import umc.kkijuk.server.unitTest.mock.FakeRecruitRepository;
+import umc.kkijuk.server.recruit.service.RecruitServiceImpl;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
@@ -22,9 +24,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RecruitServiceTest {
     private RecruitService recruitService;
+    private final Long testMemberId = 3333L;
     private Member requestMember;
 
-    private final Long testMemberId = 3333L;
+    /**
+     * testValues
+     */
     private final LocalDateTime testRecruitStartTime = LocalDateTime.of(2023, 7, 19, 2, 30);
     private final LocalDateTime testRecruitEndTime = LocalDateTime.of(2023, 7, 31, 17, 30);
     private final LocalDate testRecruitApplyDate = LocalDate.of(2023, 7, 19);
@@ -67,7 +72,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void create_새로운_recruit_만들기() {
+    @DisplayName("[create] 새로운 recruit 만들기 정상 요청")
+    void testCreateRecruit() {
         //given
         RecruitCreate recruitCreate = RecruitCreate.builder()
                 .title("dto-title")
@@ -97,7 +103,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void create_새로운_recruit_만들기_nullable() {
+    @DisplayName("[create] 새로운 recruit 만들기 nullable 정상 요청")
+    void testCreateRecruitNullable() {
         //given
         RecruitCreate recruitCreate = RecruitCreate.builder()
                 .title("dto-title")
@@ -123,7 +130,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void update_기존_recruit_수정() {
+    @DisplayName("[update] recruit 수정 정상 요청")
+    void testUpdateRecruit() {
         //given
         RecruitUpdate recruitUpdate = RecruitUpdate.builder()
                 .title("update-title")
@@ -153,7 +161,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void update_수정시_없는_리소스로의_요청은_에러() {
+    @DisplayName("[update] recruit 수정 없는 리소스로의 요청 ResourceNotFoundException")
+    void testUpdateRecruitResourceNotFound() {
         //given
         RecruitUpdate recruitUpdate = RecruitUpdate.builder()
                 .title("update-title")
@@ -173,7 +182,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void update_다른_사용자가_수정요청시_에러() {
+    @DisplayName("[update] recruit 수정 다른 사용자의 요청 RecruitOwnerMismatchException")
+    void testUpdateRecruitOwnerMismatch() {
         //given
         RecruitUpdate recruitUpdate = RecruitUpdate.builder()
                 .title("update-title")
@@ -197,7 +207,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void updateStatus_다른_사용자가_수정요청시_에러() {
+    @DisplayName("[updateState] recruit 상태수정 다른 사용자의 요청 RecruitOwnerMismatchException")
+    void testUpdateRecruitStateOwnerMismatch() {
         //given
         RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
                 .status(RecruitStatus.ACCEPTED).build();
@@ -214,7 +225,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void updateStatus_status만_수정시_없는_리소스로의_요청은_에러() {
+    @DisplayName("[updateState] recruit 상태수정 없는 리소스로의 요청 ResourceNotFoundException")
+    void testUpdateRecruitStateResourceNotFound() {
         //given
         RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
                 .status(RecruitStatus.ACCEPTED).build();
@@ -226,7 +238,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void updateStatus_기존_recruit_status_수정() {
+    @DisplayName("[updateState] recruit 상태수정 정상 요청")
+    void testUpdateRecruitState() {
         //given
         RecruitStatusUpdate recruitStatusUpdate = RecruitStatusUpdate.builder()
                 .status(RecruitStatus.ACCEPTED).build();
@@ -248,7 +261,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void disable_기존_recruit_비활성화() {
+    @DisplayName("[disable] recruit 비활성화 정상 요청")
+    void testDisableRecruit() {
         //given
         //when
         Recruit result = recruitService.disable(requestMember, 1L);
@@ -262,7 +276,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void disable_없는_유저는_비활성화_할수_없다() {
+    @DisplayName("[disable] recruit 비활성화 없는 리소스로의 요청 ResourceNotFoundException")
+    void testDisableRecruitResourceNotFound() {
         //given
         //when
         //then
@@ -272,7 +287,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void disable_비활성화된_유저는_getById로_찾을수_없다() {
+    @DisplayName("[getById] recruit 비활성화된 공고는 찾을 수 없다. ResourceNotFoundException")
+    void testGetByIdDisabledRecruit() {
         //given
         recruitService.disable(requestMember, 1L);
 
@@ -284,7 +300,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void disable_다른_사용자가_요청할수_없다() {
+    @DisplayName("[disable] recruit 비활성화 다른 사용자의 요청은 RecruitOwnerMismatchException")
+    void testDisableRecruitOwnerMismatch() {
         //given
         Member anotherMember = Member.builder()
                 .id(2222L)
@@ -297,7 +314,8 @@ class RecruitServiceTest {
                 .isInstanceOf(RecruitOwnerMismatchException.class);
     }
     @Test
-    void findAllByEndTime_마감시간이_date인_모든_active공고를_불러온다() {
+    @DisplayName("[findAllByEndTime] 정상 요청")
+    void testFindAllByEndTime() {
         //given
         int times = 10;
         for (int i = 0; i < times; i++){
@@ -314,7 +332,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void findAllByEndTime_마감시간이_date인_inactive공고는_제외한다() {
+    @DisplayName("[findAllByEndTime] disable 공고는 제외한다")
+    void testFindAllByEndTimeDisable() {
         //given
         int times = 10;
         for (int i = 0; i < times; i++){
@@ -332,7 +351,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void findAllByEndTime_active_inactive공고() {
+    @DisplayName("[findAllByEndTime] disable 공고는 제외한다2")
+    void testFindAllByEndTimeDisable2() {
         //given
         int times = 10;
         for (int i = 0; i < times; i++){
@@ -350,7 +370,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void findAllByEndTimeAfter_마감이_안지난_active공고를_불러온다() {
+    @DisplayName("[findAllByEndTimeAfter] 정상 요청")
+    void testFindAllByEndTimeAfter() {
         //given
         //when
         List<Recruit> result = recruitService.findAllByEndTimeAfter(requestMember, testRecruitEndTime.minusDays(1));
@@ -360,7 +381,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void findAllByEndTimeAfter_inactive공고는_제외한다() {
+    @DisplayName("[findAllByEndTimeAfter] disable 공고는 제외한다.")
+    void testFindAllByEndTimeAfterDisable() {
         //given
         recruitService.disable(requestMember, 1L);
 
@@ -372,7 +394,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void findAllValidRecruitByMemberIdTest() {
+    @DisplayName("[findAllValidRecruitByMemberId] 정상 요청")
+    void testFindAllValidRecruitByMemberId() {
         //given
         for (RecruitStatus value : RecruitStatus.values()) {
             RecruitCreate recruitCreate = RecruitCreate.builder()
@@ -413,7 +436,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void findAllValidRecruitByYearAndMonthTest() {
+    @DisplayName("[findAllValidRecruitByYearAndMonth] 정상 요청")
+    void testFindAllValidRecruitByYearAndMonth() {
         //given
         for (int i = 0; i <10; i++) {
             RecruitCreate recruitCreate = RecruitCreate.builder()
@@ -436,7 +460,8 @@ class RecruitServiceTest {
     }
 
     @Test
-    void findAllValidRecruitByYearAndMonth_inactive는_제외() {
+    @DisplayName("[findAllValidRecruitByYearAndMonth] disable 공고는 제외한다.")
+    void testFindAllValidRecruitByYearAndMonthDisable() {
         //given
         for (int i = 0; i <10; i++) {
             RecruitCreate recruitCreate = RecruitCreate.builder()

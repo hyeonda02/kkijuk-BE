@@ -13,6 +13,7 @@ import umc.kkijuk.server.common.domian.exception.*;
 import umc.kkijuk.server.common.domian.response.ErrorResponse;
 import umc.kkijuk.server.common.domian.exception.ConfirmPasswordMismatchException;
 import umc.kkijuk.server.common.domian.response.ErrorResultResponse;
+import umc.kkijuk.server.login.exception.UnauthorizedException;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
@@ -68,8 +69,8 @@ public class ExceptionControllerAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(EmailNotFoundException.class)
-    public ErrorResponse EmailNotFoundException(EmailNotFoundException e) {
+    @ExceptionHandler(MemberEmailNotFoundException.class)
+    public ErrorResponse EmailNotFoundException(MemberEmailNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -93,6 +94,12 @@ public class ExceptionControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(OwnerMismatchException.class)
     public ErrorResponse CareerOwnerMismatchException(OwnerMismatchException exception) {
+        return new ErrorResponse(exception.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ExceptionHandler(UnauthorizedException.class)
+    public ErrorResponse UnauthorizedException(UnauthorizedException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 }

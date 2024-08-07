@@ -1,6 +1,8 @@
 package umc.kkijuk.server.member.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,20 +14,22 @@ import umc.kkijuk.server.member.controller.response.MemberStateResponse;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.*;
-import umc.kkijuk.server.member.repository.MemberJpaRepository;
+import umc.kkijuk.server.member.repository.MemberRepository;
 
 import java.util.List;
 
+@Slf4j
 @Service
+@Builder
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public Member getById(Long memberId) {
-        return memberJpaRepository.findById(memberId)
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Member", memberId));
     }
 
@@ -42,7 +46,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberJoinDto.getPassword());
         joinMember.changeMemberPassword(encodedPassword);
 
-        memberJpaRepository.save(joinMember);
+        memberRepository.save(joinMember);
         return joinMember;
     }
 
@@ -113,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberPasswordChangeDto.getNewPassword());
         member.changeMemberPassword(encodedPassword);
 
-        memberJpaRepository.save(member);
+        memberRepository.save(member);
         return member;
     }
 
@@ -149,7 +153,7 @@ public class MemberServiceImpl implements MemberService {
             member.inactivate();
         }
 
-        memberJpaRepository.save(member);
+        memberRepository.save(member);
 
         return MemberStateResponse.builder()
                 .deleteDate(member.getDeleteDate())

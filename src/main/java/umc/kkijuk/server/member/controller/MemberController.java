@@ -2,11 +2,14 @@ package umc.kkijuk.server.member.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.common.LoginUser;
+import umc.kkijuk.server.login.controller.dto.LoginInfo;
+import umc.kkijuk.server.login.service.LoginService;
 import umc.kkijuk.server.member.controller.response.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.*;
@@ -24,6 +27,7 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final LoginService loginService;
 //    private final MailService mailService;
     private int authRandomNumber; // 이메일 인증 숫자를 저장하는 변수
 
@@ -31,9 +35,14 @@ public class MemberController {
             summary = "회원가입 요청",
             description = "회원가입 요청을 받아 성공/실패 여부를 반환합니다.")
     @PostMapping
-    public ResponseEntity<CreateMemberResponse> saveMember(@RequestBody @Valid MemberJoinDto memberJoinDto) {
+    public ResponseEntity<CreateMemberResponse> saveMember(
+            @RequestBody @Valid MemberJoinDto memberJoinDto,
+            HttpServletRequest request
+
+    ) {
         Member joinMember = memberService.join(memberJoinDto);
 
+        loginService.makeLoginSession(LoginInfo.from(joinMember), request);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new CreateMemberResponse(joinMember.getId(), "Member created successfully"));

@@ -9,7 +9,7 @@ import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
-import umc.kkijuk.server.member.repository.MemberJpaRepository;
+import umc.kkijuk.server.member.repository.MemberRepository;
 import umc.kkijuk.server.record.domain.Record;
 import umc.kkijuk.server.record.domain.RecordRepository;
 import umc.kkijuk.server.record.dto.RecordListResDto;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class RecordService {
     private final CareerRepository careerRepository;
     private final RecordRepository recordRepository;
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
     public Long saveRecord(Member requestMember, RecordReqDto recordReqDto){
@@ -45,7 +45,7 @@ public class RecordService {
 
     @Transactional
     public RecordResDto getRecord(Member requestMember) {
-        Member member=memberJpaRepository.findById(requestMember.getId())
+        Member member= memberRepository.findById(requestMember.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
         List<Record> records = recordRepository.findAll();
@@ -87,7 +87,7 @@ public class RecordService {
             throw new IntroOwnerMismatchException();
         }
 
-        Member member=memberJpaRepository.findById(requestMember.getId())
+        Member member= memberRepository.findById(requestMember.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
         List<Career> careers = careerRepository.findAll();
