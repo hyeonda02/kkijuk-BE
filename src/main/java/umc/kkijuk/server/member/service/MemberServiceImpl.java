@@ -43,8 +43,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberJoinDto.getPassword());
         joinMember.changeMemberPassword(encodedPassword);
 
-        memberJpaRepository.save(joinMember);
-        return joinMember;
+        return memberJpaRepository.save(joinMember);
     }
 
     @Override
@@ -86,18 +85,18 @@ public class MemberServiceImpl implements MemberService {
         if(!member.getField().equals(memberFieldDto.getField())){
             throw new FieldUpdateException();
         }
-        return member;
+        return memberJpaRepository.save(member);
     }
 
     @Override
     @Transactional
     public Member updateMemberInfo(Long memberId, MemberInfoChangeDto memberInfoChangeDto){
         Member member = this.getById(memberId);
-        member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
         if(member.getPhoneNumber() == null || member.getBirthDate() == null || member.getMarketingAgree() == null){
             throw new InvalidMemberDataException();
         }
-        return member;
+        member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
+        return memberJpaRepository.save(member);
     }
 
     @Override
@@ -114,12 +113,10 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberPasswordChangeDto.getNewPassword());
         member.changeMemberPassword(encodedPassword);
 
-        memberJpaRepository.save(member);
-        return member;
+        return memberJpaRepository.save(member);
     }
 
     @Override
-    @Transactional
     public Member myPagePasswordAuth(Long memberId, MyPagePasswordAuthDto myPagePasswordAuthDto) {
         Member member = this.getById(memberId);
 
