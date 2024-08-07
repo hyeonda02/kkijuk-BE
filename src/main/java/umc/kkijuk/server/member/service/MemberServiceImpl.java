@@ -15,6 +15,7 @@ import umc.kkijuk.server.member.dto.*;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -154,6 +155,16 @@ public class MemberServiceImpl implements MemberService {
         return MemberStateResponse.builder()
                 .deleteDate(member.getDeleteDate())
                 .build();
+    }
+
+    @Override
+    public Boolean confirmDupEmail(MemberEmailDto memberEmailDto) {
+        Optional<Member> member = memberJpaRepository.findByEmail(memberEmailDto.getEmail());
+        if(member.isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
     }
 
 }

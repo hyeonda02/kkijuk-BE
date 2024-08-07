@@ -10,7 +10,6 @@ import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.member.controller.response.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.*;
-//import umc.kkijuk.server.member.emailauth.MailService;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -37,6 +36,15 @@ public class MemberController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new CreateMemberResponse(joinMember.getId(), "Member created successfully"));
+    }
+
+    @Operation(
+            summary = "이메일 중복 확인",
+            description = "회원가입시 이메일 중복을 확인합니다.")
+    @PostMapping("/confirmEmail")
+    public ResponseEntity<Boolean> confirmEmail(@RequestBody MemberEmailDto memberEmailDto){
+        Boolean result = memberService.confirmDupEmail(memberEmailDto);
+        return ResponseEntity.ok(result);
     }
 
     @Operation(

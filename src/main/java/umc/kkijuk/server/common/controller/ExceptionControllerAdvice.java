@@ -95,4 +95,16 @@ public class ExceptionControllerAdvice {
     public ErrorResponse CareerOwnerMismatchException(OwnerMismatchException exception) {
         return new ErrorResponse(exception.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MemberAlreadyExistsException.class)
+    public ErrorResponse MemberAlreadyExistsException(MemberAlreadyExistsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CertificationNumberMismatchException.class)
+    public ErrorResponse CertificationNumberMismatchException(CertificationNumberMismatchException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }
