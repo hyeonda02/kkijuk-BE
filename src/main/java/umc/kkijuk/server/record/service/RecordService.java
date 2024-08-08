@@ -8,13 +8,14 @@ import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.introduce.domain.Introduce;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
+import umc.kkijuk.server.record.domain.Education;
+import umc.kkijuk.server.record.domain.EducationRepository;
 import umc.kkijuk.server.record.domain.Record;
 import umc.kkijuk.server.record.domain.RecordRepository;
-import umc.kkijuk.server.record.dto.RecordListResDto;
-import umc.kkijuk.server.record.dto.RecordReqDto;
-import umc.kkijuk.server.record.dto.RecordResDto;
+import umc.kkijuk.server.record.dto.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +26,7 @@ public class RecordService {
     private final CareerRepository careerRepository;
     private final RecordRepository recordRepository;
     private final MemberJpaRepository memberJpaRepository;
+    private final EducationRepository educationRepository;
 
     @Transactional
     public Long saveRecord(Member requestMember, RecordReqDto recordReqDto){
@@ -41,6 +43,40 @@ public class RecordService {
         recordRepository.save(record);
 
         return record.getId();
+    }
+
+    @Transactional
+    public Long saveEducation(Long recordId, EducationReqDto educationReqDto){
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+
+        Education education=Education.builder()
+                .category(educationReqDto.getCategory())
+                .schoolName(educationReqDto.getSchoolName())
+                .major(educationReqDto.getMajor())
+                .state(educationReqDto.getState())
+                .admissionDate(educationReqDto.getAdmissionDate())
+                .graduationDate(educationReqDto.getGraduationDate())
+                .build();
+
+        education.setRecord(record);
+
+        educationRepository.save(education);
+
+        return education.getId();
+    }
+
+    @Transactional
+    public Long deleteEducation(Member requestMember, Long educationId){
+        Education education=educationRepository.findById(educationId)
+                .orElseThrow(()-> new ResourceNotFoundException("education ", educationId));
+        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        educationRepository.delete(education);
+
+        return education.getId();
     }
 
     @Transactional
@@ -67,11 +103,15 @@ public class RecordService {
                 .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
                 .collect(Collectors.toList());
 
-
         // 이력서 있을 때
         if (!records.isEmpty()) {
             Record record = records.get(0);
-            return new RecordResDto(record, member, activitiesAndExperiences, jobs);
+            List<EducationResDto> educationList = record.getEducations()
+                    .stream()
+                    .map(education -> new EducationResDto(education))
+                    .collect(Collectors.toList());
+
+            return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
         }
 
         // 이력서 없을 때
@@ -112,7 +152,13 @@ public class RecordService {
                 recordReqDto.getAddress(),
                 recordReqDto.getProfileImageUrl());
 
-        return new RecordResDto(record, member, activitiesAndExperiences, jobs);
+        List<EducationResDto> educationList = record.getEducations()
+                .stream()
+                .map(education -> new EducationResDto(education))
+                .collect(Collectors.toList());
+
+        return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
     }
+
 
 }
