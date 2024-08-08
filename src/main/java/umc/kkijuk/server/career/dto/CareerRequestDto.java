@@ -5,11 +5,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
-import umc.kkijuk.server.career.validation.ValidCategory;
 import umc.kkijuk.server.career.validation.ValidPeriod;
 
 import java.time.LocalDate;
@@ -49,7 +47,6 @@ public class CareerRequestDto {
         @Schema(description = "활동 종료 날짜", example = "2024-07-20", type = "string")
         LocalDate endDate;
 
-        @ValidCategory
         @NotNull(message = "활동 카테고리는 필수 선택 항목입니다.")
         @Schema(description = "활동 카테고리", example = "1", type = "int")
         Integer category;
