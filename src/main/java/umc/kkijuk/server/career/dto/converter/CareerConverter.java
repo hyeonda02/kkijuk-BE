@@ -1,6 +1,5 @@
 package umc.kkijuk.server.career.dto.converter;
 
-import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.CareerResponseDto;
@@ -11,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class CareerConverter {
-
     public static Career toCareer(CareerRequestDto.CreateCareerDto request, Long memberId){
         return Career.builder()
                 .memberId(memberId)
@@ -21,7 +19,6 @@ public class CareerConverter {
                 .startdate(request.getStartDate())
                 .enddate(request.getEndDate())
                 .unknown(request.getIsUnknown())
-                .enddate(request.getEndDate())
                 .build();
     }
     public static CareerResponseDto.CareerResultDto toCareerResultDto(Career career){

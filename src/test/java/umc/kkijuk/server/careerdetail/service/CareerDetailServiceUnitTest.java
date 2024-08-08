@@ -153,7 +153,7 @@ public class CareerDetailServiceUnitTest {
         //given
         when(careerDetailRepository.findById(any(Long.class))).thenReturn(Optional.of(careerDetail));
         //when
-        careerDetailService.delete(testRequestMember1, 1L);
+        careerDetailService.delete(testRequestMember1, 1L,1L);
         //then
         verify(careerDetailRepository,times(1)).delete(careerDetail);
     }
@@ -165,7 +165,7 @@ public class CareerDetailServiceUnitTest {
         //when
         //then
         assertThrows(ResourceNotFoundException.class, () ->
-                careerDetailService.delete(testRequestMember1, 1L));
+                careerDetailService.delete(testRequestMember1, 1L,1L));
         verify(careerDetailRepository, never()).delete(any(CareerDetail.class));
         verify(careerDetailRepository,times(1)).findById(any(Long.class));
     }

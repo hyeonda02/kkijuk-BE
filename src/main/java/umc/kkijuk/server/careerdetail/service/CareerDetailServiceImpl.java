@@ -12,6 +12,7 @@ import umc.kkijuk.server.careerdetail.dto.converter.CareerDetailConverter;
 import umc.kkijuk.server.careerdetail.dto.converter.CareerTagConverter;
 import umc.kkijuk.server.careerdetail.repository.CareerDetailRepository;
 import umc.kkijuk.server.careerdetail.repository.CareerTagRepository;
+import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
@@ -52,8 +53,12 @@ public class CareerDetailServiceImpl implements CareerDetailService{
 
     @Override
     @Transactional
-    public void delete(Member reqeustMember ,Long detailId) {
+    public void delete(Member reqeustMember , Long careerId , Long detailId) {
         CareerDetail careerDetail = careerDetailRepository.findById(detailId).orElseThrow(() -> new ResourceNotFoundException("CareerDetail", detailId));
+        Career career = careerDetail.getCareer();
+        if(!career.getId().equals(careerId)){
+            throw new CareerValidationException("주어진 활동 기록 Id는 해당 활동에 속하지 않습니다. 활동 Id와 활동 기록 Id를 확인해 주세요.");
+        }
         if(!careerDetail.getMemberId().equals(reqeustMember.getId())){
             throw new OwnerMismatchException();
         }
@@ -63,6 +68,10 @@ public class CareerDetailServiceImpl implements CareerDetailService{
     @Transactional
     public CareerDetail update(Member requestMember, CareerDetailRequestDto.CareerDetailUpdate request, Long careerId, Long detailId){
         CareerDetail updateCareerDetail = careerDetailRepository.findById(detailId).orElseThrow(() -> new ResourceNotFoundException("CareerDetail", detailId));
+        Career career = updateCareerDetail.getCareer();
+        if(!career.getId().equals(careerId)){
+            throw new CareerValidationException("주어진 활동 기록 Id는 해당 활동에 속하지 않습니다. 활동 Id와 활동 기록 Id를 확인해 주세요.");
+        }
         if(!updateCareerDetail.getMemberId().equals(requestMember.getId())){
             throw new OwnerMismatchException();
         }

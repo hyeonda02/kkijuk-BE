@@ -37,7 +37,7 @@ public class CareerServiceImpl implements CareerService {
             career.setEnddate(LocalDate.now());
             career.setYear(LocalDate.now().getYear());
         }
-        career.setCategory(categoryRepository.findById(Long.valueOf(request.getCategory())).get());
+        career.setCategory(categoryRepository.findById(Long.valueOf(request.getCategory())).orElseThrow(() -> new ResourceNotFoundException("category", request.getCategory())));
         career.setYear(parsingYear(request));
         return careerRepository.save(career);
     }
