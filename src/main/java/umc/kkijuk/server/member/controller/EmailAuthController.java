@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.member.emailauth.MailAddressDto;
 import umc.kkijuk.server.member.emailauth.MailCertificationDto;
 import umc.kkijuk.server.member.emailauth.MailCertificationResponse;
-import umc.kkijuk.server.member.emailauth.MailService;
+import umc.kkijuk.server.member.emailauth.MailServiceImpl;
 
 @Tag(name = "auth", description = "이메일 인증 API")
 @RestController
@@ -17,7 +17,7 @@ import umc.kkijuk.server.member.emailauth.MailService;
 @RequiredArgsConstructor
 public class EmailAuthController {
 
-    private final MailService mailService;
+    private final MailServiceImpl mailService;
 
     @Operation(
             summary = "이메일 인증번호 요청",

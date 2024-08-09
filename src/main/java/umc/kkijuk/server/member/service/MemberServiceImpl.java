@@ -13,6 +13,7 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.*;
 import umc.kkijuk.server.member.repository.MemberJpaRepository;
+import umc.kkijuk.server.member.repository.MemberRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,12 +22,12 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
-    private final MemberJpaRepository memberJpaRepository;
+    private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public Member getById(Long memberId) {
-        return memberJpaRepository.findById(memberId)
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Member", memberId));
     }
 
@@ -43,7 +44,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberJoinDto.getPassword());
         joinMember.changeMemberPassword(encodedPassword);
 
-        return memberJpaRepository.save(joinMember);
+        return memberRepository.save(joinMember);
     }
 
     @Override
@@ -85,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
         if(!member.getField().equals(memberFieldDto.getField())){
             throw new FieldUpdateException();
         }
-        return memberJpaRepository.save(member);
+        return memberRepository.save(member);
     }
 
     @Override
@@ -96,7 +97,7 @@ public class MemberServiceImpl implements MemberService {
             throw new InvalidMemberDataException();
         }
         member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
-        return memberJpaRepository.save(member);
+        return memberRepository.save(member);
     }
 
     @Override
@@ -113,7 +114,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberPasswordChangeDto.getNewPassword());
         member.changeMemberPassword(encodedPassword);
 
-        return memberJpaRepository.save(member);
+        return memberRepository.save(member);
     }
 
     @Override
@@ -129,15 +130,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public EmailAuthResponse getEmailAuth(EmailAddressDto emailAddressDto, int authRandomNumber){
-        return EmailAuthResponse.builder()
-                .email(emailAddressDto.getEmail())
-                .authNumber(authRandomNumber)
-                .build();
-    }
-
-    @Override
-    @Transactional
     public MemberStateResponse changeMemberState(Long memberId){
         Member member = this.getById(memberId);
         if(member.getUserState().equals(State.INACTIVATE)){
@@ -147,21 +139,22 @@ public class MemberServiceImpl implements MemberService {
             member.inactivate();
         }
 
-        memberJpaRepository.save(member);
+        memberRepository.save(member);
 
         return MemberStateResponse.builder()
                 .deleteDate(member.getDeleteDate())
                 .build();
     }
 
-    @Override
-    public Boolean confirmDupEmail(MemberEmailDto memberEmailDto) {
-        Optional<Member> member = memberJpaRepository.findByEmail(memberEmailDto.getEmail());
-        if(member.isEmpty()){
-            return true;
-        }else{
-            return false;
-        }
-    }
+//    @Override
+//    @Transactional
+//    public EmailAuthResponse getEmailAuth(EmailAddressDto emailAddressDto, int authRandomNumber){
+//        return EmailAuthResponse.builder()
+//                .email(emailAddressDto.getEmail())
+//                .authNumber(authRandomNumber)
+//                .build();
+//    }
+
+
 
 }
