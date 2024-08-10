@@ -25,6 +25,22 @@ public class CareerResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    public static class CareerSearchDto{
+        Long id;
+        String careerName;
+        String alias;
+        String summary;
+        LocalDate startDate;
+        LocalDate endDate;
+        List<CareerDetailResponseDto.CareerDetailResult> details;
+
+
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class CareerDto{
         Long id;
         String careerName;
@@ -86,6 +102,15 @@ public class CareerResponseDto {
 
         private int totalDetailCount;
         private List<CareerDetailResponseDto.CareerDetailResult> details;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CareerSearchDtoList{
+        @Schema(description = "필터링 된 활동 목록")
+        private List<CareerSearchDto> careers;
     }
 
 

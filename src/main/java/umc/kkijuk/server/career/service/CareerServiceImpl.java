@@ -1,9 +1,11 @@
 package umc.kkijuk.server.career.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.career.domain.Category;
+import umc.kkijuk.server.career.repository.specification.CareerSpecification;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
@@ -100,6 +102,12 @@ public class CareerServiceImpl implements CareerService {
         }
     }
 
+    @Override
+    public List<Career> searchCareer(Member requestMember, CareerRequestDto.SearchCareerDto request) {
+        Specification<Career> spec = CareerSpecification.filterCareers(request);
+        return careerRepository.findAll(spec);
+
+    }
     @Override
     public Career findCareerDetail(Member requestMember, Long careerId) {
         Career career = findCareer(careerId).get();

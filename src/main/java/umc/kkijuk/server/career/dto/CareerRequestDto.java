@@ -85,4 +85,45 @@ public class CareerRequestDto {
         Integer category;
     }
 
+    @Getter
+    @Builder
+    public static class SearchCareerDto {
+        @Nullable
+        @Schema(description = "검색어", example = "앱서비스", type="string")
+        String search;
+
+
+        @NotNull(message = "검색 조건에서 활동명을 선택하였는지를 나타냅니다. true 나 false 값을 주세요")
+        @Schema(description = "활동명 조건 선택 여부", example = "true", type="Boolean")
+        Boolean careerName;
+
+        @NotNull(message = "검책 조건에서 활동 기록을 선택하였는지를 나타냅니다. true 나 false 값을 주세요.")
+        @Schema(description = "활동 기록 조건 선택 여부", example = "false", type="Boolean")
+        Boolean careerDetail;
+
+        @NotNull(message = "활동 기간을 알고 있는지 여부를 나타냅니다.")
+        @Schema(description = "태그 조건 선택 여부", example = "false", type="Boolean")
+        Boolean tag;
+
+
+        @Nullable
+        @Schema(description = "정렬 기준", example = "desc", type="String")
+        String sort;
+
+
+
+
+        @Nullable
+        @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        @Schema(description = "검색 기간 ( 시작 기간 )", example = "2024-04-14", type="string")
+        LocalDate startDate;
+
+        @Nullable
+        @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        @Schema(description = "검색 기간 ( 종료 기간 )", example = "2024-07-20", type = "string")
+        LocalDate endDate;
+
+    }
+
+
 }

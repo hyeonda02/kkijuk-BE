@@ -26,6 +26,36 @@ public class CareerConverter {
                 .careerId(career.getId())
                 .build();
     }
+
+    public static CareerResponseDto.CareerSearchDtoList toCareerSearchDtoList(List<Career> searchCareers) {
+        return CareerResponseDto.CareerSearchDtoList.builder()
+                .careers(searchCareers.stream().map(entry ->
+                                CareerResponseDto.CareerSearchDto.builder()
+                                        .id(entry.getId())
+                                        .careerName(entry.getName())
+                                        .alias(entry.getAlias())
+                                        .summary(entry.getSummary())
+                                        .startDate(entry.getStartdate())
+                                        .endDate(entry.getEnddate())
+                                        .details(entry.getCareerDetailList().stream().map(detail ->
+                                                        CareerDetailResponseDto.CareerDetailResult.builder()
+                                                                .id(detail.getId())
+                                                                .careerId(detail.getCareer().getId())
+                                                                .title(detail.getTitle())
+                                                                .content(detail.getContent())
+                                                                .startDate(detail.getStartDate())
+                                                                .endDate(detail.getEndDate())
+                                                                .careerTagList(detail.getCareerTagList().stream().map(tag ->
+                                                                                CareerDetailResponseDto.CareerTag.builder()
+                                                                                        .id(tag.getTag().getId())
+                                                                                        .tagName(tag.getTag().getName())
+                                                                                        .build()).collect(Collectors.toList()))
+                                                                .build()).collect(Collectors.toList()))
+                                        .build()).collect(Collectors.toList())).build();
+    }
+
+
+
     public static CareerResponseDto.CareerDto toCareerDto(Career career) {
         return CareerResponseDto.CareerDto.builder()
                 .id(career.getId())
@@ -40,6 +70,7 @@ public class CareerConverter {
                 .categoryName(career.getCategory().getName())
                 .build();
     }
+
 
     public static List<CareerResponseDto.CareerGroupedByCategoryDto> toCareerGroupedByCategoryDto( Map<String, List<Career>> groupedCareers ) {
         return groupedCareers.entrySet().stream()
