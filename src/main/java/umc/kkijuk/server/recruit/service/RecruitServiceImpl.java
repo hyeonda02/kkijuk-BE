@@ -8,6 +8,7 @@ import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
+import umc.kkijuk.server.recruit.domain.RecruitApplyDateUpdate;
 import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
@@ -98,6 +99,17 @@ public class RecruitServiceImpl implements RecruitService {
         return recruits.stream()
                 .map(RecruitListByMonthDto::from)
                 .toList();
+    }
+
+    @Override
+    public Recruit updateApplyDate(Member requestMember, long recruitId, RecruitApplyDateUpdate recruitApplyDateUpdate) {
+        Recruit recruit = getById(recruitId);
+        if (!recruit.getMemberId().equals(requestMember.getId())) {
+            throw new RecruitOwnerMismatchException();
+        }
+
+        recruit = recruit.updateApplyDate(recruitApplyDateUpdate);
+        return recruitRepository.save(recruit);
     }
 
     private boolean isUnappliedOrPlanned(Recruit recruit) {

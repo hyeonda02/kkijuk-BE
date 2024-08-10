@@ -27,4 +27,6 @@ public interface RecruitService {
     List<ValidRecruitDto> findAllValidRecruitByMemberId(Member member, LocalDateTime endTime);
 
     List<RecruitListByMonthDto> findAllValidRecruitByYearAndMonth(Member member, Integer year, Integer month);
+
+    Recruit updateApplyDate(Member requestMember, long recruitId, RecruitApplyDateUpdate recruitApplyDateUpdate);
 }

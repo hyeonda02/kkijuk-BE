@@ -8,6 +8,7 @@ on:
       - mvp/career
       - mvp/portfolio
       - feature/record
+      - feat/update-recruit-date
 
 jobs:
   CI:
