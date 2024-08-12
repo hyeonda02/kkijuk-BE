@@ -163,7 +163,7 @@ public class RecruitController {
     }
 
     @Operation(
-            summary = "공고 지워 날짜 수정",
+            summary = "공고 지원 날짜 수정",
             description = "공고 지원 날짜를 주어진 날짜로 수정합니다.")
     @PatchMapping("/{recruitId}/apply-date")
     public ResponseEntity<RecruitIdResponse> updateApplyDate(@RequestBody @Valid RecruitApplyDateUpdate recruitApplyDateUpdate,
@@ -173,5 +173,17 @@ public class RecruitController {
         return ResponseEntity
                 .ok()
                 .body(RecruitIdResponse.from(recruit));
+    }
+
+    @Operation(
+            summary = "메인화면 공고 리마인더 API",
+            description = "생성한 공고 중 남은 마감일자가 적은 순서로 두 개 출력"
+    )
+    @GetMapping("/remind")
+    public ResponseEntity<RecruitRemindResponse> remind() {
+        List<Recruit> recruit = recruitService.getTopTwoRecruitsByEndTime(requestMember);
+        return ResponseEntity
+                .ok()
+                .body(RecruitRemindResponse.from(recruit));
     }
 }
