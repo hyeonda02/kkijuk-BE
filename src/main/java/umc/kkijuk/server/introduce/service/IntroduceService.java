@@ -67,14 +67,6 @@ public class IntroduceService {
     }
 
     @Transactional
-    public List<HomeIntroduceResDto> getHomeIntro(Member requestMember) {
-        List<Introduce> introduces = introduceRepository.findTop2ByMemberIdOrderByEndTimeAsc(requestMember.getId());
-        return introduces.stream()
-                .map(HomeIntroduceResDto::new)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
     public List<IntroduceListResDto> getIntroList(Member requestMember){
         List<Introduce> introduces = introduceRepository.findAllByMemberId(requestMember.getId())
                 .orElseThrow(IntroOwnerMismatchException::new);

@@ -11,8 +11,4 @@ import java.util.Optional;
 public interface IntroduceRepository extends JpaRepository<Introduce, Long> {
     Optional<Introduce> findByRecruitId(Long recruitId);
     Optional<List<Introduce>> findAllByMemberId(Long memberId);
-
-    @Query("SELECT i FROM Introduce i WHERE i.memberId = :memberId ORDER BY i.recruit.endTime ASC")
-    List<Introduce> findTop2ByMemberIdOrderByEndTimeAsc(@Param("memberId") Long memberId);
-
 }

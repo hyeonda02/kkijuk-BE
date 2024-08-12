@@ -70,12 +70,4 @@ public class IntroduceController {
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "자기소개서 삭제 완료", intro_Id));
     }
 
-    @GetMapping("/home")
-    @Operation(summary = "홈 자기소개서 작성 알림")
-    public ResponseEntity<Object> get(){
-        List<HomeIntroduceResDto> homeIntroduceResDtos = introduceService.getHomeIntro(requestMember);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "홈 자기소개서 작성 알림 조회 완료", homeIntroduceResDtos));
-    }
 }
