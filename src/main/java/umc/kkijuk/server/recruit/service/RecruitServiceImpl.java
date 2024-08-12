@@ -8,11 +8,13 @@ import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
+import umc.kkijuk.server.recruit.domain.RecruitApplyDateUpdate;
 import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -84,7 +86,7 @@ public class RecruitServiceImpl implements RecruitService {
     }
 
     @Override
-    public List<ValidRecruitDto> findAllValidRecruitByMemberId(Member requestMember, LocalDateTime endTime) {
+    public List<ValidRecruitDto> findAllValidRecruitByMember(Member requestMember, LocalDateTime endTime) {
         List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberId(requestMember.getId());
         return recruits.stream()
                 .filter(item -> !isUnappliedOrPlanned(item) || item.getEndTime().isAfter(endTime))
@@ -97,6 +99,26 @@ public class RecruitServiceImpl implements RecruitService {
         List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberIdAndMonth(requestMember.getId(), year, month);
         return recruits.stream()
                 .map(RecruitListByMonthDto::from)
+                .toList();
+    }
+
+    @Override
+    public Recruit updateApplyDate(Member requestMember, long recruitId, RecruitApplyDateUpdate recruitApplyDateUpdate) {
+        Recruit recruit = getById(recruitId);
+        if (!recruit.getMemberId().equals(requestMember.getId())) {
+            throw new RecruitOwnerMismatchException();
+        }
+
+        recruit = recruit.updateApplyDate(recruitApplyDateUpdate);
+        return recruitRepository.save(recruit);
+    }
+
+    @Override
+    public List<Recruit> getTopTwoRecruitsByEndTime(Member requestMember) {
+        List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberIdAndEndTimeAfter(requestMember.getId(), LocalDate.now().atStartOfDay());
+        return recruits.stream()
+                .sorted(Comparator.comparing(Recruit::getEndTime))
+                .limit(2)
                 .toList();
     }
 
