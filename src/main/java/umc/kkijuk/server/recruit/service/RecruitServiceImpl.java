@@ -86,7 +86,7 @@ public class RecruitServiceImpl implements RecruitService {
     }
 
     @Override
-    public List<ValidRecruitDto> findAllValidRecruitByMemberId(Member requestMember, LocalDateTime endTime) {
+    public List<ValidRecruitDto> findAllValidRecruitByMember(Member requestMember, LocalDateTime endTime) {
         List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberId(requestMember.getId());
         return recruits.stream()
                 .filter(item -> !isUnappliedOrPlanned(item) || item.getEndTime().isAfter(endTime))

@@ -141,7 +141,7 @@ public class RecruitController {
             @RequestParam LocalDateTime time
     ) {
 //        Member requestMember = memberService.findOne(LoginUser.get().getId());
-        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMemberId(requestMember, time);
+        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMember(requestMember, time);
         return ResponseEntity
                 .ok()
                 .body(ValidRecruitListResponse.from(ValidRecruitDtoList));
@@ -173,17 +173,5 @@ public class RecruitController {
         return ResponseEntity
                 .ok()
                 .body(RecruitIdResponse.from(recruit));
-    }
-
-    @Operation(
-            summary = "메인화면 공고 리마인더 API",
-            description = "생성한 공고 중 남은 마감일자가 적은 순서로 두 개 출력"
-    )
-    @GetMapping("/remind")
-    public ResponseEntity<RecruitRemindResponse> remind() {
-        List<Recruit> recruit = recruitService.getTopTwoRecruitsByEndTime(requestMember);
-        return ResponseEntity
-                .ok()
-                .body(RecruitRemindResponse.from(recruit));
     }
 }

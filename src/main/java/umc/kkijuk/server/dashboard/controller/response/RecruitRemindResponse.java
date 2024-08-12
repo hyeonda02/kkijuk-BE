@@ -1,7 +1,8 @@
-package umc.kkijuk.server.recruit.controller.response;
+package umc.kkijuk.server.dashboard.controller.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import umc.kkijuk.server.recruit.controller.response.RecruitTitleEndTime;
 import umc.kkijuk.server.recruit.domain.Recruit;
 
 import java.time.LocalDate;
