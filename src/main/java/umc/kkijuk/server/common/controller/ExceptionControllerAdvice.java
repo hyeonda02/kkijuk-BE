@@ -93,7 +93,7 @@ public class ExceptionControllerAdvice {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(OwnerMismatchException.class)
-    public ErrorResponse CareerOwnerMismatchException(OwnerMismatchException exception) {
+    public ErrorResponse OwnerMismatchException(OwnerMismatchException exception) {
         return new ErrorResponse(exception.getMessage());
     }
 

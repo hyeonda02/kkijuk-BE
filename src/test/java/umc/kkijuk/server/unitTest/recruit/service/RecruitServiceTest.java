@@ -422,7 +422,7 @@ class RecruitServiceTest {
         }
 
         //when
-        List<ValidRecruitDto> result = recruitService.findAllValidRecruitByMemberId(requestMember, LocalDateTime.now());
+        List<ValidRecruitDto> result = recruitService.findAllValidRecruitByMember(requestMember, LocalDateTime.now());
 
         //then
         assertAll(

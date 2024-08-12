@@ -61,27 +61,27 @@ public class RecruitController {
             description = "주어진 정보를 바탕으로 지원 공고 데이터를 수정합니다.")
     @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
     @PutMapping("/{recruitId}")
-    public ResponseEntity<Long> update(@RequestBody @Valid RecruitUpdate recruitUpdate,
+    public ResponseEntity<RecruitIdResponse> update(@RequestBody @Valid RecruitUpdate recruitUpdate,
                                        @PathVariable long recruitId) {
 //        Member requestMember = memberService.findOne(LoginUser.get().getId());
         Recruit recruit = recruitService.update(requestMember, recruitId, recruitUpdate);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(recruit.getId());
+                .body(RecruitIdResponse.from(recruit));
     }
 
     @Operation(
             summary = "지원 공고 상태 수정",
             description = "다음 중 주어진 상태로 지원 공고의 상태를 수정합니다." +  " [UNAPPLIED / PLANNED / APPLYING / REJECTED / ACCEPTED]")
     @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
-    @PatchMapping("/{recruitId}")
-    public ResponseEntity<Long> updateState(@RequestBody @Valid RecruitStatusUpdate recruitStatusUpdate,
+    @PatchMapping("/{recruitId}/status")
+    public ResponseEntity<RecruitIdResponse> updateState(@RequestBody @Valid RecruitStatusUpdate recruitStatusUpdate,
                                             @PathVariable long recruitId) {
 //        Member requestMember = memberService.findOne(LoginUser.get().getId());
         Recruit recruit = recruitService.updateStatus(requestMember, recruitId, recruitStatusUpdate);
         return ResponseEntity
                 .ok()
-                .body(recruit.getId());
+                .body(RecruitIdResponse.from(recruit));
     }
 
     @Operation(
@@ -89,12 +89,12 @@ public class RecruitController {
             description = "지원 공고 ID에 해당 하는 공고를 삭제합니다")
     @Parameter(name = "recruitId", description = "지원 공고 ID", example = "1")
     @DeleteMapping("/{recruitId}")
-    public ResponseEntity<Long> delete(@PathVariable long recruitId) {
+    public ResponseEntity<RecruitIdResponse> delete(@PathVariable long recruitId) {
 //        Member requestMember = memberService.findOne(LoginUser.get().getId());
         Recruit recruit = recruitService.disable(requestMember, recruitId);
         return ResponseEntity
                 .ok()
-                .body(recruit.getId());
+                .body(RecruitIdResponse.from(recruit));
     }
 
     @Operation(
@@ -152,7 +152,7 @@ public class RecruitController {
             @RequestParam LocalDateTime time
     ) {
 //        Member requestMember = memberService.findOne(LoginUser.get().getId());
-        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMemberId(requestMember, time);
+        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMember(requestMember, time);
         return ResponseEntity
                 .ok()
                 .body(ValidRecruitListResponse.from(ValidRecruitDtoList));
@@ -171,5 +171,18 @@ public class RecruitController {
         return ResponseEntity
                 .ok()
                 .body(RecruitListByMonthResponse.from(recruitListByMonthDtoList));
+    }
+
+    @Operation(
+            summary = "공고 지원 날짜 수정",
+            description = "공고 지원 날짜를 주어진 날짜로 수정합니다.")
+    @PatchMapping("/{recruitId}/apply-date")
+    public ResponseEntity<RecruitIdResponse> updateApplyDate(@RequestBody @Valid RecruitApplyDateUpdate recruitApplyDateUpdate,
+                                                             @PathVariable long recruitId) {
+//        Member requestMember = memberService.findOne(LoginUser.get().getId());
+        Recruit recruit = recruitService.updateApplyDate(requestMember, recruitId, recruitApplyDateUpdate);
+        return ResponseEntity
+                .ok()
+                .body(RecruitIdResponse.from(recruit));
     }
 }

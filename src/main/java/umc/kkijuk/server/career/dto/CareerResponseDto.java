@@ -1,11 +1,9 @@
 package umc.kkijuk.server.career.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
+import umc.kkijuk.server.careerdetail.dto.CareerDetailRequestDto;
 import umc.kkijuk.server.careerdetail.dto.CareerDetailResponseDto;
 
 import java.time.LocalDate;
@@ -20,6 +18,7 @@ public class CareerResponseDto {
         @Schema(description = "생성된 활동 Id", example = "1", type = "Long")
         private Long careerId;
     }
+
 
     @Getter
     @Builder
@@ -86,6 +85,38 @@ public class CareerResponseDto {
 
         private int totalDetailCount;
         private List<CareerDetailResponseDto.CareerDetailResult> details;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CareerNameSearchDto{
+        private Long id;
+        private String careerName;
+        private String alias;
+        private String summary;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        String categoryName;
+        private CareerDetailResponseDto.CareerDetailResult careerDetail;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CareerSearchDto{
+        Long id;
+        String careerName;
+        String alias;
+        String summary;
+        LocalDate startDate;
+        LocalDate endDate;
+        String categoryName;
+        List<CareerDetailResponseDto.CareerDetailResult> details;
+
+
     }
 
 
