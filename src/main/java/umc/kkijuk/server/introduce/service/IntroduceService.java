@@ -12,6 +12,8 @@ import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,6 +64,14 @@ public class IntroduceService {
         /*List<String> introduceList=getIntroduceTitles();*/
 
         return new IntroduceResDto(introduce, questionList/*, introduceList*/);
+    }
+
+    @Transactional
+    public List<HomeIntroduceResDto> getHomeIntro(Member requestMember) {
+        List<Introduce> introduces = introduceRepository.findTop2ByMemberIdOrderByEndTimeAsc(requestMember.getId());
+        return introduces.stream()
+                .map(HomeIntroduceResDto::new)
+                .collect(Collectors.toList());
     }
 
     @Transactional

@@ -51,11 +51,8 @@ public class IntroduceResDto {
 
     private String calculateTimeUntilDeadline(LocalDateTime updatedAt, LocalDateTime deadline) {
         Duration duration = Duration.between(updatedAt, deadline);
-        long days = duration.toDays();
-        if (days < 8 && days > 0) {
-            return "D-" + days;
-        }
-        else return null;
+        long days = duration.toDays() + 1;
+        return "D-" + days;
     }
 
 }
