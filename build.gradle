@@ -38,6 +38,9 @@ dependencies {
 	implementation 'org.openapitools:jackson-databind-nullable:0.2.1'
 
 	implementation 'org.springframework.security:spring-security-crypto'
+
+	implementation 'com.querydsl:querydsl-jpa:5.0.0'
+	implementation 'com.querydsl:querydsl-apt:5.0.0:jpa'
 }
 
 tasks.named('test') {

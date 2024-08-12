@@ -25,9 +25,7 @@ public class CareerSpecification {
 
                 if(request.getCareerName()){
                     Predicate careerNamePredicate = criteriaBuilder.like(root.get("name"), searchTerm);
-                    Predicate summaryPredicate = criteriaBuilder.like(root.get("summary"), searchTerm);
-                    Predicate combinedPredicate = criteriaBuilder.or(careerNamePredicate,summaryPredicate);
-                    predicateList.add(combinedPredicate);
+                    predicateList.add(careerNamePredicate);
 
                 }
                 if(request.getCareerDetail()){
@@ -66,8 +64,69 @@ public class CareerSpecification {
             if (predicateList.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
+            return criteriaBuilder.or(predicateList.toArray(new Predicate[0]));
 
         };
     }
+    public static Specification<CareerDetail> filterCareerDetails(CareerRequestDto.SearchCareerDto request){
+        return (root, query, criteriaBuilder) -> {
+            List<Predicate> predicateList = new ArrayList<>();
+            Join<CareerDetail, CareerTag> careerTagJoin = root.join("careerTagList", JoinType.LEFT);
+            Join<CareerTag, Tag> tagJoin = careerTagJoin.join("tag", JoinType.LEFT);
+            Join<CareerDetail, Career> careerJoin = root.join("career", JoinType.LEFT);
+
+            if(request.getSearch() != null && !request.getSearch().isEmpty()){
+                String searchTerm = "%" + request.getSearch() + "%";
+                List<Predicate> orPredicateList = new ArrayList<>();
+
+                if(request.getCareerDetail()){
+                    Predicate careerDetailTitlePredicate = criteriaBuilder.like(root.get("title"), searchTerm);
+                    orPredicateList.add(careerDetailTitlePredicate);
+                }
+
+                if(request.getCareerName()){
+                    Predicate careerNamePredicate = criteriaBuilder.like(careerJoin.get("name"), searchTerm);
+                    orPredicateList.add(careerNamePredicate);
+                }
+
+                if(request.getTag()){
+                    Predicate tagNamePredicate = criteriaBuilder.like(tagJoin.get("name"), searchTerm);
+                    orPredicateList.add(tagNamePredicate);
+                }
+
+                if(!orPredicateList.isEmpty()) {
+                    Predicate orPredicate = criteriaBuilder.or(orPredicateList.toArray(new Predicate[0]));
+                    predicateList.add(orPredicate);
+                }
+            }
+
+            if (request.getStartDate() != null) {
+                Predicate startDateWithRange = criteriaBuilder.between(root.get("startDate"), request.getStartDate(), request.getEndDate());
+                Predicate endDateWithRange = criteriaBuilder.between(root.get("endDate"), request.getStartDate(), request.getEndDate());
+
+                Predicate periodContainsRange = criteriaBuilder.and(
+                        criteriaBuilder.lessThanOrEqualTo(root.get("startDate"), request.getStartDate()),
+                        criteriaBuilder.greaterThanOrEqualTo(root.get("endDate"), request.getEndDate())
+                );
+
+                Predicate datePradicate = criteriaBuilder.or(startDateWithRange, endDateWithRange, periodContainsRange);
+                predicateList.add(datePradicate);
+            }
+
+            if (request.getSort() != null) {
+                if(request.getSort().equalsIgnoreCase("desc")){
+                    query.orderBy(criteriaBuilder.desc(root.get("startDate")));
+                }else{
+                    query.orderBy(criteriaBuilder.asc(root.get("startDate")));
+                }
+            }
+
+            if(predicateList.isEmpty()) {
+                return criteriaBuilder.conjunction();
+            }
+
+            return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
+        };
+    }
+
 }

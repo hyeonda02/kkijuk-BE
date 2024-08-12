@@ -1,11 +1,16 @@
 package umc.kkijuk.server.career.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.career.domain.Category;
+import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.repository.specification.CareerSpecification;
+import umc.kkijuk.server.careerdetail.domain.CareerDetail;
+import umc.kkijuk.server.careerdetail.dto.converter.CareerDetailConverter;
+import umc.kkijuk.server.careerdetail.repository.CareerDetailRepository;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
@@ -19,9 +24,7 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +33,7 @@ import java.util.stream.Collectors;
 public class CareerServiceImpl implements CareerService {
     private final CategoryRepository categoryRepository;
     private final CareerRepository careerRepository;
+    private final CareerDetailRepository careerDetailRepository;
 
     @Override
     @Transactional
@@ -106,7 +110,12 @@ public class CareerServiceImpl implements CareerService {
     public List<Career> searchCareer(Member requestMember, CareerRequestDto.SearchCareerDto request) {
         Specification<Career> spec = CareerSpecification.filterCareers(request);
         return careerRepository.findAll(spec);
+    }
 
+    @Override
+    public List<CareerDetail> searchCareerDetail(Member requestMember, CareerRequestDto.SearchCareerDto request) {
+        Specification<CareerDetail> spec = CareerSpecification.filterCareerDetails(request);
+        return careerDetailRepository.findAll(spec);
     }
     @Override
     public Career findCareerDetail(Member requestMember, Long careerId) {
