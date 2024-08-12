@@ -81,6 +81,23 @@ public class CareerController {
                 careerService.getCareerGroupedBy(requestMember, value));
     }
 
+    @PostMapping("/search")
+    @Operation(
+            summary = "활동 검색",
+            description = "필터 조건에 맞게 활동들을 조회합니다."
+    )
+    public CareerResponse<?> search(@RequestBody @Valid CareerRequestDto.SearchCareerDto request) {
+        if (request.getCareerName() && !request.getCareerDetail() && !request.getTag()) {
+            List<Career> searchList = careerService.searchCareer(requestMember, request);
+            return CareerResponse.success(HttpStatus.OK,
+                    CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                    CareerConverter.toCareerNameSearchDto(searchList));
+        }
+        return CareerResponse.success(HttpStatus.OK,
+                CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                careerService.searchCareerDetail(requestMember, request));
+    }
+
 
 
 }
