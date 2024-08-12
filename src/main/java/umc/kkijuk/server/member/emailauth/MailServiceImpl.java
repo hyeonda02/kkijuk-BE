@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import umc.kkijuk.server.common.domian.exception.CertificationNumberMismatchException;
+import umc.kkijuk.server.common.domian.exception.EmailNotResistedException;
 import umc.kkijuk.server.common.domian.exception.MemberAlreadyExistsException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.MemberEmailDto;
@@ -38,14 +39,21 @@ public class MailServiceImpl implements MailService{
         return randomNum;
     }
 
-    public MailCertificationResponse sendMail(String mail) {
+    public MailCertificationResponse sendMailPasswordReset(String email) {
+        if(memberRepository.findByEmail(email).isEmpty()){
+            throw new EmailNotResistedException();
+        }
 
+        return this.sendMailJoin(email);
+    }
+
+    public MailCertificationResponse sendMailJoin(String email) {
         MimeMessage message = javaMailSender.createMimeMessage();
         String randomNum = createRandomNumber();
 
         try {
             message.setFrom(senderEmail);
-            message.setRecipients(MimeMessage.RecipientType.TO, mail);
+            message.setRecipients(MimeMessage.RecipientType.TO, email);
             message.setSubject("이메일 인증");
             String body = "";
             body += "<h3>" + "요청하신 인증 번호입니다." + "</h3>";
@@ -57,9 +65,10 @@ public class MailServiceImpl implements MailService{
         }
 
         javaMailSender.send(message);
-        mailCertification.createMailCertification(mail,randomNum);
-        return new MailCertificationResponse(mail, randomNum);
+        mailCertification.createMailCertification(email,randomNum);
+        return new MailCertificationResponse(email, randomNum);
     }
+
 
     // 인증 번호 검증
     public Boolean verifyMail(MailCertificationDto requestDto) {

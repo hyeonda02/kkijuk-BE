@@ -20,6 +20,6 @@ public interface MemberService {
     Member myPagePasswordAuth(Long memberId, MyPagePasswordAuthDto myPagePasswordAuthDto);
     MemberEmailResponse getMemberEmail(Long memberId);
     MemberStateResponse changeMemberState(Long memberId);
-    Member resetMemberPassword(MemberPasswordResetDto memberPasswordResetDto)
+    Member resetMemberPassword(MemberPasswordResetDto memberPasswordResetDto);
 
 }

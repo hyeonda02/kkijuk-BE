@@ -62,7 +62,7 @@ public class MailServiceTest {
         MemberEmailDto memberEmailDto = new MemberEmailDto(testMemberEmail);
 
         // then
-        assertThatThrownBy(() -> mailService.sendMail(testMemberEmail))
+        assertThatThrownBy(() -> mailService.sendMailJoin(testMemberEmail))
                 .isInstanceOf(MemberAlreadyExistsException.class);
     }
 
@@ -74,7 +74,7 @@ public class MailServiceTest {
         doReturn(mimeMessage).when(javaMailSender).createMimeMessage();
 
         // when
-        MailCertificationResponse response = mailService.sendMail(newEmail);
+        MailCertificationResponse response = mailService.sendMailJoin(newEmail);
 
         // then
         assertAll(

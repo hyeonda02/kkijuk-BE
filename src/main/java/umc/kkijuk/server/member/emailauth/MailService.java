@@ -4,7 +4,8 @@ import umc.kkijuk.server.member.dto.MemberEmailDto;
 
 public interface MailService {
 
-    MailCertificationResponse sendMail(String mail);
+    public MailCertificationResponse sendMailPasswordReset(String email);
+    public MailCertificationResponse sendMailJoin(String email);
 
     Boolean verifyMail(MailCertificationDto requestDto);
 

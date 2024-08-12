@@ -23,12 +23,20 @@ public class EmailAuthController {
     private final MemberService memberService;
 
     @Operation(
-            summary = "이메일 인증번호 요청",
+            summary = "회원가입시 이메일 인증번호 요청",
             description = "이메일 인증정보를 요청합니다.")
-    @PostMapping({"/auth", "/password/send"})
-    public ResponseEntity<MailCertificationResponse> mailSend(@RequestBody @Valid MailAddressDto mailAddressDto) {
+    @PostMapping("/auth")
+    public ResponseEntity<MailCertificationResponse> joinSendMail(@RequestBody @Valid MailAddressDto mailAddressDto) {
+        MailCertificationResponse mailCertificationResponse = mailService.sendMailJoin(mailAddressDto.getEmail());
+        return ResponseEntity.ok(mailCertificationResponse);
+    }
 
-        MailCertificationResponse mailCertificationResponse = mailService.sendMail(mailAddressDto.getEmail());
+    @Operation(
+            summary = "비밀번호 재설정시 이메일 인증번호 요청",
+            description = "이메일 인증정보를 요청합니다.")
+    @PostMapping("/password/send")
+    public ResponseEntity<MailCertificationResponse> resetPasswordSendMail(@RequestBody @Valid MailAddressDto mailAddressDto) {
+        MailCertificationResponse mailCertificationResponse = mailService.sendMailPasswordReset(mailAddressDto.getEmail());
         return ResponseEntity.ok(mailCertificationResponse);
     }
 

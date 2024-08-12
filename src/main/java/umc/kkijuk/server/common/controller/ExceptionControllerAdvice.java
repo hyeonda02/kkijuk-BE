@@ -107,4 +107,10 @@ public class ExceptionControllerAdvice {
     public ErrorResponse CertificationNumberMismatchException(CertificationNumberMismatchException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmailNotResistedException.class)
+    public ErrorResponse EmailNotResistedException(EmailNotResistedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }
