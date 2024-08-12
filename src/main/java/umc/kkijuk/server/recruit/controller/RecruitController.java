@@ -141,7 +141,7 @@ public class RecruitController {
             @RequestParam LocalDateTime time
     ) {
 //        Member requestMember = memberService.findOne(LoginUser.get().getId());
-        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMemberId(requestMember, time);
+        List<ValidRecruitDto> ValidRecruitDtoList = recruitService.findAllValidRecruitByMember(requestMember, time);
         return ResponseEntity
                 .ok()
                 .body(ValidRecruitListResponse.from(ValidRecruitDtoList));
@@ -163,7 +163,7 @@ public class RecruitController {
     }
 
     @Operation(
-            summary = "공고 지워 날짜 수정",
+            summary = "공고 지원 날짜 수정",
             description = "공고 지원 날짜를 주어진 날짜로 수정합니다.")
     @PatchMapping("/{recruitId}/apply-date")
     public ResponseEntity<RecruitIdResponse> updateApplyDate(@RequestBody @Valid RecruitApplyDateUpdate recruitApplyDateUpdate,

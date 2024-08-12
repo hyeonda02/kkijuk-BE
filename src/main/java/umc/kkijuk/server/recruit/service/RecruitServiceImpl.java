@@ -14,6 +14,7 @@ import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -85,7 +86,7 @@ public class RecruitServiceImpl implements RecruitService {
     }
 
     @Override
-    public List<ValidRecruitDto> findAllValidRecruitByMemberId(Member requestMember, LocalDateTime endTime) {
+    public List<ValidRecruitDto> findAllValidRecruitByMember(Member requestMember, LocalDateTime endTime) {
         List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberId(requestMember.getId());
         return recruits.stream()
                 .filter(item -> !isUnappliedOrPlanned(item) || item.getEndTime().isAfter(endTime))
@@ -110,6 +111,15 @@ public class RecruitServiceImpl implements RecruitService {
 
         recruit = recruit.updateApplyDate(recruitApplyDateUpdate);
         return recruitRepository.save(recruit);
+    }
+
+    @Override
+    public List<Recruit> getTopTwoRecruitsByEndTime(Member requestMember) {
+        List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberIdAndEndTimeAfter(requestMember.getId(), LocalDate.now().atStartOfDay());
+        return recruits.stream()
+                .sorted(Comparator.comparing(Recruit::getEndTime))
+                .limit(2)
+                .toList();
     }
 
     private boolean isUnappliedOrPlanned(Recruit recruit) {
