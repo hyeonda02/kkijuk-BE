@@ -17,6 +17,7 @@ import umc.kkijuk.server.member.dto.*;
 import umc.kkijuk.server.member.repository.MemberRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -46,8 +47,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberJoinDto.getPassword());
         joinMember.changeMemberPassword(encodedPassword);
 
-        memberRepository.save(joinMember);
-        return joinMember;
+        return memberRepository.save(joinMember);
     }
 
     @Override
@@ -85,22 +85,24 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member updateMemberField(Long memberId, MemberFieldDto memberFieldDto){
         Member member = this.getById(memberId);
-        member.changeFieldInfo(memberFieldDto.getField());
-        if(!member.getField().equals(memberFieldDto.getField())){
+
+        if(member.getField().equals(memberFieldDto.getField())){
             throw new FieldUpdateException();
         }
-        return member;
+        member.changeFieldInfo(memberFieldDto.getField());
+        return memberRepository.save(member);
     }
 
     @Override
     @Transactional
     public Member updateMemberInfo(Long memberId, MemberInfoChangeDto memberInfoChangeDto){
         Member member = this.getById(memberId);
-        member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
         if(member.getPhoneNumber() == null || member.getBirthDate() == null || member.getMarketingAgree() == null){
             throw new InvalidMemberDataException();
         }
-        return member;
+        member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
+
+        return memberRepository.save(member);
     }
 
     @Override
@@ -117,8 +119,7 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberPasswordChangeDto.getNewPassword());
         member.changeMemberPassword(encodedPassword);
 
-        memberRepository.save(member);
-        return member;
+        return memberRepository.save(member);
     }
 
     @Override
@@ -156,8 +157,14 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
 
         return MemberStateResponse.builder()
-                .deleteDate(member.getDeleteDate())
+                .memberState(member.getUserState())
                 .build();
+    }
+
+    @Override
+    public Boolean confirmDupEmail(MemberEmailDto memberEmailDto) {
+        Optional<Member> member = memberRepository.findByEmail(memberEmailDto.getEmail());
+        return member.isEmpty();
     }
 
 }
