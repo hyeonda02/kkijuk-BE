@@ -146,14 +146,20 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
-//    @Override
-//    @Transactional
-//    public EmailAuthResponse getEmailAuth(EmailAddressDto emailAddressDto, int authRandomNumber){
-//        return EmailAuthResponse.builder()
-//                .email(emailAddressDto.getEmail())
-//                .authNumber(authRandomNumber)
-//                .build();
-//    }
+    @Override
+    @Transactional
+    public Member resetMemberPassword(MemberPasswordResetDto memberPasswordResetDto){
+        Optional<Member> member = memberRepository.findByEmail(memberPasswordResetDto.getEmail());
+
+        if(!memberPasswordResetDto.getNewPassword().equals(memberPasswordResetDto.getNewPasswordConfirm())){
+            throw new ConfirmPasswordMismatchException();
+        }
+
+        String encodedPassword = passwordEncoder.encode(memberPasswordResetDto.getNewPassword());
+        member.get().changeMemberPassword(encodedPassword);
+
+        return memberRepository.save(member.get());
+    }
 
 
 

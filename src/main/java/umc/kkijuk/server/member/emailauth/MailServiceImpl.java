@@ -39,9 +39,6 @@ public class MailServiceImpl implements MailService{
     }
 
     public MailCertificationResponse sendMail(String mail) {
-        if(memberRepository.findByEmail(mail).isPresent()){
-            throw new MemberAlreadyExistsException();
-        }
 
         MimeMessage message = javaMailSender.createMimeMessage();
         String randomNum = createRandomNumber();

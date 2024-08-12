@@ -19,7 +19,7 @@ public interface MemberService {
     Member changeMemberPassword(Long memberId, MemberPasswordChangeDto memberPasswordChangeDto);
     Member myPagePasswordAuth(Long memberId, MyPagePasswordAuthDto myPagePasswordAuthDto);
     MemberEmailResponse getMemberEmail(Long memberId);
-//    EmailAuthResponse getEmailAuth(EmailAddressDto emailAddressDto, int number);
     MemberStateResponse changeMemberState(Long memberId);
+    Member resetMemberPassword(MemberPasswordResetDto memberPasswordResetDto)
 
 }
