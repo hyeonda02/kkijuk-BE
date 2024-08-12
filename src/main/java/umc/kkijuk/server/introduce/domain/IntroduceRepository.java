@@ -13,6 +13,7 @@ public interface IntroduceRepository extends JpaRepository<Introduce, Long> {
     Optional<Introduce> findByRecruitId(Long recruitId);
     Optional<List<Introduce>> findAllByMemberId(Long memberId);
 
-    @Query("SELECT i FROM Introduce i WHERE i.memberId = :memberId ORDER BY i.recruit.endTime ASC")
-    Page<Introduce> findTop2ByMemberIdOrderByEndTimeAsc(@Param("memberId") Long memberId, Pageable pageable);
+    @Query("SELECT i FROM Introduce i WHERE i.memberId = :memberId AND i.state = :state ORDER BY i.recruit.endTime ASC")
+    Page<Introduce> findByMemberIdAndStateOrderByEndTimeAsc(@Param("memberId") Long memberId, @Param("state") int state, Pageable pageable);
+
 }
