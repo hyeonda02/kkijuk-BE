@@ -48,6 +48,7 @@ public class MemberController {
                 .body(new CreateMemberResponse(joinMember.getId(), "Member created successfully"));
     }
 
+
     @Operation(
             summary = "내 정보 조회",
             description = "마이페이지에서 내 정보들을 가져옵니다.")

@@ -16,8 +16,20 @@ public class FakeMemberRepository implements MemberRepository {
     @Override
     public Member save(Member member) {
         if (member.getId() == null || member.getId() == 0){
-            data.add(member);
-            return member;
+            Member newMember = Member.builder()
+                    .id(authGeneratedID.incrementAndGet())
+                    .email(member.getEmail())
+                    .name(member.getName())
+                    .password(member.getPassword())
+                    .birthDate(member.getBirthDate())
+                    .phoneNumber(member.getPhoneNumber())
+                    .field(member.getField())
+                    .marketingAgree(member.getMarketingAgree())
+                    .userState(member.getUserState())
+                    .deleteDate(member.getDeleteDate())
+                    .build();
+            data.add(newMember);
+            return newMember;
         } else {
             data.removeIf(item -> Objects.equals(item.getId(), member.getId()));
             data.add(member);

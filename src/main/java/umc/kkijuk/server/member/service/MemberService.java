@@ -21,4 +21,5 @@ public interface MemberService {
     MemberEmailResponse getMemberEmail(Long memberId);
     EmailAuthResponse getEmailAuth(EmailAddressDto emailAddressDto, int number);
     MemberStateResponse changeMemberState(Long memberId);
+    Boolean confirmDupEmail(MemberEmailDto memberEmailDto);
 }
