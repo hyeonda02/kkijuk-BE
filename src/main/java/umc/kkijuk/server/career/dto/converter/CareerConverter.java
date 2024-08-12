@@ -155,11 +155,11 @@ public class CareerConverter {
         return result;
     }
 
-    public static List<CareerResponseDto.CareerSearchDto> toCareerSearchDto(List<CareerDetail> details) {
+    public static List<CareerResponseDto.CareerSearchDto> toCareerSearchDto(List<CareerDetail> details, List<Career> careers) {
         Map<Long, List<CareerDetail>> groupedByCareer = details.stream()
                 .collect(Collectors.groupingBy(detail -> detail.getCareer().getId()));
 
-        List<CareerResponseDto.CareerSearchDto> result = groupedByCareer.entrySet().stream()
+        List<CareerResponseDto.CareerSearchDto> resultWithDetails = groupedByCareer.entrySet().stream()
                 .map(entry ->{
                     Career firstCareer = entry.getValue().get(0).getCareer();
 
@@ -190,7 +190,26 @@ public class CareerConverter {
                             .build();
                 }).collect(Collectors.toList());
 
-        return result;
+
+        if(careers!=null) {
+            List<CareerResponseDto.CareerSearchDto> resultWithoutDetails = mapCareersWithoutDetails(careers);
+            resultWithDetails.addAll(resultWithoutDetails);
+        }
+        return resultWithDetails;
+    }
+    private static List<CareerResponseDto.CareerSearchDto> mapCareersWithoutDetails(List<Career> careers) {
+        return careers.stream()
+                .map(career -> CareerResponseDto.CareerSearchDto.builder()
+                        .id(career.getId())
+                        .careerName(career.getName())
+                        .alias(career.getAlias())
+                        .summary(career.getSummary())
+                        .startDate(career.getStartdate())
+                        .endDate(career.getEnddate())
+                        .details(null) // details는 null로 설정
+                        .categoryName(career.getCategory().getName())
+                        .build())
+                .collect(Collectors.toList());
     }
 
 

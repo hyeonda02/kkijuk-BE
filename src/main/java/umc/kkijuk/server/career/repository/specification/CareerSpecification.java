@@ -12,31 +12,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CareerSpecification {
-    public static Specification<Career> filterCareers(CareerRequestDto.SearchCareerDto request){
+    public static Specification<Career> filterCareers(CareerRequestDto.SearchCareerDto request, Long memberId){
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
-            Join<Career, CareerDetail> careerDetailJoin = root.join("careerDetailList", JoinType.LEFT);
-            Join<CareerDetail, CareerTag> careerTagJoin = careerDetailJoin.join("careerTagList", JoinType.LEFT);
-            Join<CareerTag, Tag> tagJoin = careerTagJoin.join("tag", JoinType.LEFT);
 
+            Predicate memberPredicate = criteriaBuilder.equal(root.get("memberId"),memberId);
+            predicateList.add(memberPredicate);
 
             if(request.getSearch()!=null && !request.getSearch().isEmpty()){
                 String searchTerm = "%" + request.getSearch() +"%";
 
-                if(request.getCareerName()){
-                    Predicate careerNamePredicate = criteriaBuilder.like(root.get("name"), searchTerm);
-                    predicateList.add(careerNamePredicate);
-
-                }
-                if(request.getCareerDetail()){
-                    Predicate careerDetailTitlePredicate = criteriaBuilder.like(careerDetailJoin.get("title"), searchTerm);
-                    predicateList.add(careerDetailTitlePredicate);
-                }
-
-                if (request.getTag()) {
-                    Predicate tagNamePredicate = criteriaBuilder.like(tagJoin.get("name"), searchTerm);
-                    predicateList.add(tagNamePredicate);
-                }
+                Predicate careerNamePredicate = criteriaBuilder.like(root.get("name"), searchTerm);
+                predicateList.add(careerNamePredicate);
 
             }
             if (request.getStartDate() != null) {
@@ -59,21 +46,28 @@ public class CareerSpecification {
                     query.orderBy(criteriaBuilder.asc(root.get("enddate")));
                 }
             }
-
-
             if (predicateList.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-            return criteriaBuilder.or(predicateList.toArray(new Predicate[0]));
+            return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
 
         };
     }
-    public static Specification<CareerDetail> filterCareerDetails(CareerRequestDto.SearchCareerDto request){
+    public static Specification<CareerDetail> filterCareerDetails(CareerRequestDto.SearchCareerDto request, Long memberId){
+        if (!request.getCareerName() && !request.getCareerDetail() && !request.getTag()) {
+            request.setCareerDetail(true);
+            request.setCareerName(true);
+        }
+
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicateList = new ArrayList<>();
+
             Join<CareerDetail, CareerTag> careerTagJoin = root.join("careerTagList", JoinType.LEFT);
             Join<CareerTag, Tag> tagJoin = careerTagJoin.join("tag", JoinType.LEFT);
             Join<CareerDetail, Career> careerJoin = root.join("career", JoinType.LEFT);
+
+            Predicate memberPredicate = criteriaBuilder.equal(careerJoin.get("memberId"), memberId);
+            predicateList.add(memberPredicate);
 
             if(request.getSearch() != null && !request.getSearch().isEmpty()){
                 String searchTerm = "%" + request.getSearch() + "%";
@@ -124,9 +118,7 @@ public class CareerSpecification {
             if(predicateList.isEmpty()) {
                 return criteriaBuilder.conjunction();
             }
-
             return criteriaBuilder.and(predicateList.toArray(new Predicate[0]));
         };
     }
-
 }

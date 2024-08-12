@@ -92,7 +92,6 @@ public class CareerRequestDto {
         @Schema(description = "검색어", example = "앱서비스", type="string")
         String search;
 
-
         @NotNull(message = "검색 조건에서 활동명을 선택하였는지를 나타냅니다. true 나 false 값을 주세요")
         @Schema(description = "활동명 조건 선택 여부", example = "true", type="Boolean")
         Boolean careerName;
@@ -105,13 +104,9 @@ public class CareerRequestDto {
         @Schema(description = "태그 조건 선택 여부", example = "false", type="Boolean")
         Boolean tag;
 
-
         @Nullable
         @Schema(description = "정렬 기준", example = "desc", type="String")
         String sort;
-
-
-
 
         @Nullable
         @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
@@ -123,6 +118,12 @@ public class CareerRequestDto {
         @Schema(description = "검색 기간 ( 종료 기간 )", example = "2024-07-20", type = "string")
         LocalDate endDate;
 
+        public void setCareerName(Boolean careerName) {
+            this.careerName = careerName;
+        }
+        public void setCareerDetail(Boolean careerDetail) {
+            this.careerDetail = careerDetail;
+        }
     }
 
 

@@ -3,6 +3,7 @@ package umc.kkijuk.server.career.service;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
+import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 import umc.kkijuk.server.member.domain.Member;
 
@@ -17,5 +18,5 @@ public interface CareerService {
     Career findCareerDetail(Member member, Long careerId);
     List<? extends CareerGroupedByResponse> getCareerGroupedBy(Member member, String value);
     List<Career> searchCareer(Member member, CareerRequestDto.SearchCareerDto request);
-    List<CareerDetail> searchCareerDetail(Member member, CareerRequestDto.SearchCareerDto request);
+    List<CareerResponseDto.CareerSearchDto> searchCareerDetail(Member member, CareerRequestDto.SearchCareerDto request);
 }

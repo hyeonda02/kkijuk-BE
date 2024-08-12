@@ -15,7 +15,6 @@ import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.dto.CareerResponseDto;
 import umc.kkijuk.server.career.dto.converter.CareerConverter;
 import umc.kkijuk.server.career.service.CareerService;
-import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.member.domain.Member;
 
@@ -94,10 +93,9 @@ public class CareerController {
                     CareerResponseMessage.CAREER_FINDALL_SUCCESS,
                     CareerConverter.toCareerNameSearchDto(searchList));
         }
-        List<CareerDetail> searchList = careerService.searchCareerDetail(requestMember, request);
         return CareerResponse.success(HttpStatus.OK,
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                CareerConverter.toCareerSearchDto(searchList));
+                careerService.searchCareerDetail(requestMember, request));
     }
 
 
