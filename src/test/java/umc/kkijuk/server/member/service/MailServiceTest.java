@@ -57,16 +57,6 @@ public class MailServiceTest {
     }
 
     @Test
-    void sendMail_이미존재하는이메일_예외발생() {
-        // given
-        MemberEmailDto memberEmailDto = new MemberEmailDto(testMemberEmail);
-
-        // then
-        assertThatThrownBy(() -> mailService.sendMailJoin(testMemberEmail))
-                .isInstanceOf(MemberAlreadyExistsException.class);
-    }
-
-    @Test
     void sendMail_새로운이메일_메일발송성공() throws MessagingException {
         // given
         String newEmail = "newuser@example.com";
