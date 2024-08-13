@@ -18,7 +18,6 @@ public class TagResponseDto {
         private Long id;
         @Schema(description = "생성된 활동 태그 이름", example = "핵심 역량", type = "String")
         private String tagName;
-        private Long memberId;
     }
     @Getter
     @Builder

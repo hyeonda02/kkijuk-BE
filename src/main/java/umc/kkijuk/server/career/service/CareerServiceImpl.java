@@ -89,8 +89,7 @@ public class CareerServiceImpl implements CareerService {
 
     @Override
     public List<? extends CareerGroupedByResponse> getCareerGroupedBy(Member requestMember, String status) {
-        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId()); //동작하는지 확인해야 됨 ( 멤버 아이디 넣음 -> CareerRepository )
-
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
         Map<String,List<Career>> groupedCareers;
 
         if(status.equalsIgnoreCase("category")){
@@ -161,7 +160,6 @@ public class CareerServiceImpl implements CareerService {
             setEndDate(career, endDate);
         }
     }
-
     private void setEndDate(Career career, LocalDate endDate) {
         if (endDate != null) {
             career.setEnddate(endDate);
@@ -175,13 +173,11 @@ public class CareerServiceImpl implements CareerService {
             }
         }
     }
-
     private void validatedPeriod(Career career) {
         if(career.getEnddate().isBefore(career.getStartdate())){
             throw new CareerValidationException(CareerResponseMessage.CAREER_PERIOD_FAIL);
         }
     }
-
     private int parsingYear(CareerRequestDto.CreateCareerDto request){
         if(!request.getIsUnknown()){
             return request.getEndDate().getYear();

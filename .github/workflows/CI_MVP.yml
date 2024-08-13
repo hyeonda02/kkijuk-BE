@@ -10,6 +10,7 @@ on:
       - feature/record
       - feature/home
       - feature/login
+      - refactor/career
 
 jobs:
   CI:

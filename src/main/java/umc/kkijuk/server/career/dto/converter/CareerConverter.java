@@ -206,7 +206,7 @@ public class CareerConverter {
                         .summary(career.getSummary())
                         .startDate(career.getStartdate())
                         .endDate(career.getEnddate())
-                        .details(null) // details는 null로 설정
+                        .details(null)
                         .categoryName(career.getCategory().getName())
                         .build())
                 .collect(Collectors.toList());

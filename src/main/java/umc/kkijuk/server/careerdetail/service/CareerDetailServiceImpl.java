@@ -48,18 +48,17 @@ public class CareerDetailServiceImpl implements CareerDetailService{
         careerTagList.forEach(careerTag -> careerTag.setCareerDetail(newCareerDetail));
         return careerDetailRepository.save(newCareerDetail);
 
-
     }
 
     @Override
     @Transactional
-    public void delete(Member reqeustMember , Long careerId , Long detailId) {
+    public void delete(Member requestMember , Long careerId , Long detailId) {
         CareerDetail careerDetail = careerDetailRepository.findById(detailId).orElseThrow(() -> new ResourceNotFoundException("CareerDetail", detailId));
         Career career = careerDetail.getCareer();
         if(!career.getId().equals(careerId)){
             throw new CareerValidationException("주어진 활동 기록 Id는 해당 활동에 속하지 않습니다. 활동 Id와 활동 기록 Id를 확인해 주세요.");
         }
-        if(!careerDetail.getMemberId().equals(reqeustMember.getId())){
+        if(!careerDetail.getMemberId().equals(requestMember.getId()) && !career.getMemberId().equals(requestMember.getId())){
             throw new OwnerMismatchException();
         }
         careerDetailRepository.delete(careerDetail);
@@ -72,7 +71,7 @@ public class CareerDetailServiceImpl implements CareerDetailService{
         if(!career.getId().equals(careerId)){
             throw new CareerValidationException("주어진 활동 기록 Id는 해당 활동에 속하지 않습니다. 활동 Id와 활동 기록 Id를 확인해 주세요.");
         }
-        if(!updateCareerDetail.getMemberId().equals(requestMember.getId())){
+        if(!updateCareerDetail.getMemberId().equals(requestMember.getId())&& !career.getMemberId().equals(requestMember.getId())){
             throw new OwnerMismatchException();
         }
 
