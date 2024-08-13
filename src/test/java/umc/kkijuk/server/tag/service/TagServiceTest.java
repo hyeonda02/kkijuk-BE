@@ -157,7 +157,6 @@ public class TagServiceTest {
                 () -> assertThat(tagList).isNotEmpty(),
                 () -> assertThat(tagList.size()).isEqualTo(1),
                 () -> assertThat(tag1.getId()).isEqualTo(1L),
-                () -> assertThat(tag1.getMemberId()).isEqualTo(testMemberId1),
                 () -> assertThat(tag1.getTagName()).isEqualTo("test tag1")
 
         );

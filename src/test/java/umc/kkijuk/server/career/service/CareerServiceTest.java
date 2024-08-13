@@ -5,7 +5,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.annotation.DirtiesContext;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
 import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
@@ -106,7 +105,6 @@ public class CareerServiceTest {
                 .build();
         //when
         Career newCareer = careerService.createCareer(testRequestMember,careerCreateDto);
-        //then
         assertAll(
                 () -> assertThat(newCareer.getMemberId().equals(testMemberId)),
                 () -> assertThat(newCareer.getId()).isEqualTo(3L),
