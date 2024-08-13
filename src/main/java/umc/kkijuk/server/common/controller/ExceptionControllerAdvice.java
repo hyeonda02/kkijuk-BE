@@ -97,6 +97,24 @@ public class ExceptionControllerAdvice {
         return new ErrorResponse(exception.getMessage());
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MemberAlreadyExistsException.class)
+    public ErrorResponse MemberAlreadyExistsException(MemberAlreadyExistsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CertificationNumberMismatchException.class)
+    public ErrorResponse CertificationNumberMismatchException(CertificationNumberMismatchException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmailNotResistedException.class)
+    public ErrorResponse EmailNotResistedException(EmailNotResistedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(UnauthorizedException.class)
     public ErrorResponse UnauthorizedException(UnauthorizedException exception) {
