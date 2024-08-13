@@ -10,6 +10,7 @@ on:
       - feature/record
       - feature/home
       - feature/login
+      - feature/login-memberTest
 
 jobs:
   CI:
