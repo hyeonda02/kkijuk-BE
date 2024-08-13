@@ -8,6 +8,7 @@ on:
       - mvp/career
       - mvp/portfolio
       - feature/record
+      - feature/home
 
 jobs:
   CI:

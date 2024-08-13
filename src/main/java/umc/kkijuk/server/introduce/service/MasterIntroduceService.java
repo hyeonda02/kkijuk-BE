@@ -6,27 +6,18 @@ import org.springframework.stereotype.Service;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.introduce.domain.Introduce;
-import umc.kkijuk.server.introduce.domain.IntroduceRepository;
 import umc.kkijuk.server.introduce.domain.MasterIntroduce;
 import umc.kkijuk.server.introduce.domain.MasterIntroduceRepository;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.member.domain.Member;
-import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class MasterIntroduceService{
     private final MasterIntroduceRepository masterIntroduceRepository;
-    private final IntroduceRepository introduceRepository;
-    private final RecruitJpaRepository recruitJpaRepository;
 
     @Transactional
     public MasterIntroduceResDto saveMasterIntro(Member requestMember, MasterIntroduceReqDto masterIntroduceReqDto){
@@ -38,24 +29,22 @@ public class MasterIntroduceService{
                 .memberId(requestMember.getId())
                 .oneLiner(masterIntroduceReqDto.getOneLiner())
                 .motive(masterIntroduceReqDto.getMotive())
-                .introduction(masterIntroduceReqDto.getIntroduction())
+                .motiveTitle(masterIntroduceReqDto.getMotiveTitle())
+                .prosAndConsTitle(masterIntroduceReqDto.getProsAndConsTitle())
                 .prosAndCons(masterIntroduceReqDto.getProsAndCons())
+                .jobSuitabilityTitle(masterIntroduceReqDto.getJobSuitabilityTitle())
                 .jobSuitability(masterIntroduceReqDto.getJobSuitability())
                 .build();
 
 
         masterIntroduceRepository.save(masterIntroduce);
 
-        return new MasterIntroduceResDto(masterIntroduce/*, null*/);
+        return new MasterIntroduceResDto(masterIntroduce);
     }
 
     @Transactional
-    public List<MasterIntroduceResDto> getMasterIntro(Member requestMember){
+    public List<MasterIntroduceResDto> getMasterIntro(){
         List<MasterIntroduce> masterIntroduces =masterIntroduceRepository.findAll();
-
-/*
-        List<String> introduceList=getIntroduceTitles();
-*/
 
         return masterIntroduces.stream()
                 .map(masterIntroduce -> new MasterIntroduceResDto(masterIntroduce/*, introduceList*/))
@@ -71,24 +60,13 @@ public class MasterIntroduceService{
         }
         masterIntroduce.update(
                 masterIntroduceReqDto.getOneLiner(),
-                masterIntroduceReqDto.getIntroduction(),
+                masterIntroduceReqDto.getMotiveTitle(),
                 masterIntroduceReqDto.getMotive(),
+                masterIntroduceReqDto.getProsAndConsTitle(),
                 masterIntroduceReqDto.getProsAndCons(),
+                masterIntroduceReqDto.getJobSuitabilityTitle(),
                 masterIntroduceReqDto.getJobSuitability());
-/*
-        List<String> introduceList=getIntroduceTitles();
-*/
+
         return new MasterIntroduceResDto(masterIntroduce/*, introduceList*/);
     }
-
-/*    @Transactional
-    public List<String> getIntroduceTitles() {
-        List<Introduce> introduces = introduceRepository.findAll();
-
-        return introduces.stream()
-                .map(introduce -> recruitJpaRepository.findById(introduce.getRecruit().toModel().getId()))
-                .filter(Optional::isPresent)
-                .map(opt -> opt.get().toModel().getTitle())
-                .collect(Collectors.toList());
-    }*/
 }

@@ -25,11 +25,11 @@ public class IntroduceResDto {
     private String link;
     private String updatedAt;
     private String timeSinceUpdate;
-    private List<String> introduceList;
+ /*   private List<String> introduceList;*/
     private int state;
 
     @Builder
-    public IntroduceResDto(Introduce introduce, List<QuestionDto> questionList, List<String> introduceList) {
+    public IntroduceResDto(Introduce introduce, List<QuestionDto> questionList/*, List<String> introduceList*/) {
         this.id = introduce.getId();
         this.recruitId=introduce.getRecruit().toModel().getId();
         this.memberId=introduce.getMemberId();
@@ -40,7 +40,7 @@ public class IntroduceResDto {
         this.link=introduce.getRecruit().toModel().getLink();
         this.updatedAt = formatUpdatedAt(introduce.getUpdatedAt());
         this.timeSinceUpdate = calculateTimeUntilDeadline(introduce.getUpdatedAt(), introduce.getRecruit().toModel().getEndTime());
-        this.introduceList = introduceList;
+        /*this.introduceList = introduceList;*/
         this.state=introduce.getState();
     }
 

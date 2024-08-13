@@ -26,10 +26,12 @@ public class CareerTag {
 
     public void setCareerDetail(CareerDetail careerDetail) {
         if (this.careerDetail != null) {
-            careerDetail.getCareerTagList().remove(this);
+           this.careerDetail.getCareerTagList().remove(this);
         }
         this.careerDetail = careerDetail;
-        careerDetail.getCareerTagList().add(this);
+        if (careerDetail != null) {
+            careerDetail.getCareerTagList().add(this);
+        }
     }
 
 
