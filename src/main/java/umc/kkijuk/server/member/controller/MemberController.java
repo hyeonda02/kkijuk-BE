@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import lombok.Builder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.List;
 
 
 @Tag(name = "member", description = "회원 관리 API")
+@Builder
 @RestController
 @RequestMapping("/member")
 @RequiredArgsConstructor
@@ -30,7 +32,7 @@ public class MemberController {
     private final MemberService memberService;
     private final LoginService loginService;
 //    private final MailService mailService;
-    private int authRandomNumber; // 이메일 인증 숫자를 저장하는 변수
+//    private int authRandomNumber; // 이메일 인증 숫자를 저장하는 변수
 
     @Operation(
             summary = "회원가입 요청",

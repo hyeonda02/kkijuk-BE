@@ -128,6 +128,19 @@ public class MemberTest {
         );
     }
 
+    @Test
+    @DisplayName("내 정보 조회 - 로그인 정보가 없을 때 /api/error")
+    public void testGetMemberInfoWithoutLogin() throws Exception {
+        //given
+        //when
+        MvcResult result = mockMvc.perform(get("/member/myPage/info"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        //then
+        assertThat(result.getResponse().getForwardedUrl()).isEqualTo("/api/error");
+
+    }
 
     @Test
     @DisplayName("내 정보 수정")

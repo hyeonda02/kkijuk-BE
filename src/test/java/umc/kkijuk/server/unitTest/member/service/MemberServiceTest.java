@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class MemberServiceTest {
     private MemberService memberService;
     private Member member;
-    
 
     /**
      * testValues
