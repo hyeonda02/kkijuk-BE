@@ -69,7 +69,6 @@ public class MailServiceTest {
         // then
         assertAll(
                 () -> assertThat(response.getEmail()).isEqualTo(newEmail),
-                () -> assertThat(response.getAuthNumber()).hasSize(6),
                 () -> verify(javaMailSender).send(mimeMessage),
                 () -> verify(mailCertification).createMailCertification(eq(newEmail), anyString())
         );

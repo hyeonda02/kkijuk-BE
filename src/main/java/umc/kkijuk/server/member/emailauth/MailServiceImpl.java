@@ -66,7 +66,7 @@ public class MailServiceImpl implements MailService{
 
         javaMailSender.send(message);
         mailCertification.createMailCertification(email,randomNum);
-        return new MailCertificationResponse(email, randomNum);
+        return new MailCertificationResponse(email);
     }
 
 

@@ -8,11 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MailCertificationResponse {
     private String email;
-    private String authNumber;
 
     @Builder
-    public MailCertificationResponse(String email, String authNumber) {
+    public MailCertificationResponse(String email) {
         this.email = email;
-        this.authNumber = authNumber;
     }
 }
