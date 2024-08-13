@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import umc.kkijuk.server.login.exception.UnauthorizedException;
 
 @Controller
-public class IntercepterErrorController {
+public class InterceptorErrorController {
 
     @RequestMapping("/api/error")
     public void error(HttpServletRequest request, HttpServletResponse response) throws Exception {
