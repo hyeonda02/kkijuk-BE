@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import umc.kkijuk.server.career.domain.base.BaseEntity;
@@ -50,6 +52,9 @@ public class Member extends BaseEntity {
 
     private LocalDate deleteDate;
 
+    @Convert(converter = StringListToStringConverter.class)
+    private List<String> recruitTags;
+
 
     public Member(String email, String name, String phoneNumber, LocalDate birthDate, String password, MarketingAgree marketingAgree, State userState) {
         this.email = email;
@@ -85,4 +90,11 @@ public class Member extends BaseEntity {
         this.deleteDate = null;
     }
 
+    public void addRecruitTag(String tag){
+        this.recruitTags.add(tag);
+    }
+
+    public void deleteRecruitTag(String tag) {
+        this.recruitTags.remove(tag);
+    }
 }

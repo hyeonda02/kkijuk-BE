@@ -113,4 +113,10 @@ public class ExceptionControllerAdvice {
     public ErrorResponse EmailNotResistedException(EmailNotResistedException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(RecruitTagNotFoundException.class)
+    public ErrorResponse RecruitTagNotFoundException(RecruitTagNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }
