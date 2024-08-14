@@ -161,6 +161,27 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(member.get());
     }
 
+    @Override
+    @Transactional
+    public List<String> addRecruitTag(Member member, String tag) {
+        List<String> recruitTags = member.getRecruitTags();
+        if (recruitTags.contains(tag)) {
+            throw new RecruitTagAlreadyExistException(tag);
+        }
 
+        member.addRecruitTag(tag);
+        return member.getRecruitTags();
+    }
 
+    @Override
+    @Transactional
+    public List<String> deleteRecruitTag(Member member, String tag) {
+        List<String> recruitTags = member.getRecruitTags();
+        if (!recruitTags.contains(tag)) {
+            throw new RecruitTagNotFoundException(tag);
+        }
+
+        member.deleteRecruitTag(tag);
+        return member.getRecruitTags();
+    }
 }

@@ -9,6 +9,7 @@ on:
       - mvp/portfolio
       - feature/record
       - feature/home
+      - feature/recruit-tag
 
 jobs:
   CI:
