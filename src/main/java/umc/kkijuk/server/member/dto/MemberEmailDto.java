@@ -1,5 +1,6 @@
 package umc.kkijuk.server.member.dto;
 
+import jakarta.validation.constraints.Email;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class MemberEmailDto {
+    @Email
     private String email;
 
     @Builder
