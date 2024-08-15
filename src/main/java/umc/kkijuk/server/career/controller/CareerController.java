@@ -7,7 +7,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
@@ -41,7 +40,7 @@ public class CareerController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         Career career = careerService.createCareer(requestMember, request);
 
-        return CareerResponse.success(HttpStatus.CREATED,
+        return CareerResponse.success(
                 CareerResponseMessage.CAREER_CREATE_SUCCESS,
                 CareerConverter.toCareerResultDto(career));
     }
@@ -56,7 +55,7 @@ public class CareerController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         Career careerDetail = careerService.findCareerDetail(requestMember, careerId);
 
-        return CareerResponse.success(HttpStatus.OK,
+        return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
                 CareerConverter.toCareerDetailDto(careerDetail));
     }
@@ -70,7 +69,7 @@ public class CareerController {
     ) {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         careerService.deleteCareer(requestMember, careerId);
-        return CareerResponse.success(HttpStatus.OK,
+        return CareerResponse.success(
                 CareerResponseMessage.CAREER_DELETE_SUCCESS, null);
     }
 
@@ -85,7 +84,7 @@ public class CareerController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         Career updateCareer = careerService.updateCareer(requestMember,careerId, request);
 
-        return CareerResponse.success(HttpStatus.OK,
+        return CareerResponse.success(
                 CareerResponseMessage.CAREER_UPDATE_SUCCESS,
                 CareerConverter.toCareerDto(updateCareer));
     }
@@ -94,14 +93,19 @@ public class CareerController {
     @Operation(
             summary = "활동 목록",
             description = "활동을 카테고리, 연도 별로 조회합니다. query 값으로  category(카테고리 기준)나, year(연도 기준) 값을 주세요. " )
-    public CareerResponse<List<? extends CareerGroupedByResponse>> read(
+    public CareerResponse<?> read(
             @Login LoginInfo loginInfo,
             @RequestParam(name="status") String value
     ){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        return CareerResponse.success(HttpStatus.OK,
+        if (value.equals("category")) {
+            return CareerResponse.success(
+                    CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                    careerService.getCareerGroupedByCategory(requestMember));
+        }
+        return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                careerService.getCareerGroupedBy(requestMember, value));
+                careerService.getCareerGroupedByYear(requestMember));
     }
 
     @PostMapping("/search")
@@ -118,11 +122,11 @@ public class CareerController {
 
         if (request.getCareerName() && !request.getCareerDetail() && !request.getTag()) {
             List<Career> searchList = careerService.searchCareer(requestMember, request);
-            return CareerResponse.success(HttpStatus.OK,
+            return CareerResponse.success(
                     CareerResponseMessage.CAREER_FINDALL_SUCCESS,
                     CareerConverter.toCareerNameSearchDto(searchList));
         }
-        return CareerResponse.success(HttpStatus.OK,
+        return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
                 careerService.searchCareerDetail(requestMember, request));
     }

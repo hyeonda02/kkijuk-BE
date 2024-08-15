@@ -357,11 +357,12 @@ public class CareerServiceTest {
                 .endDate(LocalDate.of(2024,1,1))
                 .category(6)
                 .build();
+
         when(careerRepository.findById(1L)).thenReturn(Optional.of(career1));
         //when
         //then
         assertThrows(ResourceNotFoundException.class,
-                () -> careerService.updateCareer(testRequestMember1, 1L, updateCareerDto));
+                () -> careerService.updateCareer(testRequestMember1, 1L, updateRequestDto));
         verify(careerRepository, never()).save(any(Career.class));
         verify(categoryRepository, times(1)).findById(any(Long.class));
         verify(careerRepository, times(1)).findById(any(Long.class));
@@ -421,9 +422,7 @@ public class CareerServiceTest {
         List<Career> careerList = Arrays.asList(career1, career3);
         when(careerRepository.findAllCareerByMemberId(testMemberId1)).thenReturn(careerList);
         //when
-        List<? extends CareerResponseDto.CareerGroupedByCategoryDto> result =
-                (List<? extends CareerResponseDto.CareerGroupedByCategoryDto>)
-                        careerService.getCareerGroupedBy(testRequestMember1,"category");
+        List<CareerResponseDto.CareerGroupedByCategoryDto> result = careerService.getCareerGroupedByCategory(testRequestMember1);
         //then
         assertAll(
                 () -> assertThat(result).isNotEmpty(),
@@ -442,9 +441,7 @@ public class CareerServiceTest {
         List<Career> careerList = Arrays.asList(career1, career3);
         when(careerRepository.findAllCareerByMemberId(testMemberId1)).thenReturn(careerList);
         //when
-        List<? extends CareerResponseDto.CareerGroupedByYearDto> result =
-                (List<? extends CareerResponseDto.CareerGroupedByYearDto>)
-                        careerService.getCareerGroupedBy(testRequestMember1,"year");
+        List<CareerResponseDto.CareerGroupedByYearDto> result = careerService.getCareerGroupedByYear(testRequestMember1);
         //then
         assertAll(
                 () -> assertThat(result).isNotEmpty(),
@@ -455,15 +452,6 @@ public class CareerServiceTest {
                 () -> assertThat(result.get(1).getYear()).isEqualTo(2022)
         );
         verify(careerRepository, times(1)).findAllCareerByMemberId(testMemberId1);
-    }
-    @Test
-    @DisplayName("[getCareerGroupedBy] year, category 값을 입력하지 않는다 IllegalArgumentException 발생 ")
-    void getCareerGroupedByYearIllegalArgumentException() {
-        //given
-        //when
-        //then
-        assertThrows(IllegalArgumentException.class,
-                () -> careerService.getCareerGroupedBy(testRequestMember1, "invalid"));
     }
 
 }

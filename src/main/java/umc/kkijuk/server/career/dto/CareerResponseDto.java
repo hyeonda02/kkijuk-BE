@@ -2,8 +2,6 @@ package umc.kkijuk.server.career.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
-import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
-import umc.kkijuk.server.careerdetail.dto.CareerDetailRequestDto;
 import umc.kkijuk.server.careerdetail.dto.CareerDetailResponseDto;
 
 import java.time.LocalDate;
@@ -41,7 +39,7 @@ public class CareerResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CareerGroupedByCategoryDto extends CareerGroupedByResponse {
+    public static class CareerGroupedByCategoryDto {
         @Schema(description = "카테고리명",example = "동아리",type = "String")
         private String categoryName;
         @Schema(description = "카테고리 내 활동 개수 ( 예 : 카테고리가 동아리인 활동의 개수 )",example = "2",type="int")
@@ -55,7 +53,7 @@ public class CareerResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CareerGroupedByYearDto extends CareerGroupedByResponse{
+    public static class CareerGroupedByYearDto{
         @Schema(description = "연도", example = "2024", type = "int")
         private int year;
         @Schema(description = "연도 내 활동 개수 ( 예 : 2024년에 진행된 활동의 개수 )", example = "2", type = "int")
