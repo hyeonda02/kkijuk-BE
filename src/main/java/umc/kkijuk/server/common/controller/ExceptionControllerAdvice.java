@@ -120,4 +120,10 @@ public class ExceptionControllerAdvice {
     public ErrorResponse UnauthorizedException(UnauthorizedException exception) {
         return new ErrorResponse(exception.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ErrorResponse EmailAlreadyExistsException(EmailAlreadyExistsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

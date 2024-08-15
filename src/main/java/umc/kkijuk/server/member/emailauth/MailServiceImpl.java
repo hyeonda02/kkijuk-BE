@@ -89,9 +89,9 @@ public class MailServiceImpl implements MailService{
     public Boolean confirmDupEmail(MemberEmailDto memberEmailDto) {
         Optional<Member> member = memberRepository.findByEmail(memberEmailDto.getEmail());
         if(member.isEmpty()){
-            return true;
+            return Boolean.TRUE;
         }else{
-            return false;
+            return Boolean.FALSE;
         }
     }
 }

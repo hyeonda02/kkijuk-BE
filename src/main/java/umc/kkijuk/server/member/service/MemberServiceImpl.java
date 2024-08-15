@@ -47,6 +47,11 @@ public class MemberServiceImpl implements MemberService {
         String encodedPassword = passwordEncoder.encode(memberJoinDto.getPassword());
         joinMember.changeMemberPassword(encodedPassword);
 
+        Optional<Member> member = memberRepository.findByEmail(memberJoinDto.getEmail());
+        if (!member.isEmpty()){
+            throw new EmailAlreadyExistsException();
+        }
+
         return memberRepository.save(joinMember);
     }
 
