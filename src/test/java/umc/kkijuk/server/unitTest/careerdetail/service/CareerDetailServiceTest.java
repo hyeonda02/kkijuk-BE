@@ -1,4 +1,4 @@
-package umc.kkijuk.server.careerdetail.service;
+package umc.kkijuk.server.unitTest.careerdetail.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +14,7 @@ import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 import umc.kkijuk.server.careerdetail.domain.mapping.CareerTag;
 import umc.kkijuk.server.careerdetail.dto.CareerDetailRequestDto;
 import umc.kkijuk.server.careerdetail.repository.CareerDetailRepository;
+import umc.kkijuk.server.careerdetail.service.CareerDetailServiceImpl;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
@@ -23,16 +24,16 @@ import umc.kkijuk.server.tag.repository.TagRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CareerDetailServiceUnitTest {
+public class CareerDetailServiceTest {
     @Mock
     private CareerRepository careerRepository;
     @Mock
@@ -158,7 +159,7 @@ public class CareerDetailServiceUnitTest {
         verify(careerDetailRepository,times(1)).delete(careerDetail);
     }
     @Test
-    @DisplayName("delete - 존재하지 않는 CareerDetailId 입력시 ResourceNotFoundException 발 ")
+    @DisplayName("delete - 존재하지 않는 CareerDetailId 입력시 ResourceNotFoundException 발t생")
     void delete_기존_careerDetail_실패() {
         //given
         when(careerDetailRepository.findById(any(Long.class))).thenReturn(Optional.empty());

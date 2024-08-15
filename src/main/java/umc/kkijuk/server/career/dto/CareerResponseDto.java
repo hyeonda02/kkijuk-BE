@@ -13,7 +13,6 @@ public class CareerResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CareerResultDto{
-        @Schema(description = "생성된 활동 Id", example = "1", type = "Long")
         private Long careerId;
     }
 
