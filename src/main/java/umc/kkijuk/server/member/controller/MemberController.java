@@ -15,7 +15,7 @@ import umc.kkijuk.server.login.service.LoginService;
 import umc.kkijuk.server.member.controller.response.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.dto.*;
-//import umc.kkijuk.server.member.emailauth.MailService;
+import umc.kkijuk.server.member.emailauth.MailServiceImpl;
 import umc.kkijuk.server.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 
@@ -30,9 +30,14 @@ import java.util.List;
 public class MemberController {
 
     private final MemberService memberService;
+    private final MailServiceImpl mailService;
     private final LoginService loginService;
+<<<<<<< HEAD
 //    private final MailService mailService;
 //    private int authRandomNumber; // 이메일 인증 숫자를 저장하는 변수
+=======
+    private int authRandomNumber; // 이메일 인증 숫자를 저장하는 변수
+>>>>>>> 1f6964539ddbaa9783577fc3d5f7aa77e4101c4c
 
     @Operation(
             summary = "회원가입 요청",
@@ -49,6 +54,15 @@ public class MemberController {
                 .body(new CreateMemberResponse(joinMember.getId(), "Member created successfully"));
     }
 
+
+    @Operation(
+            summary = "이메일 중복 확인",
+            description = "회원가입시 이메일 중복을 확인합니다.")
+    @PostMapping("/confirmEmail")
+    public ResponseEntity<Boolean> confirmEmail(@RequestBody MemberEmailDto memberEmailDto){
+        Boolean result = mailService.confirmDupEmail(memberEmailDto);
+        return ResponseEntity.ok(result);
+    }
 
     @Operation(
             summary = "내 정보 조회",
