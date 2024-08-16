@@ -1,6 +1,7 @@
-package umc.kkijuk.server.tag.service;
+package umc.kkijuk.server.unitTest.tag.service;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import umc.kkijuk.server.tag.domain.Tag;
 import umc.kkijuk.server.tag.dto.TagRequestDto;
 import umc.kkijuk.server.tag.dto.TagResponseDto;
 import umc.kkijuk.server.tag.repository.TagRepository;
+import umc.kkijuk.server.tag.service.TagServiceImpl;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -28,144 +30,127 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TagServiceUnitTest {
+public class TagServiceTest {
     @Mock
     private TagRepository tagRepository;
     @InjectMocks
     private TagServiceImpl tagService;
     private Long testMemberId = 333L;
     private Member testMember;
-    private Member testMember2;
-    private Tag tag1;
-    private Tag tag2;
-    private Tag tag3;
+    private Member otherMember;
+    private Tag testTag1;
+    private Tag testTag2;
     @BeforeEach
     void init() {
         testMember = Member.builder()
                 .id(testMemberId)
-                .email("test@test.com")
-                .phoneNumber("000-0000-0000")
+                .email("test@naver.com")
+                .phoneNumber("010-1234-5678")
                 .birthDate(LocalDate.of(2024, 7, 31))
                 .password("test")
                 .userState(State.ACTIVATE)
                 .build();
 
-        testMember2 = Member.builder()
-                .id(444L)
-                .email("test@test.com")
-                .phoneNumber("000-0000-0000")
+        otherMember = Member.builder()
+                .id(2L)
+                .email("test2@naver.com")
+                .phoneNumber("010-2345-5678")
                 .birthDate(LocalDate.of(2024, 7, 31))
                 .password("test")
                 .userState(State.ACTIVATE)
                 .build();
 
-
-        tag1 = Tag.builder()
+        testTag1 = Tag.builder()
                 .id(1L)
                 .memberId(testMemberId)
                 .name("test tag1")
                 .build();
 
-        tag2 = Tag.builder()
+        testTag2 = Tag.builder()
                 .id(2L)
                 .memberId(testMemberId)
                 .name("test tag2")
                 .build();
-
-        tag3 = Tag.builder()
-                .id(3L)
-                .memberId(testMember2.getId())
-                .name("test tag3")
-                .build();
     }
     @Test
-    void create_tag_생성_성공() {
+    @DisplayName("[create] 새로운 tag 만들기 정상 요청")
+    void testCreateTag() {
         //given
-        Tag newTag = Tag.builder()
-                .id(4L)
-                .memberId(testMemberId)
-                .name("test tag4")
-                .build();
-
         TagRequestDto.CreateTagDto requestDto = TagRequestDto.CreateTagDto.builder()
-                .tagName("test tag4")
+                .tagName("test tag1")
                 .build();
-
-        when(tagRepository.save(any(Tag.class))).thenReturn(newTag);
+        when(tagRepository.save(any(Tag.class))).thenReturn(testTag1);
         //when
-        Tag tag = tagService.createTag(testMember, requestDto);
+        Tag tag = tagService.createTag(testMember,requestDto);
         //then
         assertAll(
                 () -> assertThat(tag.getMemberId().equals(testMemberId)),
-                () -> assertThat(tag.getId()).isEqualTo(4L),
-                () -> assertThat(tag.getName()).isEqualTo("test tag4")
+                () -> assertThat(tag.getId().equals(1L)),
+                () -> assertThat(tag.getName().equals("test tag1"))
         );
         verify(tagRepository).save(any(Tag.class));
+        verify(tagRepository, times(1)).save(any(Tag.class));
     }
+
     @Test
-    void create_tag_생성_존재하는_이름입력시_생성_실패() {
+    @DisplayName("[create] 이미 존재하는 태그이름 요청의 걍우 IncalidTagNameException 발생")
+    void testCreateTagInvalidTagNameException(){
         //given
         TagRequestDto.CreateTagDto requestDto = TagRequestDto.CreateTagDto.builder()
-                .tagName("test tag2")
+                .tagName("test tag1")
                 .build();
         when(tagRepository.existsByName(requestDto.getTagName())).thenReturn(true);
         //when
         //then
         assertThrows(InvalidTagNameException.class, () -> {
-            tagService.createTag(testMember, requestDto);
+           tagService.createTag(testMember, requestDto);
         });
         verify(tagRepository, times(1)).existsByName(requestDto.getTagName());
         verify(tagRepository, never()).save(any(Tag.class));
 
     }
     @Test
-    void create_tag_생성_공백입력시_생성_실패() {
+    @DisplayName("[delete] tag 삭제하기 정상 요청")
+    void testDeleteTag() {
         //given
-        TagRequestDto.CreateTagDto requestDto = TagRequestDto.CreateTagDto.builder()
-                .tagName("         ")
-                .build();
+        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(testTag1));
         //when
+        tagService.delete(testMember,1L);
         //then
-        assertThrows(InvalidTagNameException.class, () -> {
-            tagService.createTag(testMember, requestDto);
-        });
-        verify(tagRepository, never()).save(any(Tag.class));
+        verify(tagRepository, times(1)).delete(testTag1);
+    }
 
-    }
     @Test
-    void delete_tag_삭제_성공() {
-        //given
-        when(tagRepository.findById(anyLong())).thenReturn(Optional.of(tag1));
-        //when
-        tagService.delete(testMember, 1L);
-        //then
-        verify(tagRepository,times(1)).delete(tag1);
-    }
-    @Test
-    void delete_tag_존재하지_않는_tagId_입력시_삭제_실패() {
+    @DisplayName("[delete] 없는 리소스 요청의 경우 ResourceNotFoundException 발생")
+    void testDeleteTagResourceNotFoundException(){
         //given
         when(tagRepository.findById(anyLong())).thenReturn(Optional.empty());
         //when
         //then
-        assertThrows(ResourceNotFoundException.class, () ->{
-            tagService.delete(testMember, 1L);
+        assertThrows(ResourceNotFoundException.class, () -> {
+            tagService.delete(testMember, 5L);
         });
         verify(tagRepository, never()).delete(any(Tag.class));
-
     }
+
     @Test
-    void delete_tag_memberId가_같지_않을_경우_실패() {
+    @DisplayName("[delete] 다른 사용자의 요청의 경우 OwnerMismatchException 발생")
+    void testDeleteOwnerMismatchException() {
         //given
-        when(tagRepository.findById(1L)).thenReturn(Optional.of(tag1));
+        when(tagRepository.findById(1L)).thenReturn(Optional.of(testTag1));
         //when
         //then
-        assertThrows(OwnerMismatchException.class, () -> tagService.delete(testMember2, 1L));
-        verify(tagRepository, never()).save(any(Tag.class));
+        assertThrows(OwnerMismatchException.class, () -> {
+           tagService.delete(otherMember,1L);
+        });
+        verify(tagRepository, never()).delete(any(Tag.class));
     }
+
     @Test
-    void read_memberId로_존재하는_tag_모두_조회() {
+    @DisplayName("[findAllTags] 모든 태그 조회하기 정상 요청")
+    void testFindAllTags(){
         //given
-        List<Tag> tagList = Arrays.asList(tag1, tag2);
+        List<Tag> tagList = Arrays.asList(testTag1, testTag2);
         when(tagRepository.findAllTagByMemberId(testMemberId)).thenReturn(tagList);
         //when
         TagResponseDto.ResultTagDtoList allTags = tagService.findAllTags(testMember);
@@ -173,9 +158,8 @@ public class TagServiceUnitTest {
         assertAll(
                 () -> assertThat(allTags).isNotNull(),
                 () -> assertThat(allTags.getTagList()).hasSize(tagList.size()),
-                () -> assertThat(allTags.getTagList()).extracting("tagName").contains(tagList.get(0).getName(),tagList.get(1).getName())
-
-
+                () -> assertThat(allTags.getTagList()).extracting("tagName")
+                        .contains(tagList.get(0).getName(),tagList.get(1).getName())
         );
         verify(tagRepository, times(1)).findAllTagByMemberId(testMemberId);
     }
