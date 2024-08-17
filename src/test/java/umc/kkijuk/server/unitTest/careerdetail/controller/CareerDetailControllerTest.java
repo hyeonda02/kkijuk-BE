@@ -273,9 +273,9 @@ public class CareerDetailControllerTest {
         when(careerDetailService.update(testRequestMember1, updateRequestDto, 1L,1L)).thenReturn(updatedDetail);
 
         //when
-        CareerDetailResponse<Object> resultResponse =
+        CareerDetailResponse<CareerDetailResponseDto.CareerDetailResult> resultResponse =
                 careerDetailController.update(loginInfo, 1L,1L,updateRequestDto);
-        CareerDetailResponseDto.CareerDetailResult resultData = (CareerDetailResponseDto.CareerDetailResult) resultResponse.getData();
+        CareerDetailResponseDto.CareerDetailResult resultData = resultResponse.getData();
         //then
         assertAll(
                 () -> assertEquals(resultData.getCareerId(), 1L),

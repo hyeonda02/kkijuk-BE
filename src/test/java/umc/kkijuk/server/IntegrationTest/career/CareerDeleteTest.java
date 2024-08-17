@@ -29,8 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @SqlGroup({
-        @Sql(value = "/sql/createTestData.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-        @Sql(value = "/sql/deleteTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
+        @Sql(value = "/sql/createCareerTestData.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
+        @Sql(value = "/sql/deleteCareerTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
 public class CareerDeleteTest {
     @Autowired

@@ -61,7 +61,7 @@ public class CareerDetailController {
             @Parameter(name = "careerId",description = "활동 Id, path variable 입니다."),
             @Parameter(name = "detailId", description = "활동 기록 Id, path variable 입니다. ")
     })
-    public CareerDetailResponse<Object> update(
+    public CareerDetailResponse<CareerDetailResponseDto.CareerDetailResult> update(
             @Login LoginInfo loginInfo,
             @PathVariable Long careerId,
             @PathVariable Long detailId,
