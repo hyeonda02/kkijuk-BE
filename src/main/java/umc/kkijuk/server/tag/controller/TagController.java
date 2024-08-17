@@ -54,7 +54,6 @@ public class TagController {
     ) {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         tagService.delete(requestMember,tagId);
-
         return TagResponse.success(HttpStatus.OK, "태그 삭제가 성공적으로 이루어졌습니다.", null);
     }
 
