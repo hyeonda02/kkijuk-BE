@@ -1,8 +1,7 @@
 package umc.kkijuk.server.tag.dto.converter;
 
 import umc.kkijuk.server.tag.domain.Tag;
-import umc.kkijuk.server.tag.dto.TagRequestDto;
-import umc.kkijuk.server.tag.dto.TagResponseDto;
+import umc.kkijuk.server.tag.dto.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,11 +13,10 @@ public class TagConverter {
                 .memberId(memberId)
                 .build();
     }
-    public static TagResponseDto.ResultTagDto toTagResult(Tag hashTag) {
+    public static TagResponseDto.ResultTagDto toTagResult(Tag tag) {
         return TagResponseDto.ResultTagDto.builder()
-                .id(hashTag.getId())
-                .memberId(hashTag.getMemberId())
-                .tagName(hashTag.getName())
+                .id(tag.getId())
+                .tagName(tag.getName())
                 .build();
     }
 
@@ -28,7 +26,6 @@ public class TagConverter {
                 .tagList(tagList.stream().map(
                         value -> TagResponseDto.ResultTagDto.builder()
                                 .tagName(value.getName())
-                                .memberId(value.getMemberId())
                                 .id(value.getId())
                                 .build()
                 ).collect(Collectors.toList()))

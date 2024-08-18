@@ -4,7 +4,6 @@ package umc.kkijuk.server.career.controller.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 
 @Builder
@@ -18,7 +17,7 @@ public class CareerResponse<T> {
         this.message = message;
         this.data = data;
     }
-    public static <T> CareerResponse<T> success(HttpStatus status, String message, T data){
+    public static <T> CareerResponse<T> success(String message, T data){
         return new CareerResponse<>(message,data);
     }
 }

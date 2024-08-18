@@ -11,6 +11,7 @@ on:
       - feature/home
       - feature/login
       - feature/login-memberTest
+      - refactor/career
 
 jobs:
   CI:

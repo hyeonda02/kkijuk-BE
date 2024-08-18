@@ -27,6 +27,7 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.service.MemberService;
+import umc.kkijuk.server.record.dto.EducationResDto;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
@@ -34,6 +35,7 @@ import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,6 +66,7 @@ class IntroduceControllerTest {
     private Recruit requestRecruit;
     @Autowired
     private IntroduceService introduceService;
+
 
     @BeforeEach
     public void Init() {
