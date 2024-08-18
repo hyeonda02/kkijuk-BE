@@ -41,13 +41,5 @@ public class LoginController {
                 .ok()
                 .body("logout success");
     }
-
-    @GetMapping("sessionInfo")
-    public void SessionInfo(HttpServletRequest request) {
-        HttpSession session = request.getSession(false);
-        System.out.println("session.getId() = " + session.getId());
-        System.out.println("session = " + session.getAttributeNames());
-        System.out.println("session.getLastAccessedTime() = " + session.getLastAccessedTime());
-    }
 }
 

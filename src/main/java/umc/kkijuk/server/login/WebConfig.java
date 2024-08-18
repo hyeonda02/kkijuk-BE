@@ -19,7 +19,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/swagger-ui/**", "/v3/api-docs/**") // 스웨거 관련
                 .excludePathPatterns("/health-check")
-                .excludePathPatterns("/login", "/logout", "/sessionInfo") // 로그인
+                .excludePathPatterns("/login", "/logout") // 로그인
                 .excludePathPatterns("/api/error") // 에러처리
                 .excludePathPatterns("/member", "member/confirmEmail") // 회원가입, 회원가입 시 이메일 중복 확인
                 .excludePathPatterns("/auth/**");
