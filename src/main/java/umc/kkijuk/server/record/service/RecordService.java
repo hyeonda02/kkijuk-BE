@@ -29,7 +29,7 @@ public class RecordService {
     private final EducationRepository educationRepository;
 
     @Transactional
-    public Long saveRecord(Member requestMember, RecordReqDto recordReqDto){
+    public RecordResDto saveRecord(Member requestMember, RecordReqDto recordReqDto){
         if(recordRepository.findAll().stream().count()>0 ){
             throw new IntroFoundException("이미 이력서가 존재합니다");
         }
@@ -42,17 +42,18 @@ public class RecordService {
 
         recordRepository.save(record);
 
-        return record.getId();
+        return new RecordResDto(record, requestMember, null, null, null);
     }
 
     @Transactional
-    public Long saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto){
+    public EducationResDto saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto){
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
         if (!record.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
         Education education=Education.builder()
+                .record(record)
                 .category(educationReqDto.getCategory())
                 .schoolName(educationReqDto.getSchoolName())
                 .major(educationReqDto.getMajor())
@@ -61,11 +62,9 @@ public class RecordService {
                 .graduationDate(educationReqDto.getGraduationDate())
                 .build();
 
-        education.setRecord(record);
-
         educationRepository.save(education);
 
-        return education.getId();
+        return new EducationResDto(education);
     }
 
     @Transactional

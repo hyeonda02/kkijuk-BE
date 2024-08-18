@@ -36,10 +36,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             @RequestBody RecordReqDto recordReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        Long id = recordService.saveRecord(requestMember, recordReqDto);
+        RecordResDto recordResDto = recordService.saveRecord(requestMember, recordReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료","id: "+id));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료", recordResDto));
     }
 
     @GetMapping
@@ -70,10 +70,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             Long recordId, @RequestBody EducationReqDto educationReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        Long id = recordService.saveEducation(requestMember, recordId, educationReqDto);
+        EducationResDto educationResDto = recordService.saveEducation(requestMember, recordId, educationReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", "id: "+id));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", educationResDto));
     }
 
     @DeleteMapping("/education")
