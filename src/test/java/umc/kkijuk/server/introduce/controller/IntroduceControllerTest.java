@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -19,20 +20,22 @@ import umc.kkijuk.server.introduce.dto.IntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.IntroduceResDto;
 import umc.kkijuk.server.introduce.dto.QuestionDto;
 import umc.kkijuk.server.introduce.service.IntroduceService;
+import umc.kkijuk.server.login.controller.SessionConst;
+import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
-import umc.kkijuk.server.member.repository.MemberJpaRepository;
 import umc.kkijuk.server.member.service.MemberService;
+import umc.kkijuk.server.record.dto.EducationResDto;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
-import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -63,6 +66,7 @@ class IntroduceControllerTest {
     private Recruit requestRecruit;
     @Autowired
     private IntroduceService introduceService;
+
 
     @BeforeEach
     public void Init() {
@@ -102,10 +106,16 @@ class IntroduceControllerTest {
                 .state(state)
                 .build();
 
+        // 세션 추가
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER_INFO, LoginInfo.from(requestMember));
+
         // API 호출
         mockMvc.perform(MockMvcRequestBuilders.post("/history/intro/{recruitId}", recruitId)
+                        .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(introduceReqDto)))
+
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.questionList[0].title").value("제목"))
                 .andExpect(jsonPath("$.data.questionList[1].title").value("제목2"))

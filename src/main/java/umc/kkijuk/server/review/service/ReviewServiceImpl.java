@@ -23,8 +23,12 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
 
     @Override
-    public List<Review> findAllByRecruitId(Long recruitId) {
-        return reviewRepository.findAllByRecruitId(recruitId);
+    public List<Review> findAllByRecruit(Member requestMember, Recruit recruit) {
+        if (!recruit.getMemberId().equals(requestMember.getId())) {
+            throw new RecruitOwnerMismatchException();
+        }
+
+        return reviewRepository.findAllByRecruitId(recruit.getId());
     }
 
     public Review getById(Long id) {

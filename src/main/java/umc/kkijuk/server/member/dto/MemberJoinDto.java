@@ -1,5 +1,6 @@
 package umc.kkijuk.server.member.dto;
 
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MemberJoinDto {
 
-    @NotNull
+    @NotNull @Email
     private String email;
     @NotNull
     private String name;

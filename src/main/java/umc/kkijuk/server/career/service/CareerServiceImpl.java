@@ -11,7 +11,6 @@ import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 import umc.kkijuk.server.careerdetail.repository.CareerDetailRepository;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.CareerValidationException;
-import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
 import umc.kkijuk.server.career.controller.response.CareerResponseMessage;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.dto.CareerRequestDto;
@@ -88,21 +87,20 @@ public class CareerServiceImpl implements CareerService {
     }
 
     @Override
-    public List<? extends CareerGroupedByResponse> getCareerGroupedBy(Member requestMember, String status) {
-        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId()); //동작하는지 확인해야 됨 ( 멤버 아이디 넣음 -> CareerRepository )
-
-        Map<String,List<Career>> groupedCareers;
-
-        if(status.equalsIgnoreCase("category")){
-            groupedCareers = careers.stream().collect(Collectors.groupingBy(value -> value.getCategory().getName()));
-            return CareerConverter.toCareerGroupedByCategoryDto(groupedCareers);
-        } else if (status.equalsIgnoreCase("year")) {
-            groupedCareers = careers.stream().collect(Collectors.groupingBy(value -> String.valueOf(value.getYear())));
-            return CareerConverter.toCareerGroupedByYearDto(groupedCareers);
-        } else {
-            throw new IllegalArgumentException(CareerResponseMessage.CAREER_FINDALL_FAIL);
-        }
+    public List<CareerResponseDto.CareerGroupedByCategoryDto> getCareerGroupedByCategory(Member requestMember){
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
+        Map<String,List<Career>> groupedCareers = careers.stream().collect(Collectors.groupingBy(value -> value.getCategory().getName()));
+        return CareerConverter.toCareerGroupedByCategoryDto(groupedCareers);
     }
+
+    @Override
+    public List<CareerResponseDto.CareerGroupedByYearDto> getCareerGroupedByYear(Member requestMember){
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
+        Map<String,List<Career>> groupedCareers = careers.stream().collect(Collectors.groupingBy(value -> String.valueOf(value.getYear())));
+        return CareerConverter.toCareerGroupedByYearDto(groupedCareers);
+    }
+
+
 
     @Override
     public List<Career> searchCareer(Member requestMember, CareerRequestDto.SearchCareerDto request) {
@@ -128,6 +126,8 @@ public class CareerServiceImpl implements CareerService {
 
 
     }
+
+
     @Override
     public Career findCareerDetail(Member requestMember, Long careerId) {
         Career career = findCareer(careerId).get();
@@ -161,7 +161,6 @@ public class CareerServiceImpl implements CareerService {
             setEndDate(career, endDate);
         }
     }
-
     private void setEndDate(Career career, LocalDate endDate) {
         if (endDate != null) {
             career.setEnddate(endDate);
@@ -175,13 +174,11 @@ public class CareerServiceImpl implements CareerService {
             }
         }
     }
-
     private void validatedPeriod(Career career) {
         if(career.getEnddate().isBefore(career.getStartdate())){
             throw new CareerValidationException(CareerResponseMessage.CAREER_PERIOD_FAIL);
         }
     }
-
     private int parsingYear(CareerRequestDto.CreateCareerDto request){
         if(!request.getIsUnknown()){
             return request.getEndDate().getYear();

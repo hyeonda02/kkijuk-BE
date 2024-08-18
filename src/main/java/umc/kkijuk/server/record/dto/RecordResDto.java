@@ -17,6 +17,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class RecordResDto {
+    private Long record_id;
     private String address;
     private String profileImageUrl;
     private String updatedAt;
@@ -46,6 +47,7 @@ public class RecordResDto {
     public RecordResDto(Record record, Member member, List<EducationResDto> educationList,
                         List<RecordListResDto> activitiesAndExperiences,
                         List<RecordListResDto> jobs) {
+        this.record_id=record.getId();
         this.address = record.getAddress();
         this.profileImageUrl=record.getProfileImageUrl();
         this.educationList=educationList;

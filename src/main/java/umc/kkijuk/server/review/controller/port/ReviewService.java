@@ -13,7 +13,7 @@ public interface ReviewService {
 
     Review update(Member member, Recruit recruit, Long reviewId, ReviewUpdate reviewUpdate);
 
-    List<Review> findAllByRecruitId(Long recruitId);
+    List<Review> findAllByRecruit(Member member, Recruit recruit);
 
     Review getById(Long reviewId);
 

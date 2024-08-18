@@ -1,6 +1,8 @@
 package umc.kkijuk.server.member.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,13 +14,14 @@ import umc.kkijuk.server.member.controller.response.MemberStateResponse;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.*;
-import umc.kkijuk.server.member.repository.MemberJpaRepository;
 import umc.kkijuk.server.member.repository.MemberRepository;
 
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @Service
+@Builder
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -43,6 +46,11 @@ public class MemberServiceImpl implements MemberService {
 
         String encodedPassword = passwordEncoder.encode(memberJoinDto.getPassword());
         joinMember.changeMemberPassword(encodedPassword);
+
+        Optional<Member> member = memberRepository.findByEmail(memberJoinDto.getEmail());
+        if (!member.isEmpty()){
+            throw new EmailAlreadyExistsException();
+        }
 
         return memberRepository.save(joinMember);
     }
@@ -82,10 +90,8 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public Member updateMemberField(Long memberId, MemberFieldDto memberFieldDto){
         Member member = this.getById(memberId);
+
         member.changeFieldInfo(memberFieldDto.getField());
-        if(!member.getField().equals(memberFieldDto.getField())){
-            throw new FieldUpdateException();
-        }
         return memberRepository.save(member);
     }
 
@@ -142,7 +148,7 @@ public class MemberServiceImpl implements MemberService {
         memberRepository.save(member);
 
         return MemberStateResponse.builder()
-                .deleteDate(member.getDeleteDate())
+                .memberState(member.getUserState())
                 .build();
     }
 
@@ -159,6 +165,12 @@ public class MemberServiceImpl implements MemberService {
         member.get().changeMemberPassword(encodedPassword);
 
         return memberRepository.save(member.get());
+    }
+
+    @Override
+    public Boolean confirmDupEmail(MemberEmailDto memberEmailDto) {
+        Optional<Member> member = memberRepository.findByEmail(memberEmailDto.getEmail());
+        return member.isEmpty();
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import umc.kkijuk.server.introduce.domain.MasterIntroduce;
@@ -19,6 +20,8 @@ import umc.kkijuk.server.introduce.dto.IntroduceResDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.introduce.service.MasterIntroduceService;
+import umc.kkijuk.server.login.controller.SessionConst;
+import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.MarketingAgree;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
@@ -88,7 +91,12 @@ class MasterIntroduceControllerTest {
                 .jobSuitability(jobSuitability)
                 .build();
 
+        // 세션 추가
+        MockHttpSession session = new MockHttpSession();
+        session.setAttribute(SessionConst.LOGIN_MEMBER_INFO, LoginInfo.from(requestMember));
+
         mockMvc.perform(post("/history/intro/master")
+                        .session(session)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(masterIntroduceReqDto)))
                 .andExpect(status().isOk())

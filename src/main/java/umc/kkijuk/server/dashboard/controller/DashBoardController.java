@@ -12,6 +12,8 @@ import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.dashboard.controller.port.DashBoardService;
 import umc.kkijuk.server.dashboard.controller.response.DashBoardUserInfoResponse;
 import umc.kkijuk.server.dashboard.controller.response.IntroduceRemindResponse;
+import umc.kkijuk.server.login.argumentresolver.Login;
+import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
 import umc.kkijuk.server.dashboard.controller.response.RecruitRemindResponse;
@@ -35,8 +37,10 @@ public class DashBoardController {
             summary = "메인화면 정보 보드",
             description = "메인화면에 사용자이름, 가입한 기간, 활동, 지원현황 갯수 데이터를 응답합니다.")
     @GetMapping("/user-info")
-    public ResponseEntity<DashBoardUserInfoResponse> getUserInfo() {
-        Member requestMember = memberService.getById(1L);
+    public ResponseEntity<DashBoardUserInfoResponse> getUserInfo(
+            @Login LoginInfo loginInfo
+            ) {
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
         DashBoardUserInfoResponse response = dashBoardService.getUserInfo(requestMember);
         return ResponseEntity
                 .ok()
@@ -48,7 +52,10 @@ public class DashBoardController {
             description = "생성한 공고 중 남은 마감일자가 적은 순서로 두 개 출력"
     )
     @GetMapping("/remind/recruit")
-    public ResponseEntity<RecruitRemindResponse> getRemindRecruits() {
+    public ResponseEntity<RecruitRemindResponse> getRemindRecruits(
+            @Login LoginInfo loginInfo
+    ) {
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
         RecruitRemindResponse response = dashBoardService.getTopTwoRecruitsByEndTime(requestMember);
         return ResponseEntity
                 .ok()
@@ -57,7 +64,10 @@ public class DashBoardController {
 
     @GetMapping("/introduce")
     @Operation(summary = "홈 자기소개서 작성 알림")
-    public ResponseEntity<Object> get(){
+    public ResponseEntity<Object> get(
+            @Login LoginInfo loginInfo
+    ){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
         List<IntroduceRemindResponse> homeIntroduceResDtos = dashBoardService.getHomeIntro(requestMember);
         return ResponseEntity
                 .status(HttpStatus.OK)

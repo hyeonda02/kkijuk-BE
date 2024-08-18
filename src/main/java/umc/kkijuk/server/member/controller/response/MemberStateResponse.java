@@ -2,17 +2,18 @@ package umc.kkijuk.server.member.controller.response;
 
 import lombok.Builder;
 import lombok.Data;
+import umc.kkijuk.server.member.domain.State;
 
 import java.time.LocalDate;
 
 @Data
 public class MemberStateResponse {
-    private LocalDate deleteDate;
+    private State memberState;
 
     public MemberStateResponse(){
     }
     @Builder
-    public MemberStateResponse(LocalDate deleteDate) {
-        this.deleteDate = deleteDate;
+    public MemberStateResponse(State memberState) {
+        this.memberState = memberState;
     }
 }
