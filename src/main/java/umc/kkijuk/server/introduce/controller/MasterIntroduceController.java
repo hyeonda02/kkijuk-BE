@@ -46,8 +46,9 @@ public class MasterIntroduceController {
 
     @GetMapping
     @Operation(summary = "마스터 자기소개서 조회")
-    public ResponseEntity<Object> get(){
-        List<MasterIntroduceResDto> masterIntroduce = masterIntroduceService.getMasterIntro();
+    public ResponseEntity<Object> get(@Login LoginInfo loginInfo){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        MasterIntroduceResDto masterIntroduce = masterIntroduceService.getMasterIntro(requestMember);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "마스터 자기소개서 조회 완료", masterIntroduce));

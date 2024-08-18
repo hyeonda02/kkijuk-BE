@@ -82,41 +82,47 @@ public class RecordService {
 
     @Transactional
     public RecordResDto getRecord(Member requestMember) {
-        Member member= memberRepository.findById(requestMember.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
+        try{
+            Member member= memberRepository.findById(requestMember.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
-        List<Record> records = recordRepository.findAll();
-        List<Career> careers = careerRepository.findAll();
+            Record record = recordRepository.findByMemberId(requestMember.getId());
+            List<Career> careers = careerRepository.findAll();
 
-        // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
-        List<RecordListResDto> activitiesAndExperiences = careers.stream()
-                .filter(career -> career.getCategory().getId().equals(1L) || career.getCategory().getId().equals(2L)||
-                        career.getCategory().getId().equals(3L) || career.getCategory().getId().equals(4L)||
-                        career.getCategory().getId().equals(6L) || career.getCategory().getId().equals(7L))
-                .map(RecordListResDto::new)
-                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
-                .collect(Collectors.toList());
-
-        // 경력으로 필터링하고, endDate 기준으로 내림차순 정렬
-        List<RecordListResDto> jobs = careers.stream()
-                .filter(career -> career.getCategory().getId().equals(5L))
-                .map(RecordListResDto::new)
-                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
-                .collect(Collectors.toList());
-
-        // 이력서 있을 때
-        if (!records.isEmpty()) {
-            Record record = records.get(0);
-            List<EducationResDto> educationList = record.getEducations()
-                    .stream()
-                    .map(education -> new EducationResDto(education))
+            // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
+            List<RecordListResDto> activitiesAndExperiences = careers.stream()
+                    .filter(career -> career.getCategory().getId().equals(1L) || career.getCategory().getId().equals(2L)||
+                            career.getCategory().getId().equals(3L) || career.getCategory().getId().equals(4L)||
+                            career.getCategory().getId().equals(6L) || career.getCategory().getId().equals(7L))
+                    .map(RecordListResDto::new)
+                    .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
                     .collect(Collectors.toList());
 
-            return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
+            // 경력으로 필터링하고, endDate 기준으로 내림차순 정렬
+            List<RecordListResDto> jobs = careers.stream()
+                    .filter(career -> career.getCategory().getId().equals(5L))
+                    .map(RecordListResDto::new)
+                    .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+                    .collect(Collectors.toList());
+
+            // 이력서 있을 때
+            if (record!=null) {
+                List<EducationResDto> educationList = record.getEducations()
+                        .stream()
+                        .map(education -> new EducationResDto(education))
+                        .collect(Collectors.toList());
+
+                return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
+            }
+
+            // 이력서 없을 때
+            return new RecordResDto(member, activitiesAndExperiences, jobs);
+        }catch (Exception e){
+            System.out.println(e);
+
         }
 
-        // 이력서 없을 때
-        return new RecordResDto(member, activitiesAndExperiences, jobs);
+        return null;
     }
 
     @Transactional

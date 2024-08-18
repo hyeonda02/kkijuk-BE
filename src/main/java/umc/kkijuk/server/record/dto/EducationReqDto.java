@@ -14,9 +14,9 @@ public class EducationReqDto {
     private String schoolName;
     private String major;
     private String state;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM")
     private YearMonth admissionDate;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM")
+    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM")
     private YearMonth graduationDate;
 }
