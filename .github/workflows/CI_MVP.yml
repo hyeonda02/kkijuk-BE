@@ -12,6 +12,7 @@ on:
       - feature/login
       - feature/login-memberTest
       - refactor/career
+      - feature/login-recruit
 
 jobs:
   CI:

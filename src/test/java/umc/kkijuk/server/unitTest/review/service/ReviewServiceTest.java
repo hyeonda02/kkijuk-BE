@@ -206,7 +206,7 @@ class ReviewServiceTest {
             reviewService.create(requestMember, recruit, reviewCreate);
 
         //when
-        List<Review> reviews = reviewService.findAllByRecruitId(recruit.getId());
+        List<Review> reviews = reviewService.findAllByRecruit(requestMember, recruit);
 
         //then
         assertThat(reviews.size()).isEqualTo(11);
