@@ -1,5 +1,5 @@
-insert into `member` (`member_id`, `email`, `name`, `phone_number`, `birth_date`, `password`, `marketing_agree`, `user_state`, `field`)
-values (1, 'test@test.com', 'tester', '010-0000-0000', '2024-08-06', 'testPassword', 'BOTH', 'ACTIVATE', '[]');
+insert into `member` (`member_id`, `email`, `name`, `phone_number`, `birth_date`, `password`, `marketing_agree`, `user_state`, `field`, `recruit_tags`)
+values (1, 'test@test.com', 'tester', '010-0000-0000', '2024-08-06', 'testPassword', 'BOTH', 'ACTIVATE', '[]', '[]');
 
 insert into `category` (`category_id`, `category_name`)
 values (1, '동아리');

@@ -22,4 +22,6 @@ public interface MemberService {
     MemberStateResponse changeMemberState(Long memberId);
     Member resetMemberPassword(MemberPasswordResetDto memberPasswordResetDto);
     Boolean confirmDupEmail(MemberEmailDto memberEmailDto);
+    List<String> addRecruitTag(Member member, String tag);
+    List<String> deleteRecruitTag(Member Member, String tag);
 }

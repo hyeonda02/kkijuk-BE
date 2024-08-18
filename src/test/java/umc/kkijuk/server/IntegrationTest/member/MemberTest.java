@@ -50,8 +50,8 @@ public class MemberTest {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encodedPassword = passwordEncoder.encode("testPassword");
 
-        jdbcTemplate.update("INSERT INTO member (member_id, email, name, phone_number, birth_date, password, marketing_agree, user_state, field) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                1L, "test@test.com", "tester", "010-0000-0000", LocalDate.of(2024, 8, 6), encodedPassword, "BOTH", "ACTIVATE", "[\"game\", \"computer\"]");
+        jdbcTemplate.update("INSERT INTO member (member_id, email, name, phone_number, birth_date, password, marketing_agree, user_state, field, recruit_tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                1L, "test@test.com", "tester", "010-0000-0000", LocalDate.of(2024, 8, 6), encodedPassword, "BOTH", "ACTIVATE", "[\"game\", \"computer\"]", "[]");
     }
 
     @Autowired

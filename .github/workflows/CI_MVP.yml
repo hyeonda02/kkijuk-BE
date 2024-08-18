@@ -13,6 +13,7 @@ on:
       - feature/login-memberTest
       - refactor/career
       - feature/login-recruit
+      - feature/recruit-tag
 
 jobs:
   CI:

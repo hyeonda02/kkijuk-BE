@@ -10,6 +10,8 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -66,6 +68,7 @@ public class MemberJoinDto {
                 .password(password)
                 .marketingAgree(marketingAgree)
                 .userState(userState)
+                .recruitTags(new ArrayList<>(List.of("인턴", "정규직", "대외활동", "동아리")))
                 .build();
     }
 

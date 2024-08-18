@@ -32,8 +32,6 @@ public class MemberController {
     private final MemberService memberService;
     private final MailServiceImpl mailService;
     private final LoginService loginService;
-//    private final MailService mailService;
-//    private int authRandomNumber; // 이메일 인증 숫자를 저장하는 변수
 
     @Operation(
             summary = "회원가입 요청",
