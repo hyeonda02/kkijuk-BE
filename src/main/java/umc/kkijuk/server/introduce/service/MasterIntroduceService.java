@@ -43,12 +43,15 @@ public class MasterIntroduceService{
     }
 
     @Transactional
-    public List<MasterIntroduceResDto> getMasterIntro(){
-        List<MasterIntroduce> masterIntroduces =masterIntroduceRepository.findAll();
-
-        return masterIntroduces.stream()
-                .map(masterIntroduce -> new MasterIntroduceResDto(masterIntroduce/*, introduceList*/))
-                .collect(Collectors.toList());
+    public MasterIntroduceResDto getMasterIntro(Member requestMember){
+        MasterIntroduce masterIntroduce = masterIntroduceRepository.findByMemberId(requestMember.getId());
+        if (masterIntroduce == null) {
+            throw new ResourceNotFoundException("memberRepository", requestMember.getId());
+        }
+        if (!masterIntroduce.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+        return new MasterIntroduceResDto(masterIntroduce);
     }
 
     @Transactional
