@@ -30,7 +30,7 @@ public class RecordService {
 
     @Transactional
     public RecordResDto saveRecord(Member requestMember, RecordReqDto recordReqDto){
-        if(recordRepository.findAll().stream().count()>0 ){
+        if (recordRepository.existsByMemberId(requestMember.getId())) {
             throw new IntroFoundException("이미 이력서가 존재합니다");
         }
 
