@@ -76,7 +76,7 @@ public class CareerController {
     @PatchMapping("/{careerId}")
     @Operation(summary = "활동 수정", description = "주어진 정보를 바탕으로 활동 데이터를 수정합니다.")
     @Parameter(name="careerId", description = "활동 Id, path variable 입니다.",example = "1")
-    public CareerResponse<Object> update(
+    public CareerResponse<CareerResponseDto.CareerDto> update(
             @Login LoginInfo loginInfo,
             @RequestBody @Valid CareerRequestDto.UpdateCareerDto request,
             @PathVariable Long careerId

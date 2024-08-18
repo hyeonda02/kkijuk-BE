@@ -214,7 +214,7 @@ public class CareerControllerTest {
         when(careerService.updateCareer(requestMember1,1L,updateRequestDto)).thenReturn(updatedCareer);
 
         //when
-        CareerResponse<Object> resultResponse = careerController.update(loginInfo, updateRequestDto, 1L);
+        CareerResponse<CareerResponseDto.CareerDto> resultResponse = careerController.update(loginInfo, updateRequestDto, 1L);
         CareerResponseDto.CareerDto resultData = (CareerResponseDto.CareerDto) resultResponse.getData();
 
         //then
