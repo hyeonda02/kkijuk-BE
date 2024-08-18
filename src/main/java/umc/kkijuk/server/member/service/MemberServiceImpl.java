@@ -91,9 +91,6 @@ public class MemberServiceImpl implements MemberService {
     public Member updateMemberField(Long memberId, MemberFieldDto memberFieldDto){
         Member member = this.getById(memberId);
 
-        if(member.getField().equals(memberFieldDto.getField())){
-            throw new FieldUpdateException();
-        }
         member.changeFieldInfo(memberFieldDto.getField());
         return memberRepository.save(member);
     }
