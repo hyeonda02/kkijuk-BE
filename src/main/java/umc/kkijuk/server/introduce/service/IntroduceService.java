@@ -12,6 +12,8 @@ import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
+
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 

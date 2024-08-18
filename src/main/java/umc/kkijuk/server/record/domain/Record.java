@@ -1,11 +1,12 @@
 package umc.kkijuk.server.record.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +25,7 @@ public class Record extends BaseEntity {
     private String profileImageUrl;
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Education> educations;
+    private List<Education> educations = new ArrayList<>();;
 
     @Builder
     public Record(Long memberId, String address, String profileImageUrl, List<Education> educations) {
@@ -32,16 +33,6 @@ public class Record extends BaseEntity {
         this.address = address;
         this.profileImageUrl = profileImageUrl;
         this.educations = educations;
-        if (educations != null) {
-            setEducations(educations);
-        }
-    }
-
-    public void setEducations(List<Education> educations) {
-        this.educations = educations;
-        for (Education education : educations) {
-            education.setRecord(this);
-        }
     }
 
     public void update(String address, String profileImageUrl) {
