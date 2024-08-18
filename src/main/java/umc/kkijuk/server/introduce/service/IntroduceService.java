@@ -32,6 +32,7 @@ public class IntroduceService {
         if (introduceRepository.findByRecruitId(recruitId).isPresent()) {
             throw new IntroFoundException("이미 자기소개서가 존재합니다");
         }
+
         List<Question> questions = introduceReqDto.getQuestionList().stream()
                 .map(dto -> new Question(dto.getTitle(), dto.getContent(), dto.getNumber()))
                 .collect(Collectors.toList());

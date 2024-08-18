@@ -21,8 +21,8 @@ public class MasterIntroduceService{
 
     @Transactional
     public MasterIntroduceResDto saveMasterIntro(Member requestMember, MasterIntroduceReqDto masterIntroduceReqDto){
-        if(masterIntroduceRepository.findAll().stream().count()>0 ){
-            throw new IntroFoundException("이미 마스터 자기소개가 존재합니다");
+        if (masterIntroduceRepository.existsByMemberId(requestMember.getId())) {
+            throw new IntroFoundException("이미 마스터 자기소개서가 존재합니다");
         }
 
         MasterIntroduce masterIntroduce=MasterIntroduce.builder()
@@ -35,7 +35,6 @@ public class MasterIntroduceService{
                 .jobSuitabilityTitle(masterIntroduceReqDto.getJobSuitabilityTitle())
                 .jobSuitability(masterIntroduceReqDto.getJobSuitability())
                 .build();
-
 
         masterIntroduceRepository.save(masterIntroduce);
 
