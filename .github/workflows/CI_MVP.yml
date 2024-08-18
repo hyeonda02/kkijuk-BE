@@ -8,7 +8,9 @@ on:
       - mvp/career
       - mvp/portfolio
       - feature/record
+      - feature/home
       - feature/login
+      - refactor/career
 
 jobs:
   CI:

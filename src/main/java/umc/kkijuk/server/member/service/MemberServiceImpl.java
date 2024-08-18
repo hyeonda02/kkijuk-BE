@@ -101,7 +101,6 @@ public class MemberServiceImpl implements MemberService {
             throw new InvalidMemberDataException();
         }
         member.changeMemberInfo(memberInfoChangeDto.getPhoneNumber(), memberInfoChangeDto.getBirthDate(), memberInfoChangeDto.getMarketingAgree());
-
         return memberRepository.save(member);
     }
 
@@ -123,7 +122,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    @Transactional
     public Member myPagePasswordAuth(Long memberId, MyPagePasswordAuthDto myPagePasswordAuthDto) {
         Member member = this.getById(memberId);
 
@@ -132,15 +130,6 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return member;
-    }
-
-    @Override
-    @Transactional
-    public EmailAuthResponse getEmailAuth(EmailAddressDto emailAddressDto, int authRandomNumber){
-        return EmailAuthResponse.builder()
-                .email(emailAddressDto.getEmail())
-                .authNumber(authRandomNumber)
-                .build();
     }
 
     @Override
@@ -162,9 +151,25 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
+    public Member resetMemberPassword(MemberPasswordResetDto memberPasswordResetDto){
+        Optional<Member> member = memberRepository.findByEmail(memberPasswordResetDto.getEmail());
+
+        if(!memberPasswordResetDto.getNewPassword().equals(memberPasswordResetDto.getNewPasswordConfirm())){
+            throw new ConfirmPasswordMismatchException();
+        }
+
+        String encodedPassword = passwordEncoder.encode(memberPasswordResetDto.getNewPassword());
+        member.get().changeMemberPassword(encodedPassword);
+
+        return memberRepository.save(member.get());
+    }
+
+
+
+    @Override
     public Boolean confirmDupEmail(MemberEmailDto memberEmailDto) {
         Optional<Member> member = memberRepository.findByEmail(memberEmailDto.getEmail());
         return member.isEmpty();
     }
-
 }

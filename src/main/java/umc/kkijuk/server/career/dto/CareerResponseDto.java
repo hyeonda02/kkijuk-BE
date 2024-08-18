@@ -1,11 +1,7 @@
 package umc.kkijuk.server.career.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import umc.kkijuk.server.career.controller.response.CareerGroupedByResponse;
+import lombok.*;
 import umc.kkijuk.server.careerdetail.dto.CareerDetailResponseDto;
 
 import java.time.LocalDate;
@@ -17,9 +13,9 @@ public class CareerResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class CareerResultDto{
-        @Schema(description = "생성된 활동 Id", example = "1", type = "Long")
         private Long careerId;
     }
+
 
     @Getter
     @Builder
@@ -42,7 +38,7 @@ public class CareerResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CareerGroupedByCategoryDto extends CareerGroupedByResponse {
+    public static class CareerGroupedByCategoryDto {
         @Schema(description = "카테고리명",example = "동아리",type = "String")
         private String categoryName;
         @Schema(description = "카테고리 내 활동 개수 ( 예 : 카테고리가 동아리인 활동의 개수 )",example = "2",type="int")
@@ -56,7 +52,7 @@ public class CareerResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class CareerGroupedByYearDto extends CareerGroupedByResponse{
+    public static class CareerGroupedByYearDto{
         @Schema(description = "연도", example = "2024", type = "int")
         private int year;
         @Schema(description = "연도 내 활동 개수 ( 예 : 2024년에 진행된 활동의 개수 )", example = "2", type = "int")
@@ -86,6 +82,38 @@ public class CareerResponseDto {
 
         private int totalDetailCount;
         private List<CareerDetailResponseDto.CareerDetailResult> details;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CareerNameSearchDto{
+        private Long id;
+        private String careerName;
+        private String alias;
+        private String summary;
+        private LocalDate startDate;
+        private LocalDate endDate;
+        String categoryName;
+        private CareerDetailResponseDto.CareerDetailResult careerDetail;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class CareerSearchDto{
+        Long id;
+        String careerName;
+        String alias;
+        String summary;
+        LocalDate startDate;
+        LocalDate endDate;
+        String categoryName;
+        List<CareerDetailResponseDto.CareerDetailResult> details;
+
+
     }
 
 

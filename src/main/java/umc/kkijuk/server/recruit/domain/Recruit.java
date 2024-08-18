@@ -82,4 +82,19 @@ public class Recruit {
                 .disabledTime(LocalDateTime.now())
                 .build();
     }
+
+    public Recruit updateApplyDate(RecruitApplyDateUpdate recruitApplyDateUpdate) {
+        return Recruit.builder()
+                .id(this.id)
+                .memberId(memberId)
+                .title(this.getTitle())
+                .status(this.getStatus())
+                .startTime(this.getStartTime())
+                .endTime(this.getEndTime())
+                .applyDate(recruitApplyDateUpdate.getApplyDate())
+                .tags(this.getTags())
+                .link(this.getLink())
+                .active(this.active)
+                .build();
+    }
 }

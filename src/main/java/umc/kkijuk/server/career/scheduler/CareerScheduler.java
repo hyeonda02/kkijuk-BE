@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CareerScheduler {
     private final CareerRepository careerRepository;
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void updateUnkownEndDates() {
         List<Career> careers = careerRepository.findAllByUnknown(true);
         LocalDate now = LocalDate.now();
