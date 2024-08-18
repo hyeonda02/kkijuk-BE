@@ -9,11 +9,11 @@ on:
       - mvp/portfolio
       - feature/record
       - feature/home
+      - feature/recruit-tag
       - feature/login
       - feature/login-memberTest
       - refactor/career
       - feature/login-recruit
-      - feature/recruit-tag
 
 jobs:
   CI:

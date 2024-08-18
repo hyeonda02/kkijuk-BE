@@ -167,8 +167,6 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(member.get());
     }
 
-
-
     @Override
     public Boolean confirmDupEmail(MemberEmailDto memberEmailDto) {
         Optional<Member> member = memberRepository.findByEmail(memberEmailDto.getEmail());
