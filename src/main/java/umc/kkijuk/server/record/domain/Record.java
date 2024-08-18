@@ -1,12 +1,10 @@
 package umc.kkijuk.server.record.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
-import umc.kkijuk.server.introduce.domain.Question;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,13 +34,6 @@ public class Record extends BaseEntity {
         this.profileImageUrl = profileImageUrl;
         this.educations = educations;
     }
-
-    /*public void setEducations(List<Education> educations) {
-        this.educations = educations;
-        for (Education education : educations) {
-            education.setRecord(this);
-        }
-    }*/
 
     public void update(String address, String profileImageUrl) {
         this.address = address;

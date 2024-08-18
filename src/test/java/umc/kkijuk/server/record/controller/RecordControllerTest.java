@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
-import umc.kkijuk.server.career.repository.CareerRepository;
-import umc.kkijuk.server.career.repository.CategoryRepository;
 import umc.kkijuk.server.record.domain.Education;
 import umc.kkijuk.server.record.domain.EducationRepository;
 import umc.kkijuk.server.record.domain.Record;
@@ -34,9 +32,7 @@ import umc.kkijuk.server.record.dto.RecordReqDto;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,10 +45,6 @@ class RecordControllerTest {
 
     @Autowired
     private RecordRepository recordRepository;
-    @Autowired
-    private CareerRepository careerRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
     @Autowired
     private EducationRepository educationRepository;
     @Autowired
@@ -169,8 +161,7 @@ class RecordControllerTest {
                         .educations(new ArrayList<>())
                         .build());
 
-        // Education 객체들을 생성하고 record를 설정
-        Education education = educationRepository.save(Education.builder()
+        educationRepository.save(Education.builder()
                 .record(existRecord)
                 .state("state")
                 .major("major")
@@ -180,7 +171,7 @@ class RecordControllerTest {
                 .graduationDate(YearMonth.of(2024, 8))
                 .build());
 
-        Education education1 = educationRepository.save(Education.builder()
+        educationRepository.save(Education.builder()
                 .record(existRecord)
                 .state("state1")
                 .major("major1")
@@ -238,7 +229,7 @@ class RecordControllerTest {
                 .graduationDate(YearMonth.of(2024, 8))
                 .build());
 
-        Education education1 = educationRepository.save(Education.builder()
+        educationRepository.save(Education.builder()
                 .record(existRecord)
                 .state("state1")
                 .major("major1")

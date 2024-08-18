@@ -5,9 +5,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
-import umc.kkijuk.server.introduce.domain.Introduce;
-
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 
 @Entity
