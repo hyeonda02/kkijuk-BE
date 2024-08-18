@@ -46,10 +46,12 @@ public class RecordService {
     }
 
     @Transactional
-    public Long saveEducation(Long recordId, EducationReqDto educationReqDto){
+    public Long saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto){
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
-
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
         Education education=Education.builder()
                 .category(educationReqDto.getCategory())
                 .schoolName(educationReqDto.getSchoolName())
