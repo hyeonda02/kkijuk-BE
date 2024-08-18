@@ -2,6 +2,7 @@ package umc.kkijuk.server.login.service;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,7 @@ import umc.kkijuk.server.member.repository.MemberRepository;
 
 @Service
 @Slf4j
+@Builder
 @RequiredArgsConstructor
 public class LoginService {
     private final MemberRepository memberRepository;

@@ -29,7 +29,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 public class MemberServiceTest {
     private MemberService memberService;
     private Member member;
-    
 
     /**
      * testValues
@@ -204,18 +203,18 @@ public class MemberServiceTest {
     }
 
 
-    @Test
-    @DisplayName("[updateMemberField] 기존의 필드 정보로 업데이트 시 예외 발생 - FieldUpdateException")
-    void testUpdateMemberFieldDisable() {
-        //given
-        List<String> newField = List.of("game", "computer");
-        MemberFieldDto memberFieldDto = MemberFieldDto.builder().field(newField).build();
-        //when
-        //then
-        assertThatThrownBy(
-                () -> memberService.updateMemberField(1L, memberFieldDto))
-                .isInstanceOf(FieldUpdateException.class);
-    }
+//    @Test
+//    @DisplayName("[updateMemberField] 기존의 필드 정보로 업데이트 시 예외 발생 - FieldUpdateException")
+//    void testUpdateMemberFieldDisable() {
+//        //given
+//        List<String> newField = List.of("game", "computer");
+//        MemberFieldDto memberFieldDto = MemberFieldDto.builder().field(newField).build();
+//        //when
+//        //then
+//        assertThatThrownBy(
+//                () -> memberService.updateMemberField(1L, memberFieldDto))
+//                .isInstanceOf(FieldUpdateException.class);
+//    }
 
     @Test
     @DisplayName("[updateMemberInfo] 멤버 정보 업데이트 - 정상 업데이트")

@@ -2,6 +2,8 @@ package umc.kkijuk.server.unitTest.mock;
 
 import lombok.Builder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import umc.kkijuk.server.login.argumentresolver.Login;
+import umc.kkijuk.server.login.service.LoginService;
 import umc.kkijuk.server.member.repository.MemberRepository;
 import umc.kkijuk.server.member.service.MemberService;
 import umc.kkijuk.server.member.service.MemberServiceImpl;
@@ -20,6 +22,8 @@ public class TestContainer {
 
     public final PasswordEncoder passwordEncoder;
 
+    public final LoginService loginService;
+
 
     @Builder
     public TestContainer() {
@@ -32,6 +36,10 @@ public class TestContainer {
                 .recruitRepository(recruitRepository)
                 .build();
         this.memberService = MemberServiceImpl.builder()
+                .memberRepository(memberRepository)
+                .passwordEncoder(passwordEncoder)
+                .build();
+        this.loginService = LoginService.builder()
                 .memberRepository(memberRepository)
                 .passwordEncoder(passwordEncoder)
                 .build();
