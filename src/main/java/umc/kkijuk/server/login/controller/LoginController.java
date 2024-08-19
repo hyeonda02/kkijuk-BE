@@ -1,6 +1,7 @@
 package umc.kkijuk.server.login.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,11 @@ public class LoginController {
     @PostMapping("/login")
     public ResponseEntity<String> Login(
             HttpServletRequest request,
+            HttpServletResponse response,
             @RequestBody LoginRequestDto loginRequestDto) {
         LoginInfo loginInfo = loginService.login(loginRequestDto.getEmail(), loginRequestDto.getPassword());
 
-        loginService.makeLoginSession(loginInfo, request);
+        loginService.makeLoginSession(loginInfo, request, response);
 
         return ResponseEntity
                 .ok()
