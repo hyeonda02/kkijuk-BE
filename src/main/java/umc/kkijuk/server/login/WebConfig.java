@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/health-check")
                 .excludePathPatterns("/login", "/logout") // 로그인
                 .excludePathPatterns("/api/error") // 에러처리
-                .excludePathPatterns("/member", "member/confirmEmail") // 회원가입, 회원가입 시 이메일 중복 확인
+                .excludePathPatterns("/member", "/member/confirmEmail") // 회원가입, 회원가입 시 이메일 중복 확인
                 .excludePathPatterns("/auth/**", "/password/**"); // 이메일 인증
 
     }
