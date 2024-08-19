@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import umc.kkijuk.server.login.controller.SessionConst;
@@ -85,13 +86,14 @@ public class MemberControllerTest {
 
         //when
         MockHttpServletRequest request = new MockHttpServletRequest();
-        ResponseEntity<CreateMemberResponse> response = memberController.saveMember(memberJoinDto,request);
+        MockHttpServletResponse response = new MockHttpServletResponse();
+        ResponseEntity<CreateMemberResponse> result = memberController.saveMember(memberJoinDto,request, response);
 
         //then
         assertAll(
-                () -> assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED),
+                () -> assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED),
                 () -> {
-                    CreateMemberResponse body = response.getBody();
+                    CreateMemberResponse body = result.getBody();
                     assertThat(body).isNotNull();
                     assertThat(body.getId()).isNotNull();
                     assertThat(body.getMessage()).isEqualTo("Member created successfully");

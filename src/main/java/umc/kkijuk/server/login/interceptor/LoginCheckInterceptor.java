@@ -1,5 +1,8 @@
 package umc.kkijuk.server.login.interceptor;
 
+import io.micrometer.common.util.StringUtils;
+import io.netty.util.internal.StringUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -7,6 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 import umc.kkijuk.server.login.controller.SessionConst;
 import umc.kkijuk.server.login.exception.UnauthorizedException;
+
+import java.net.http.HttpHeaders;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.http.HttpHeaders.*;
 
 @Slf4j
 public class LoginCheckInterceptor implements HandlerInterceptor {
