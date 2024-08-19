@@ -48,7 +48,7 @@ public class MemberServiceImpl implements MemberService {
         joinMember.changeMemberPassword(encodedPassword);
 
         Optional<Member> member = memberRepository.findByEmail(memberJoinDto.getEmail());
-        if (!member.isEmpty()){
+        if (member.isPresent()){
             throw new EmailAlreadyExistsException();
         }
 

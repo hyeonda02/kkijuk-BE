@@ -1,5 +1,6 @@
 package umc.kkijuk.server.member.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -18,6 +19,7 @@ import java.util.List;
 public class MemberJoinDto {
 
     @NotNull @Email
+    @Schema(description = "이메일", example = "test@gmail.com", type = "string")
     private String email;
     @NotNull
     private String name;
