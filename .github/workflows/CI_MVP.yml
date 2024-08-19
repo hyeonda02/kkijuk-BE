@@ -16,6 +16,7 @@ on:
       - feature/login-recruit
       - fix/record
       - feature/errorFix
+      - fix/credential
 
 jobs:
   CI:
