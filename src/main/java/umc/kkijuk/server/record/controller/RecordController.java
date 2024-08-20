@@ -76,6 +76,18 @@ public class RecordController {
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", educationResDto));
     }
 
+    @PatchMapping("/education")
+    @Operation(summary = "학력 수정")
+    public ResponseEntity<Object> patchEducation(
+            @Login LoginInfo loginInfo,
+            Long educationId, @RequestBody EducationReqDto educationReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        EducationResDto educationResDto = recordService.updateEducation(requestMember, educationId, educationReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 수정 완료", educationResDto));
+    }
+
     @DeleteMapping("/education")
     @Operation(summary = "학력 삭제")
     public ResponseEntity<Object> deleteEducation(@Login LoginInfo loginInfo, Long educationId){

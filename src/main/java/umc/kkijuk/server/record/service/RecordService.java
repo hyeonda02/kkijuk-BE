@@ -9,6 +9,9 @@ import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.introduce.domain.Introduce;
+import umc.kkijuk.server.introduce.domain.MasterIntroduce;
+import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
+import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
 import umc.kkijuk.server.record.domain.Education;
@@ -81,48 +84,59 @@ public class RecordService {
     }
 
     @Transactional
+    public EducationResDto updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
+        Education education = educationRepository.findById(educationId)
+                .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
+        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+        education.update(
+                educationReqDto.getCategory(),
+                educationReqDto.getSchoolName(),
+                educationReqDto.getMajor(),
+                educationReqDto.getState(),
+                educationReqDto.getAdmissionDate(),
+                educationReqDto.getGraduationDate());
+
+        return new EducationResDto(education);
+    }
+
+    @Transactional
     public RecordResDto getRecord(Member requestMember) {
-        try{
-            Member member= memberRepository.findById(requestMember.getId())
-                    .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
+        Member member= memberRepository.findById(requestMember.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
-            Record record = recordRepository.findByMemberId(requestMember.getId());
-            List<Career> careers = careerRepository.findAll();
+        Record record = recordRepository.findByMemberId(requestMember.getId());
+        List<Career> careers = careerRepository.findAll();
 
-            // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
-            List<RecordListResDto> activitiesAndExperiences = careers.stream()
-                    .filter(career -> career.getCategory().getId().equals(1L) || career.getCategory().getId().equals(2L)||
-                            career.getCategory().getId().equals(3L) || career.getCategory().getId().equals(4L)||
-                            career.getCategory().getId().equals(6L) || career.getCategory().getId().equals(7L))
-                    .map(RecordListResDto::new)
-                    .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+        // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
+        List<RecordListResDto> activitiesAndExperiences = careers.stream()
+                .filter(career -> career.getCategory().getId().equals(1L) || career.getCategory().getId().equals(2L)||
+                        career.getCategory().getId().equals(3L) || career.getCategory().getId().equals(4L)||
+                        career.getCategory().getId().equals(6L) || career.getCategory().getId().equals(7L))
+                .map(RecordListResDto::new)
+                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+                .collect(Collectors.toList());
+
+        // 경력으로 필터링하고, endDate 기준으로 내림차순 정렬
+        List<RecordListResDto> jobs = careers.stream()
+                .filter(career -> career.getCategory().getId().equals(5L))
+                .map(RecordListResDto::new)
+                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+                .collect(Collectors.toList());
+
+        // 이력서 있을 때
+        if (record!=null) {
+            List<EducationResDto> educationList = record.getEducations()
+                    .stream()
+                    .map(education -> new EducationResDto(education))
                     .collect(Collectors.toList());
 
-            // 경력으로 필터링하고, endDate 기준으로 내림차순 정렬
-            List<RecordListResDto> jobs = careers.stream()
-                    .filter(career -> career.getCategory().getId().equals(5L))
-                    .map(RecordListResDto::new)
-                    .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
-                    .collect(Collectors.toList());
-
-            // 이력서 있을 때
-            if (record!=null) {
-                List<EducationResDto> educationList = record.getEducations()
-                        .stream()
-                        .map(education -> new EducationResDto(education))
-                        .collect(Collectors.toList());
-
-                return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
-            }
-
-            // 이력서 없을 때
-            return new RecordResDto(member, activitiesAndExperiences, jobs);
-        }catch (Exception e){
-            System.out.println(e);
-
+            return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
         }
 
-        return null;
+        // 이력서 없을 때
+        return new RecordResDto(member, activitiesAndExperiences, jobs);
     }
 
     @Transactional
