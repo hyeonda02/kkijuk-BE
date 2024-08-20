@@ -14,6 +14,7 @@ import java.time.YearMonth;
 @AllArgsConstructor
 @Builder
 public class EducationResDto {
+    private Long educationId;
     private String category;
     private String schoolName;
     private String major;
@@ -24,6 +25,7 @@ public class EducationResDto {
 
     @Builder
     public EducationResDto(Education education) {
+        this.educationId = education.getId();
         this.category = education.getCategory();
         this.schoolName = education.getSchoolName();
         this.major = education.getMajor();
