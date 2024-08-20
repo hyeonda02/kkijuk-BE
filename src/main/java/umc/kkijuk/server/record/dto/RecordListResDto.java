@@ -16,6 +16,7 @@ public class RecordListResDto {
     private Long careerId;
     private String careerName;
     private String alias;
+    private String category;
     private LocalDate startDate;
     private LocalDate endDate;
     private int period;
@@ -27,6 +28,7 @@ public class RecordListResDto {
         this.careerId = career.getId();
         this.careerName=career.getName();
         this.alias=career.getAlias();
+        this.category=career.getCategory().getName();
         this.startDate=career.getStartdate();
         this.endDate = career.getEnddate();
         this.period=calculatePeriodInMonths(startDate, endDate);
