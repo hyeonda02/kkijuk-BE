@@ -15,7 +15,8 @@ on:
       - refactor/career
       - feature/login-recruit
       - fix/record
-      - feature/education
+      - feature/errorFix
+      - fix/credential
 
 jobs:
   CI:

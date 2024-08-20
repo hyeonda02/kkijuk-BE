@@ -3,6 +3,7 @@ package umc.kkijuk.server.member.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
@@ -39,10 +40,11 @@ public class MemberController {
     @PostMapping
     public ResponseEntity<CreateMemberResponse> saveMember(
             @RequestBody @Valid MemberJoinDto memberJoinDto,
-            HttpServletRequest request) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
         Member joinMember = memberService.join(memberJoinDto);
 
-        loginService.makeLoginSession(LoginInfo.from(joinMember), request);
+        loginService.makeLoginSession(LoginInfo.from(joinMember), request, response);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(new CreateMemberResponse(joinMember.getId(), "Member created successfully"));
