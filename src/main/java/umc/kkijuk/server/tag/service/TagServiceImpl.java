@@ -24,9 +24,12 @@ public class TagServiceImpl implements TagService {
     @Transactional
     public Tag createTag(Member requestMember, TagRequestDto.CreateTagDto request) {
         String tagName = request.getTagName();
-        if (tagName==null || tagName.trim().isEmpty() || tagRepository.existsByName(tagName)) {
-            throw new InvalidTagNameException("태그 이름은 비워둘 수 없으며, 이미 존재하는 이름은 사용할 수 없습니다.");
+        Long memberId = requestMember.getId();
+
+        if(tagRepository.existsByNameAndMemberId(tagName,memberId)){
+            throw new InvalidTagNameException("이미 사용자가 동일한 이름의 태그를 가지고 있습니다.");
         }
+
         Tag newTag = TagConverter.toTag(requestMember.getId(), request);
         return tagRepository.save(newTag);
     }
