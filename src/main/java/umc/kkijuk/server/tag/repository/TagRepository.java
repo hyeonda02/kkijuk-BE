@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface TagRepository extends JpaRepository<Tag,Long> {
     boolean existsByName(String name);
+    boolean existsByNameAndMemberId(String name, Long memberId);
     List<Tag> findAllTagByMemberId(Long MemberId);
 
 }

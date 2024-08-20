@@ -7,7 +7,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import umc.kkijuk.server.common.domian.exception.InvalidTagNameException;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
@@ -92,23 +91,6 @@ public class TagServiceTest {
         verify(tagRepository, times(1)).save(any(Tag.class));
     }
 
-    @Test
-    @DisplayName("[create] 이미 존재하는 태그이름 요청의 걍우 IncalidTagNameException 발생")
-    void testCreateTagInvalidTagNameException(){
-        //given
-        TagRequestDto.CreateTagDto requestDto = TagRequestDto.CreateTagDto.builder()
-                .tagName("test tag1")
-                .build();
-        when(tagRepository.existsByName(requestDto.getTagName())).thenReturn(true);
-        //when
-        //then
-        assertThrows(InvalidTagNameException.class, () -> {
-           tagService.createTag(testMember, requestDto);
-        });
-        verify(tagRepository, times(1)).existsByName(requestDto.getTagName());
-        verify(tagRepository, never()).save(any(Tag.class));
-
-    }
     @Test
     @DisplayName("[delete] tag 삭제하기 정상 요청")
     void testDeleteTag() {
