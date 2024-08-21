@@ -122,9 +122,13 @@
 </div>
 
 ## 🔍 더 자세한 끼적이 궁금하다면?
-[끼적 화면설계서 (Figma)](https://www.figma.com/design/5jHCwkgafgR2OOd1M52ny6/끼적-화면설계서-(공유용)?node-id=0-1&t=oUZq3stnwqG4CSWa-1)
 
-[깃허브 페이지](https://github.com/kkijuk)
+[<img src="https://skillicons.dev/icons?i=figma&theme=light" width="25" height="25" style="vertical-align:middle;margin-right:8px;"> 끼적 화면설계서](https://www.figma.com/design/5jHCwkgafgR2OOd1M52ny6/끼적-화면설계서-(공유용)?node-id=0-1&t=oUZq3stnwqG4CSWa-1)
+
+[<img src="https://skillicons.dev/icons?i=instagram" width="25" height="25" style="vertical-align:middle;margin-right:8px;"> 끼적 인스타그램](https://www.instagram.com/kki.juk)
+
+[<img src="https://skillicons.dev/icons?i=github" width="25" height="25" style="vertical-align:middle;margin-right:8px;"> 깃허브 페이지](https://github.com/kkijuk)
+
 
 
 ## ✏️ 끼적 실제로 사용해보기
@@ -132,4 +136,9 @@
 
 
 ## 👂 끼적에게 의견을 전달해주세요!
-[끼적 설문조사 하러가기](https://forms.gle/gBGTa7zGFs9m9xXJ6)
+
+> 여러분의 소중한 의견을 기다립니다! 설문에 참여해 끼적을 더 나은 서비스로 만들어주세요.
+> [끼적 설문조사 하러가기](https://forms.gle/gBGTa7zGFs9m9xXJ6)
+
+
+
