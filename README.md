@@ -21,7 +21,7 @@
 <table>
 <tr height="200px">
         <td align="center" width="200px">
-            <a href="https://github.com/Younkyum"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/b14nc444"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/b14nc444"/></a>
             <br />
             <a href="https://github.com/b14nc444">엎질/박하은</a>
 			<br />
@@ -33,7 +33,7 @@
 <table>
 <tr height="200px">
         <td align="center" width="200px">
-            <img height="150px" width="150px" src=""/>
+            <a href="https://github.com/noowad-s"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/noowad-s"/>
             <br />
             <a href="https://github.com/noowad-s">운히/신다운</a>
 			<br />
@@ -45,25 +45,25 @@
 <table>
 <tr height="200px">
         <td align="center" width="200px">
-            <a href="https://github.com/josushell"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/cinsy26"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/cinsy26"/></a>
             <br />
             <a href="https://github.com/cinsy26">카이트/임세연</a>
 			<br />
         </td>
           <td align="center" width="200px">
-            <a href="https://github.com/bome24"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/codmoni"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/codmoni"/></a>
             <br />
             <a href="https://github.com/codmoni">모니/황무원</a>
 			<br />
         </td>
           <td align="center" width="200px">
-            <a href="https://github.com/Younkyum"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/yeondub1121"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/yeondub1121"/></a>
             <br />
             <a href="https://github.com/yeondub1121">연두/장연주</a>
             <br />
         </td>
           <td align="center" width="200px">
-            <a href="https://github.com/bome24"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/fuzzyter"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/fuzzyter"/></a>
             <br />
             <a href="https://github.com/fuzzyter">퍼지/김나은</a>
 			<br />
@@ -75,26 +75,26 @@
 <table>
 <tr height="200px">
         <td align="center" width="200px">
-            <a href="https://github.com/Dawon00"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/tape4"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/tape4"/></a>
             <br />
             <a href="https://github.com/tape4">테이프/이정훈</a>
 			<br />
                 </td>
           <td align="center" width="200px">
-            <a href="https://github.com/SeongEon-Kim"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/Suhun0331"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/Suhun0331"/></a>
             <br />
             <a href="https://github.com/Suhun0331">노아/김수훈</a>
 			<br />
         </td>
           </td>
           <td align="center" width="200px">
-            <a href="https://github.com/bik1111"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/nanna29"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/nanna29"/></a>
             <br />
             <a href="https://github.com/nanna29">넬리/김나영</a>
             <br />
         </td>
           <td align="center" width="200px">
-            <a href="https://github.com/bome24"><img height="150px" width="150px" src=""/></a>
+            <a href="https://github.com/hyeonda02"><img height="150px" width="150px" src="https://avatars.githubusercontent.com/hyeonda02"/></a>
             <br />
             <a href="https://github.com/hyeonda02">사이다/강다현</a>
 			<br />
