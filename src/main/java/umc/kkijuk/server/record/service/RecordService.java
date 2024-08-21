@@ -107,7 +107,7 @@ public class RecordService {
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
         Record record = recordRepository.findByMemberId(requestMember.getId());
-        List<Career> careers = careerRepository.findAll();
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
         List<RecordListResDto> activitiesAndExperiences = careers.stream()
@@ -151,7 +151,7 @@ public class RecordService {
         Member member= memberRepository.findById(requestMember.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
-        List<Career> careers = careerRepository.findAll();
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
         List<RecordListResDto> activitiesAndExperiences = careers.stream()
