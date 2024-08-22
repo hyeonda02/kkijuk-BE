@@ -134,7 +134,8 @@
 <br/>
 
 ## ✏️ 끼적 실제로 사용해보기
-[www.kkijuk.com](https://www.kkijuk.com/)
+[<img src="https://github.com/user-attachments/assets/56dad13e-9aaa-46c9-979e-7c16fb4a8847" width="25" height="25" style="vertical-align:middle;margin-right:8px;"> 끼적 사용하러 가기](https://www.kkijuk.com/)
+
 
 <br/>
 
