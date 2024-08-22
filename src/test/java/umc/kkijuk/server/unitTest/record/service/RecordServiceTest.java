@@ -261,7 +261,7 @@ class RecordServiceTest {
         List<Career> careers = Arrays.asList(career1);
         when(recordRepository.findById(record.getId())).thenReturn(Optional.of(record));
         when(memberRepository.findById(requestMember.getId())).thenReturn(Optional.of(requestMember));
-        when(careerRepository.findAll()).thenReturn(careers);
+        when(careerRepository.findAllCareerByMemberId(requestMember.getId())).thenReturn(careers);
 
         // Act
         RecordResDto result = recordService.updateRecord(requestMember, record.getId(), recordReqDto);
