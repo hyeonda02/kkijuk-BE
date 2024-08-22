@@ -3,11 +3,20 @@ name: CI FOR MVP
 on:
   push:
     branches:
-    - mvp/apply
-    - mvp/member
-    - mvp/career
-    - mvp/portfolio
-    - example
+      - mvp/apply
+      - mvp/member
+      - mvp/career
+      - mvp/portfolio
+      - feature/record
+      - feature/home
+      - feature/recruit-tag
+      - feature/login
+      - feature/login-memberTest
+      - refactor/career
+      - feature/login-recruit
+      - fix/record
+      - feature/errorFix
+      - fix/credential
 
 jobs:
   CI:
@@ -29,7 +38,7 @@ jobs:
       - name: Setup MySQL
         uses: mirromutth/mysql-action@v1.1
         with:
-          mysql database: 'kkijuk'
+          mysql database: 'testDB'
           mysql user: 'test'
           mysql password: 'testPW'
 
@@ -39,18 +48,6 @@ jobs:
       - name: Get short SHA
         id: slug
         run: echo "sha7=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
-
-      - name: Generate application.properties
-        run: |
-          touch ./src/test/resources/application.properties
-          touch ./src/main/resources/application.properties
-          echo ${{ secrets.PROPERTIES }} >> ./src/main/resources/application.properties
-          echo ${{ secrets.PROPERTIES }} >> ./src/test/resources/application.properties
-          
-          echo ${{ secrets.DB_PROPERTIES }} >> ./src/main/resources/application.properties
-          echo ${{ secrets.TEST_DB_PROPERTIES }} >> ./src/test/resources/application.properties
-          
-          echo commit.hash=${{ steps.slug.outputs.sha7 }} >> ./src/main/resources/application.properties
-          
+        
       - name: Build with Gradle Wrapper
         run: ./gradlew build
