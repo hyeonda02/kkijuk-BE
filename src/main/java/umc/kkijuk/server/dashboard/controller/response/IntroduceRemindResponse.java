@@ -11,11 +11,13 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 public class IntroduceRemindResponse {
+    private Long introduceId;
     private String recruitTitle;
     private String deadline;
 
     @Builder
     public IntroduceRemindResponse(Introduce introduce) {
+        this.introduceId = introduce.getId();
         this.recruitTitle = introduce.getRecruit().toModel().getTitle();
         this.deadline = calculateTimeUntilDeadline(LocalDateTime.now(), introduce.getRecruit().toModel().getEndTime());
     }

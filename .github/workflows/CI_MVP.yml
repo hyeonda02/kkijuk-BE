@@ -17,6 +17,7 @@ on:
       - fix/record
       - feature/errorFix
       - fix/credential
+      - feature/dashboard
 
 jobs:
   CI:
