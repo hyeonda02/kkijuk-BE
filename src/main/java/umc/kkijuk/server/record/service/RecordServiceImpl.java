@@ -1,0 +1,180 @@
+package umc.kkijuk.server.record.service;
+
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import umc.kkijuk.server.career.domain.Career;
+import umc.kkijuk.server.career.repository.CareerRepository;
+import umc.kkijuk.server.common.domian.exception.IntroFoundException;
+import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
+import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.member.repository.MemberRepository;
+import umc.kkijuk.server.record.controller.response.EducationResponse;
+import umc.kkijuk.server.record.controller.response.RecordListResponse;
+import umc.kkijuk.server.record.controller.response.RecordResponse;
+import umc.kkijuk.server.record.domain.Education;
+import umc.kkijuk.server.record.repository.EducationRepository;
+import umc.kkijuk.server.record.domain.Record;
+import umc.kkijuk.server.record.repository.RecordRepository;
+import umc.kkijuk.server.record.dto.*;
+
+import java.util.*;
+import java.util.stream.Collectors;
+
+@RequiredArgsConstructor
+@Service
+public class RecordServiceImpl implements RecordService {
+
+    private final CareerRepository careerRepository;
+    private final RecordRepository recordRepository;
+    private final MemberRepository memberRepository;
+    private final EducationRepository educationRepository;
+
+    @Override
+    @Transactional
+    public RecordResponse saveRecord(Member requestMember, RecordReqDto recordReqDto) {
+        if (recordRepository.existsByMemberId(requestMember.getId())) {
+            throw new IntroFoundException("이미 이력서가 존재합니다");
+        }
+
+        Record record = Record.builder()
+                .memberId(requestMember.getId())
+                .address(recordReqDto.getAddress())
+                .profileImageUrl(recordReqDto.getProfileImageUrl())
+                .build();
+
+        recordRepository.save(record);
+
+        return new RecordResponse(record, requestMember, null, null, null);
+    }
+
+    @Override
+    @Transactional
+    public EducationResponse saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto) {
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        Education education = Education.builder()
+                .record(record)
+                .category(educationReqDto.getCategory())
+                .schoolName(educationReqDto.getSchoolName())
+                .major(educationReqDto.getMajor())
+                .state(educationReqDto.getState())
+                .admissionDate(educationReqDto.getAdmissionDate())
+                .graduationDate(educationReqDto.getGraduationDate())
+                .build();
+
+        educationRepository.save(education);
+
+        return new EducationResponse(education);
+    }
+
+    @Override
+    @Transactional
+    public Long deleteEducation(Member requestMember, Long educationId) {
+        Education education = educationRepository.findById(educationId)
+                .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
+        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        educationRepository.delete(education);
+
+        return education.getId();
+    }
+
+    @Override
+    @Transactional
+    public EducationResponse updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
+        Education education = educationRepository.findById(educationId)
+                .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
+        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+        education.update(
+                educationReqDto.getCategory(),
+                educationReqDto.getSchoolName(),
+                educationReqDto.getMajor(),
+                educationReqDto.getState(),
+                educationReqDto.getAdmissionDate(),
+                educationReqDto.getGraduationDate());
+
+        return new EducationResponse(education);
+    }
+
+    @Override
+    @Transactional
+    public RecordResponse getRecord(Member requestMember) {
+        Member member = memberRepository.findById(requestMember.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
+
+        Record record = recordRepository.findByMemberId(requestMember.getId());
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
+
+        List<RecordListResponse> activitiesAndExperiences = careers.stream()
+                .filter(career -> Arrays.asList(1L, 2L, 3L, 4L, 6L, 7L).contains(career.getCategory().getId()))
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
+                .collect(Collectors.toList());
+
+        List<RecordListResponse> jobs = careers.stream()
+                .filter(career -> career.getCategory().getId().equals(5L))
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
+                .collect(Collectors.toList());
+
+        if (record != null) {
+            List<EducationResponse> educationList = record.getEducations()
+                    .stream()
+                    .map(EducationResponse::new)
+                    .collect(Collectors.toList());
+
+            return new RecordResponse(record, member, educationList, activitiesAndExperiences, jobs);
+        }
+
+        return new RecordResponse(member, activitiesAndExperiences, jobs);
+    }
+
+    @Override
+    @Transactional
+    public RecordResponse updateRecord(Member requestMember, Long recordId, RecordReqDto recordReqDto) {
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("record ", recordId));
+
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        Member member = memberRepository.findById(requestMember.getId())
+                .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
+
+        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
+
+        List<RecordListResponse> activitiesAndExperiences = careers.stream()
+                .filter(career -> Arrays.asList(1L, 2L, 3L, 4L, 6L, 7L).contains(career.getCategory().getId()))
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
+                .collect(Collectors.toList());
+
+        List<RecordListResponse> jobs = careers.stream()
+                .filter(career -> career.getCategory().getId().equals(5L))
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
+                .collect(Collectors.toList());
+
+        record.update(
+                recordReqDto.getAddress(),
+                recordReqDto.getProfileImageUrl());
+
+        List<EducationResponse> educationList = record.getEducations()
+                .stream()
+                .map(EducationResponse::new)
+                .collect(Collectors.toList());
+
+        return new RecordResponse(record, member, educationList, activitiesAndExperiences, jobs);
+    }
+}
