@@ -10,6 +10,9 @@ import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
+import umc.kkijuk.server.record.controller.response.EducationResponse;
+import umc.kkijuk.server.record.controller.response.RecordListResponse;
+import umc.kkijuk.server.record.controller.response.RecordResponse;
 import umc.kkijuk.server.record.domain.Education;
 import umc.kkijuk.server.record.repository.EducationRepository;
 import umc.kkijuk.server.record.domain.Record;
@@ -28,7 +31,7 @@ public class RecordService {
     private final EducationRepository educationRepository;
 
     @Transactional
-    public RecordResDto saveRecord(Member requestMember, RecordReqDto recordReqDto){
+    public RecordResponse saveRecord(Member requestMember, RecordReqDto recordReqDto){
         if (recordRepository.existsByMemberId(requestMember.getId())) {
             throw new IntroFoundException("이미 이력서가 존재합니다");
         }
@@ -41,11 +44,11 @@ public class RecordService {
 
         recordRepository.save(record);
 
-        return new RecordResDto(record, requestMember, null, null, null);
+        return new RecordResponse(record, requestMember, null, null, null);
     }
 
     @Transactional
-    public EducationResDto saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto){
+    public EducationResponse saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto){
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
         if (!record.getMemberId().equals(requestMember.getId())) {
@@ -63,7 +66,7 @@ public class RecordService {
 
         educationRepository.save(education);
 
-        return new EducationResDto(education);
+        return new EducationResponse(education);
     }
 
     @Transactional
@@ -80,7 +83,7 @@ public class RecordService {
     }
 
     @Transactional
-    public EducationResDto updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
+    public EducationResponse updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
         Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
         if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
@@ -94,11 +97,11 @@ public class RecordService {
                 educationReqDto.getAdmissionDate(),
                 educationReqDto.getGraduationDate());
 
-        return new EducationResDto(education);
+        return new EducationResponse(education);
     }
 
     @Transactional
-    public RecordResDto getRecord(Member requestMember) {
+    public RecordResponse getRecord(Member requestMember) {
         Member member= memberRepository.findById(requestMember.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
@@ -106,37 +109,37 @@ public class RecordService {
         List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
-        List<RecordListResDto> activitiesAndExperiences = careers.stream()
+        List<RecordListResponse> activitiesAndExperiences = careers.stream()
                 .filter(career -> career.getCategory().getId().equals(1L) || career.getCategory().getId().equals(2L)||
                         career.getCategory().getId().equals(3L) || career.getCategory().getId().equals(4L)||
                         career.getCategory().getId().equals(6L) || career.getCategory().getId().equals(7L))
-                .map(RecordListResDto::new)
-                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
                 .collect(Collectors.toList());
 
         // 경력으로 필터링하고, endDate 기준으로 내림차순 정렬
-        List<RecordListResDto> jobs = careers.stream()
+        List<RecordListResponse> jobs = careers.stream()
                 .filter(career -> career.getCategory().getId().equals(5L))
-                .map(RecordListResDto::new)
-                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
                 .collect(Collectors.toList());
 
         // 이력서 있을 때
         if (record!=null) {
-            List<EducationResDto> educationList = record.getEducations()
+            List<EducationResponse> educationList = record.getEducations()
                     .stream()
-                    .map(education -> new EducationResDto(education))
+                    .map(education -> new EducationResponse(education))
                     .collect(Collectors.toList());
 
-            return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
+            return new RecordResponse(record, member, educationList, activitiesAndExperiences, jobs);
         }
 
         // 이력서 없을 때
-        return new RecordResDto(member, activitiesAndExperiences, jobs);
+        return new RecordResponse(member, activitiesAndExperiences, jobs);
     }
 
     @Transactional
-    public RecordResDto updateRecord(Member requestMember, Long recordId, RecordReqDto recordReqDto){
+    public RecordResponse updateRecord(Member requestMember, Long recordId, RecordReqDto recordReqDto){
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("record ", recordId));
 
@@ -150,31 +153,31 @@ public class RecordService {
         List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
 
         // 활동 및 경험으로 필터링하고, endDate 기준으로 내림차순 정렬
-        List<RecordListResDto> activitiesAndExperiences = careers.stream()
+        List<RecordListResponse> activitiesAndExperiences = careers.stream()
                 .filter(career -> career.getCategory().getId().equals(1L) || career.getCategory().getId().equals(2L)||
                         career.getCategory().getId().equals(3L) || career.getCategory().getId().equals(4L)||
                         career.getCategory().getId().equals(6L) || career.getCategory().getId().equals(7L))
-                .map(RecordListResDto::new)
-                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
                 .collect(Collectors.toList());
 
         // 경력으로 필터링하고, endDate 기준으로 내림차순 정렬
-        List<RecordListResDto> jobs = careers.stream()
+        List<RecordListResponse> jobs = careers.stream()
                 .filter(career -> career.getCategory().getId().equals(5L))
-                .map(RecordListResDto::new)
-                .sorted(Comparator.comparing(RecordListResDto::getEndDate).reversed())
+                .map(RecordListResponse::new)
+                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
                 .collect(Collectors.toList());
 
         record.update(
                 recordReqDto.getAddress(),
                 recordReqDto.getProfileImageUrl());
 
-        List<EducationResDto> educationList = record.getEducations()
+        List<EducationResponse> educationList = record.getEducations()
                 .stream()
-                .map(education -> new EducationResDto(education))
+                .map(education -> new EducationResponse(education))
                 .collect(Collectors.toList());
 
-        return new RecordResDto(record, member, educationList, activitiesAndExperiences, jobs);
+        return new RecordResponse(record, member, educationList, activitiesAndExperiences, jobs);
     }
 
 

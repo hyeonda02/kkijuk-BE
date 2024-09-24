@@ -27,7 +27,6 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.service.MemberService;
-import umc.kkijuk.server.record.dto.EducationResDto;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;

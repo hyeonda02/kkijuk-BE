@@ -12,10 +12,10 @@ import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
+import umc.kkijuk.server.record.controller.response.EducationResponse;
+import umc.kkijuk.server.record.controller.response.RecordResponse;
 import umc.kkijuk.server.record.dto.EducationReqDto;
-import umc.kkijuk.server.record.dto.EducationResDto;
 import umc.kkijuk.server.record.dto.RecordReqDto;
-import umc.kkijuk.server.record.dto.RecordResDto;
 import umc.kkijuk.server.record.service.RecordService;
 
 @Tag(name = "record", description = "이력서 API")
@@ -36,20 +36,20 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             @RequestBody RecordReqDto recordReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResDto recordResDto = recordService.saveRecord(requestMember, recordReqDto);
+        RecordResponse recordResponse = recordService.saveRecord(requestMember, recordReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료", recordResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료", recordResponse));
     }
 
     @GetMapping
     @Operation(summary = "이력서 전체 조회")
     public ResponseEntity<Object> get(@Login LoginInfo loginInfo){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResDto recordResDto = recordService.getRecord(requestMember);
+        RecordResponse recordResponse = recordService.getRecord(requestMember);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 전체 조회 완료", recordResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 전체 조회 완료", recordResponse));
     }
 
     @PatchMapping
@@ -58,10 +58,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             Long recordId, @RequestBody RecordReqDto recordReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResDto recordResDto = recordService.updateRecord(requestMember, recordId, recordReqDto);
+        RecordResponse recordResponse = recordService.updateRecord(requestMember, recordId, recordReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 수정 완료", recordResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 수정 완료", recordResponse));
     }
 
     @PostMapping("/education")
@@ -70,10 +70,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             Long recordId, @RequestBody EducationReqDto educationReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        EducationResDto educationResDto = recordService.saveEducation(requestMember, recordId, educationReqDto);
+        EducationResponse educationResponse = recordService.saveEducation(requestMember, recordId, educationReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", educationResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", educationResponse));
     }
 
     @PatchMapping("/education")
@@ -82,10 +82,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             Long educationId, @RequestBody EducationReqDto educationReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        EducationResDto educationResDto = recordService.updateEducation(requestMember, educationId, educationReqDto);
+        EducationResponse educationResponse = recordService.updateEducation(requestMember, educationId, educationReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 수정 완료", educationResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 수정 완료", educationResponse));
     }
 
     @DeleteMapping("/education")

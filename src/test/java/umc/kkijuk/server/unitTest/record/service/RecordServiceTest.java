@@ -15,14 +15,14 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.repository.MemberRepository;
+import umc.kkijuk.server.record.controller.response.EducationResponse;
+import umc.kkijuk.server.record.controller.response.RecordResponse;
 import umc.kkijuk.server.record.domain.Education;
 import umc.kkijuk.server.record.repository.EducationRepository;
 import umc.kkijuk.server.record.domain.Record;
 import umc.kkijuk.server.record.repository.RecordRepository;
 import umc.kkijuk.server.record.dto.EducationReqDto;
-import umc.kkijuk.server.record.dto.EducationResDto;
 import umc.kkijuk.server.record.dto.RecordReqDto;
-import umc.kkijuk.server.record.dto.RecordResDto;
 import umc.kkijuk.server.record.service.RecordService;
 
 import java.time.LocalDate;
@@ -160,7 +160,7 @@ class RecordServiceTest {
                 .build();
 
         when(recordRepository.save(any(Record.class))).thenReturn(record);
-        RecordResDto result = recordService.saveRecord(requestMember, recordReqDto);
+        RecordResponse result = recordService.saveRecord(requestMember, recordReqDto);
         //then
         assertAll(
                 () -> assertThat(result.getAddress()).isEqualTo("address"),
@@ -204,7 +204,7 @@ class RecordServiceTest {
         when(educationRepository.save(any(Education.class))).thenReturn(education);
 
         // Act
-        EducationResDto result = recordService.saveEducation(requestMember, record.getId(),
+        EducationResponse result = recordService.saveEducation(requestMember, record.getId(),
                 educationReqDto);
         // Assert
         assertAll(
@@ -260,7 +260,7 @@ class RecordServiceTest {
         when(careerRepository.findAllCareerByMemberId(requestMember.getId())).thenReturn(careers);
 
         // Act
-        RecordResDto result = recordService.updateRecord(requestMember, record.getId(), recordReqDto);
+        RecordResponse result = recordService.updateRecord(requestMember, record.getId(), recordReqDto);
 
         // Assert
         assertAll(
