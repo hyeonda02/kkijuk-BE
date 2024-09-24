@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
 import umc.kkijuk.server.record.domain.Education;
-import umc.kkijuk.server.record.domain.EducationRepository;
+import umc.kkijuk.server.record.repository.EducationRepository;
 import umc.kkijuk.server.record.domain.Record;
 import umc.kkijuk.server.login.controller.SessionConst;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
@@ -26,7 +26,7 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.dto.MemberJoinDto;
 import umc.kkijuk.server.member.service.MemberService;
-import umc.kkijuk.server.record.domain.RecordRepository;
+import umc.kkijuk.server.record.repository.RecordRepository;
 import umc.kkijuk.server.record.dto.RecordReqDto;
 
 import java.time.LocalDate;

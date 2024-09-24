@@ -8,16 +8,12 @@ import umc.kkijuk.server.career.repository.CareerRepository;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
-import umc.kkijuk.server.introduce.domain.Introduce;
-import umc.kkijuk.server.introduce.domain.MasterIntroduce;
-import umc.kkijuk.server.introduce.dto.MasterIntroduceReqDto;
-import umc.kkijuk.server.introduce.dto.MasterIntroduceResDto;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
 import umc.kkijuk.server.record.domain.Education;
-import umc.kkijuk.server.record.domain.EducationRepository;
+import umc.kkijuk.server.record.repository.EducationRepository;
 import umc.kkijuk.server.record.domain.Record;
-import umc.kkijuk.server.record.domain.RecordRepository;
+import umc.kkijuk.server.record.repository.RecordRepository;
 import umc.kkijuk.server.record.dto.*;
 
 import java.util.*;
