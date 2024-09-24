@@ -24,6 +24,7 @@ import umc.kkijuk.server.record.repository.RecordRepository;
 import umc.kkijuk.server.record.dto.EducationReqDto;
 import umc.kkijuk.server.record.dto.RecordReqDto;
 import umc.kkijuk.server.record.service.RecordService;
+import umc.kkijuk.server.record.service.RecordServiceImpl;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -48,7 +49,7 @@ class RecordServiceTest {
     private MemberRepository memberRepository;
 
     @InjectMocks
-    private RecordService recordService;
+    private RecordServiceImpl recordService;
 
     private Member requestMember;
     private Career career1;
