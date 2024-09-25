@@ -34,10 +34,16 @@ public class MasterIntroduce extends BaseEntity {
     @Size(max = 24)
     private String oneLiner;
     private String motiveTitle;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String motive;
     private String prosAndConsTitle;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String prosAndCons;
     private String jobSuitabilityTitle;
+    @Lob
+    @Column(columnDefinition = "TEXT")
     private String jobSuitability;
 
 
