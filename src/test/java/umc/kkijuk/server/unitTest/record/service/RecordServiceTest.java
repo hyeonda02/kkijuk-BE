@@ -2,7 +2,6 @@ package umc.kkijuk.server.unitTest.record.service;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -10,24 +9,22 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import umc.kkijuk.server.career.domain.Career;
 import umc.kkijuk.server.career.domain.Category;
-import umc.kkijuk.server.career.dto.CareerRequestDto;
 import umc.kkijuk.server.career.repository.CareerRepository;
-import umc.kkijuk.server.career.service.CareerService;
-import umc.kkijuk.server.career.service.CareerServiceImpl;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.member.repository.MemberRepository;
+import umc.kkijuk.server.record.controller.response.EducationResponse;
+import umc.kkijuk.server.record.controller.response.RecordResponse;
 import umc.kkijuk.server.record.domain.Education;
-import umc.kkijuk.server.record.domain.EducationRepository;
+import umc.kkijuk.server.record.repository.EducationRepository;
 import umc.kkijuk.server.record.domain.Record;
-import umc.kkijuk.server.record.domain.RecordRepository;
+import umc.kkijuk.server.record.repository.RecordRepository;
 import umc.kkijuk.server.record.dto.EducationReqDto;
-import umc.kkijuk.server.record.dto.EducationResDto;
 import umc.kkijuk.server.record.dto.RecordReqDto;
-import umc.kkijuk.server.record.dto.RecordResDto;
 import umc.kkijuk.server.record.service.RecordService;
+import umc.kkijuk.server.record.service.RecordServiceImpl;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -52,7 +49,7 @@ class RecordServiceTest {
     private MemberRepository memberRepository;
 
     @InjectMocks
-    private RecordService recordService;
+    private RecordServiceImpl recordService;
 
     private Member requestMember;
     private Career career1;
@@ -164,7 +161,7 @@ class RecordServiceTest {
                 .build();
 
         when(recordRepository.save(any(Record.class))).thenReturn(record);
-        RecordResDto result = recordService.saveRecord(requestMember, recordReqDto);
+        RecordResponse result = recordService.saveRecord(requestMember, recordReqDto);
         //then
         assertAll(
                 () -> assertThat(result.getAddress()).isEqualTo("address"),
@@ -208,7 +205,7 @@ class RecordServiceTest {
         when(educationRepository.save(any(Education.class))).thenReturn(education);
 
         // Act
-        EducationResDto result = recordService.saveEducation(requestMember, record.getId(),
+        EducationResponse result = recordService.saveEducation(requestMember, record.getId(),
                 educationReqDto);
         // Assert
         assertAll(
@@ -264,7 +261,7 @@ class RecordServiceTest {
         when(careerRepository.findAllCareerByMemberId(requestMember.getId())).thenReturn(careers);
 
         // Act
-        RecordResDto result = recordService.updateRecord(requestMember, record.getId(), recordReqDto);
+        RecordResponse result = recordService.updateRecord(requestMember, record.getId(), recordReqDto);
 
         // Assert
         assertAll(

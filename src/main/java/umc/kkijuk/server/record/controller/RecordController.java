@@ -12,10 +12,8 @@ import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
-import umc.kkijuk.server.record.dto.EducationReqDto;
-import umc.kkijuk.server.record.dto.EducationResDto;
-import umc.kkijuk.server.record.dto.RecordReqDto;
-import umc.kkijuk.server.record.dto.RecordResDto;
+import umc.kkijuk.server.record.controller.response.*;
+import umc.kkijuk.server.record.dto.*;
 import umc.kkijuk.server.record.service.RecordService;
 
 @Tag(name = "record", description = "이력서 API")
@@ -36,20 +34,20 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             @RequestBody RecordReqDto recordReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResDto recordResDto = recordService.saveRecord(requestMember, recordReqDto);
+        RecordResponse recordResponse = recordService.saveRecord(requestMember, recordReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료", recordResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 생성 완료", recordResponse));
     }
 
     @GetMapping
     @Operation(summary = "이력서 전체 조회")
     public ResponseEntity<Object> get(@Login LoginInfo loginInfo){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResDto recordResDto = recordService.getRecord(requestMember);
+        RecordResponse recordResponse = recordService.getRecord(requestMember);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 전체 조회 완료", recordResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 전체 조회 완료", recordResponse));
     }
 
     @PatchMapping
@@ -58,10 +56,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             Long recordId, @RequestBody RecordReqDto recordReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResDto recordResDto = recordService.updateRecord(requestMember, recordId, recordReqDto);
+        RecordResponse recordResponse = recordService.updateRecord(requestMember, recordId, recordReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 수정 완료", recordResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 수정 완료", recordResponse));
     }
 
     @PostMapping("/education")
@@ -70,10 +68,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             Long recordId, @RequestBody EducationReqDto educationReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        EducationResDto educationResDto = recordService.saveEducation(requestMember, recordId, educationReqDto);
+        EducationResponse educationResponse = recordService.saveEducation(requestMember, recordId, educationReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", educationResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", educationResponse));
     }
 
     @PatchMapping("/education")
@@ -82,10 +80,10 @@ public class RecordController {
             @Login LoginInfo loginInfo,
             Long educationId, @RequestBody EducationReqDto educationReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        EducationResDto educationResDto = recordService.updateEducation(requestMember, educationId, educationReqDto);
+        EducationResponse educationResponse = recordService.updateEducation(requestMember, educationId, educationReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 수정 완료", educationResDto));
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 수정 완료", educationResponse));
     }
 
     @DeleteMapping("/education")
@@ -97,4 +95,142 @@ public class RecordController {
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 삭제 완료", "id: "+id));
     }
+
+
+    @PostMapping("/license")
+    @Operation(summary = "자격증 생성")
+    public ResponseEntity<Object> saveLicense(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody LicenseReqDto licenseReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        LicenseResponse licenseResponse = recordService.saveLicense(requestMember, recordId, licenseReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 생성 완료", licenseResponse));
+    }
+
+    @PatchMapping("/license")
+    @Operation(summary = "자격증 수정")
+    public ResponseEntity<Object> patchLicense(
+            @Login LoginInfo loginInfo,
+            Long licenseId, @RequestBody LicenseReqDto licenseReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        LicenseResponse licenseResponse = recordService.updateLicense(requestMember, licenseId, licenseReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 수정 완료", licenseResponse));
+    }
+
+    @DeleteMapping("/license")
+    @Operation(summary = "자격증 삭제")
+    public ResponseEntity<Object> deleteLicense(@Login LoginInfo loginInfo, Long licenseId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteLicense(requestMember, licenseId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 삭제 완료", "id: " + id));
+    }
+
+    @PostMapping("/foreign")
+    @Operation(summary = "외국어 생성")
+    public ResponseEntity<Object> saveForeignLanguage(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody ForeignReqDto foreignReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        ForeignResponse foreignResponse = recordService.saveForeign(requestMember, recordId, foreignReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 생성 완료", foreignResponse));
+    }
+
+    @PatchMapping("/foreign")
+    @Operation(summary = "외국어 수정")
+    public ResponseEntity<Object> patchForeignLanguage(
+            @Login LoginInfo loginInfo,
+            Long foreignLanguageId, @RequestBody ForeignReqDto foreignReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        ForeignResponse foreignResponse = recordService.updateForeign(requestMember, foreignLanguageId, foreignReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 수정 완료", foreignResponse));
+    }
+
+    @DeleteMapping("/foreign")
+    @Operation(summary = "외국어 삭제")
+    public ResponseEntity<Object> deleteForeignLanguage(@Login LoginInfo loginInfo, Long foreignLanguageId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteForeign(requestMember, foreignLanguageId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 삭제 완료", "id: " + id));
+    }
+
+    @PostMapping("/award")
+    @Operation(summary = "수상 생성")
+    public ResponseEntity<Object> saveAward(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody AwardReqDto awardReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        AwardResponse awardResponse = recordService.saveAward(requestMember, recordId, awardReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 생성 완료", awardResponse));
+    }
+
+    @PatchMapping("/award")
+    @Operation(summary = "수상 수정")
+    public ResponseEntity<Object> patchAward(
+            @Login LoginInfo loginInfo,
+            Long awardId, @RequestBody AwardReqDto awardReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        AwardResponse awardResponse = recordService.updateAward(requestMember, awardId, awardReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 수정 완료", awardResponse));
+    }
+
+    @DeleteMapping("/award")
+    @Operation(summary = "수상 삭제")
+    public ResponseEntity<Object> deleteAward(@Login LoginInfo loginInfo, Long awardId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteAward(requestMember, awardId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 삭제 완료", "id: " + id));
+    }
+
+    @PostMapping("/skill")
+    @Operation(summary = "스킬 생성")
+    public ResponseEntity<Object> saveSkill(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody SkillReqDto skillReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        SkillResponse skillResponse = recordService.saveSkill(requestMember, recordId, skillReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 생성 완료", skillResponse));
+    }
+
+    @PatchMapping("/skill")
+    @Operation(summary = "스킬 수정")
+    public ResponseEntity<Object> patchSkill(
+            @Login LoginInfo loginInfo,
+            Long skillId, @RequestBody SkillReqDto skillReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        SkillResponse skillResponse = recordService.updateSkill(requestMember, skillId, skillReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 수정 완료", skillResponse));
+    }
+
+    @DeleteMapping("/skill")
+    @Operation(summary = "스킬 삭제")
+    public ResponseEntity<Object> deleteSkill(@Login LoginInfo loginInfo, Long skillId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteSkill(requestMember, skillId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 삭제 완료", "id: " + id));
+    }
+
 }

@@ -1,19 +1,15 @@
-package umc.kkijuk.server.record.dto;
+package umc.kkijuk.server.record.controller.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import umc.kkijuk.server.record.domain.Education;
 
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
+@Getter @Setter
 @Builder
-public class EducationResDto {
+public class EducationResponse {
     private Long educationId;
     private String category;
     private String schoolName;
@@ -23,8 +19,7 @@ public class EducationResDto {
     private YearMonth graduationDate;
     private Boolean isCurrent;
 
-    @Builder
-    public EducationResDto(Education education) {
+    public EducationResponse(Education education) {
         this.educationId = education.getId();
         this.category = education.getCategory();
         this.schoolName = education.getSchoolName();

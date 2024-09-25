@@ -1,18 +1,16 @@
-package umc.kkijuk.server.record.dto;
+package umc.kkijuk.server.record.controller.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import umc.kkijuk.server.career.domain.Career;
 
 import java.time.LocalDate;
 import java.time.Period;
 
+@Data
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RecordListResDto {
+public class RecordListResponse {
     private Long careerId;
     private String careerName;
     private String alias;
@@ -24,7 +22,7 @@ public class RecordListResDto {
     private Boolean isCurrent;
 
     @Builder
-    public RecordListResDto(Career career) {
+    public RecordListResponse(Career career) {
         this.careerId = career.getId();
         this.careerName=career.getName();
         this.alias=career.getAlias();
@@ -43,5 +41,4 @@ public class RecordListResDto {
     private static Boolean determineIsCurrent(LocalDate endDate) {
         return endDate.isAfter(LocalDate.now());
     }
-
 }

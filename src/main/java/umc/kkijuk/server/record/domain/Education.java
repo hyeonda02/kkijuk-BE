@@ -1,6 +1,7 @@
 package umc.kkijuk.server.record.domain;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,8 @@ import java.time.YearMonth;
 @Table(name="education")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Education extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,23 +30,23 @@ public class Education extends BaseEntity {
     private YearMonth admissionDate;
     private YearMonth graduationDate;
 
-    @Builder
-    public Education(Record record, String category, String schoolName, String major
-    , String state, YearMonth admissionDate, YearMonth graduationDate) {
-        this.record = record;
-        this.category = category;
-        this.schoolName = schoolName;
-        this.major = major;
-        this.state = state;
-        this.admissionDate = admissionDate;
-        this.graduationDate = graduationDate;
-    }
+//    @Builder
+//    public Education(Record record, String category, String schoolName, String major
+//    , String state, YearMonth admissionDate, YearMonth graduationDate) {
+//        this.record = record;
+//        this.category = category;
+//        this.schoolName = schoolName;
+//        this.major = major;
+//        this.state = state;
+//        this.admissionDate = admissionDate;
+//        this.graduationDate = graduationDate;
+//    }
 
    /* public void setRecord(Record record) {
         this.record = record;
     }*/
 
-    public void update(String category, String schoolName, String major
+    public void changeEducationInfo(String category, String schoolName, String major
             , String state, YearMonth admissionDate, YearMonth graduationDate) {
         this.category = category;
         this.schoolName = schoolName;
@@ -53,3 +56,5 @@ public class Education extends BaseEntity {
         this.graduationDate = graduationDate;
     }
 }
+
+

@@ -1,9 +1,6 @@
-package umc.kkijuk.server.record.dto;
+package umc.kkijuk.server.record.controller.response;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.record.domain.Record;
 
@@ -12,18 +9,19 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Data
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class RecordResDto {
+public class RecordResponse {
     private Long record_id;
     private String address;
     private String profileImageUrl;
     private String updatedAt;
-    private List<EducationResDto> educationList;
-    private List<RecordListResDto> activitiesAndExperiences;
-    private List<RecordListResDto> jobs;
+    private List<EducationResponse> educationList;
+    private List<RecordListResponse> activitiesAndExperiences;
+    private List<RecordListResponse> jobs;
     private String name;
     private LocalDate birthday;
     private String phone;
@@ -31,9 +29,9 @@ public class RecordResDto {
 
     // 이력서 없을 때
     @Builder
-    public RecordResDto(Member member,
-                        List<RecordListResDto> activitiesAndExperiences,
-                        List<RecordListResDto> jobs) {
+    public RecordResponse(Member member,
+                        List<RecordListResponse> activitiesAndExperiences,
+                        List<RecordListResponse> jobs) {
         this.activitiesAndExperiences=activitiesAndExperiences;
         this.jobs=jobs;
         this.name = member.getName();
@@ -44,9 +42,9 @@ public class RecordResDto {
 
     // 이력서 있을 때
     @Builder
-    public RecordResDto(Record record, Member member, List<EducationResDto> educationList,
-                        List<RecordListResDto> activitiesAndExperiences,
-                        List<RecordListResDto> jobs) {
+    public RecordResponse(Record record, Member member, List<EducationResponse> educationList,
+                        List<RecordListResponse> activitiesAndExperiences,
+                        List<RecordListResponse> jobs) {
         this.record_id=record.getId();
         this.address = record.getAddress();
         this.profileImageUrl=record.getProfileImageUrl();
