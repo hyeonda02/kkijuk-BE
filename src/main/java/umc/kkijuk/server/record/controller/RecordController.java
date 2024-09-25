@@ -165,40 +165,40 @@ public class RecordController {
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 삭제 완료", "id: " + id));
     }
 
-//    @PostMapping("/award")
-//    @Operation(summary = "수상 생성")
-//    public ResponseEntity<Object> saveAward(
-//            @Login LoginInfo loginInfo,
-//            Long recordId, @RequestBody AwardReqDto awardReqDto){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        AwardResponse awardResponse = recordService.saveAward(requestMember, recordId, awardReqDto);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 생성 완료", awardResponse));
-//    }
-//
-//    @PatchMapping("/award")
-//    @Operation(summary = "수상 수정")
-//    public ResponseEntity<Object> patchAward(
-//            @Login LoginInfo loginInfo,
-//            Long awardId, @RequestBody AwardReqDto awardReqDto){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        AwardResponse awardResponse = recordService.updateAward(requestMember, awardId, awardReqDto);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 수정 완료", awardResponse));
-//    }
-//
-//    @DeleteMapping("/award")
-//    @Operation(summary = "수상 삭제")
-//    public ResponseEntity<Object> deleteAward(@Login LoginInfo loginInfo, Long awardId){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        Long id = recordService.deleteAward(requestMember, awardId);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 삭제 완료", "id: " + id));
-//    }
-//
+    @PostMapping("/award")
+    @Operation(summary = "수상 생성")
+    public ResponseEntity<Object> saveAward(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody AwardReqDto awardReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        AwardResponse awardResponse = recordService.saveAward(requestMember, recordId, awardReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 생성 완료", awardResponse));
+    }
+
+    @PatchMapping("/award")
+    @Operation(summary = "수상 수정")
+    public ResponseEntity<Object> patchAward(
+            @Login LoginInfo loginInfo,
+            Long awardId, @RequestBody AwardReqDto awardReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        AwardResponse awardResponse = recordService.updateAward(requestMember, awardId, awardReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 수정 완료", awardResponse));
+    }
+
+    @DeleteMapping("/award")
+    @Operation(summary = "수상 삭제")
+    public ResponseEntity<Object> deleteAward(@Login LoginInfo loginInfo, Long awardId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteAward(requestMember, awardId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 삭제 완료", "id: " + id));
+    }
+
 //    @PostMapping("/skill")
 //    @Operation(summary = "스킬 생성")
 //    public ResponseEntity<Object> saveSkill(

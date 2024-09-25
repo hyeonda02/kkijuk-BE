@@ -32,4 +32,11 @@ public class Award extends BaseEntity {
     @Size(max = 15)
     private String awardName;
     private YearMonth acquireDate;
+
+    public void changeAwardInfo(String competitionName, String administer, String awardName, YearMonth acquireDate) {
+        this.competitionName = competitionName;
+        this.administer = administer;
+        this.awardName = awardName;
+        this.acquireDate = acquireDate;
+    }
 }

@@ -11,11 +11,9 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
 import umc.kkijuk.server.record.controller.response.*;
-import umc.kkijuk.server.record.domain.Education;
-import umc.kkijuk.server.record.domain.ForeignLanguage;
-import umc.kkijuk.server.record.domain.License;
-import umc.kkijuk.server.record.repository.*;
+import umc.kkijuk.server.record.domain.*;
 import umc.kkijuk.server.record.domain.Record;
+import umc.kkijuk.server.record.repository.*;
 import umc.kkijuk.server.record.dto.*;
 
 import java.util.*;
@@ -302,7 +300,65 @@ public class RecordServiceImpl implements RecordService {
         return foreignLanguage.getId();
     }
 
+    @Override
+    @Transactional
+    public AwardResponse saveAward(Member requestMember, Long recordId, AwardReqDto awardReqDto) {
 
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
 
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        Award award = Award.builder()
+                .record(record)
+                .competitionName(awardReqDto.getCompetitionName())
+                .administer(awardReqDto.getAdminister())
+                .awardName(awardReqDto.getAwardName())
+                .acquireDate(awardReqDto.getAcquireDate())
+                .build();
+
+        awardRepository.save(award);
+
+        return new AwardResponse(award);
+    }
+
+    @Override
+    @Transactional
+    public AwardResponse updateAward(Member requestMember, Long awardId, AwardReqDto awardReqDto) {
+
+        Award award = awardRepository.findById(awardId)
+                .orElseThrow(() -> new ResourceNotFoundException("Award", awardId));
+
+        if (!award.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        award.changeAwardInfo(
+                awardReqDto.getCompetitionName(),
+                awardReqDto.getAdminister(),
+                awardReqDto.getAwardName(),
+                awardReqDto.getAcquireDate()
+        );
+
+        return new AwardResponse(award);
+    }
+
+    @Override
+    @Transactional
+    public Long deleteAward(Member requestMember, Long awardId) {
+
+        Award award = awardRepository.findById(awardId)
+                .orElseThrow(() -> new ResourceNotFoundException("Award", awardId));
+
+        if (!award.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        awardRepository.delete(award);
+
+        return award.getId();
+    }
 
 }
