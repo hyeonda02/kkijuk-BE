@@ -9,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.kkijuk.server.career.domain.base.BaseEntity;
 
+import java.time.YearMonth;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -17,7 +19,6 @@ import umc.kkijuk.server.career.domain.base.BaseEntity;
 public class Skill extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "skill_id")
     private Long id;
 
     @ManyToOne
@@ -28,4 +29,9 @@ public class Skill extends BaseEntity {
     @Size(max = 30)
     private String skillName;
     private Workmanship workmanship;
+
+    public void changeSkillInfo(String skillName, Workmanship workmanship){
+        this.skillName = skillName;
+        this.workmanship = workmanship;
+    }
 }

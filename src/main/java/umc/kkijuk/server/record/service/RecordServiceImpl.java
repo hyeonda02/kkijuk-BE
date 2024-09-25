@@ -361,4 +361,62 @@ public class RecordServiceImpl implements RecordService {
         return award.getId();
     }
 
+    @Override
+    @Transactional
+    public SkillResponse saveSkill(Member requestMember, Long recordId, SkillReqDto skillReqDto) {
+
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        Skill skill = Skill.builder()
+                .record(record)
+                .skillName(skillReqDto.getSkillName())
+                .workmanship(skillReqDto.getWorkmanship())
+                .build();
+
+        skillRepository.save(skill);
+
+        return new SkillResponse(skill);
+    }
+
+    @Override
+    @Transactional
+    public SkillResponse updateSkill(Member requestMember, Long skillId, SkillReqDto skillReqDto) {
+
+        Skill skill = skillRepository.findById(skillId)
+                .orElseThrow(() -> new ResourceNotFoundException("Skill", skillId));
+
+        if (!skill.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        skill.changeSkillInfo(
+                skillReqDto.getSkillName(),
+                skillReqDto.getWorkmanship()
+        );
+
+        return new SkillResponse(skill);
+    }
+
+    @Override
+    @Transactional
+    public Long deleteSkill(Member requestMember, Long skillId) {
+
+        Skill skill = skillRepository.findById(skillId)
+                .orElseThrow(() -> new ResourceNotFoundException("Skill", skillId));
+
+        if (!skill.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        skillRepository.delete(skill);
+
+        return skill.getId();
+    }
+
+
 }

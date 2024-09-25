@@ -199,38 +199,38 @@ public class RecordController {
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 삭제 완료", "id: " + id));
     }
 
-//    @PostMapping("/skill")
-//    @Operation(summary = "스킬 생성")
-//    public ResponseEntity<Object> saveSkill(
-//            @Login LoginInfo loginInfo,
-//            Long recordId, @RequestBody SkillReqDto skillReqDto){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        SkillResponse skillResponse = recordService.saveSkill(requestMember, recordId, skillReqDto);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 생성 완료", skillResponse));
-//    }
-//
-//    @PatchMapping("/skill")
-//    @Operation(summary = "스킬 수정")
-//    public ResponseEntity<Object> patchSkill(
-//            @Login LoginInfo loginInfo,
-//            Long skillId, @RequestBody SkillReqDto skillReqDto){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        SkillResponse skillResponse = recordService.updateSkill(requestMember, skillId, skillReqDto);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 수정 완료", skillResponse));
-//    }
-//
-//    @DeleteMapping("/skill")
-//    @Operation(summary = "스킬 삭제")
-//    public ResponseEntity<Object> deleteSkill(@Login LoginInfo loginInfo, Long skillId){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        Long id = recordService.deleteSkill(requestMember, skillId);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 삭제 완료", "id: " + id));
-//    }
+    @PostMapping("/skill")
+    @Operation(summary = "스킬 생성")
+    public ResponseEntity<Object> saveSkill(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody SkillReqDto skillReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        SkillResponse skillResponse = recordService.saveSkill(requestMember, recordId, skillReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 생성 완료", skillResponse));
+    }
+
+    @PatchMapping("/skill")
+    @Operation(summary = "스킬 수정")
+    public ResponseEntity<Object> patchSkill(
+            @Login LoginInfo loginInfo,
+            Long skillId, @RequestBody SkillReqDto skillReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        SkillResponse skillResponse = recordService.updateSkill(requestMember, skillId, skillReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 수정 완료", skillResponse));
+    }
+
+    @DeleteMapping("/skill")
+    @Operation(summary = "스킬 삭제")
+    public ResponseEntity<Object> deleteSkill(@Login LoginInfo loginInfo, Long skillId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteSkill(requestMember, skillId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 삭제 완료", "id: " + id));
+    }
 
 }

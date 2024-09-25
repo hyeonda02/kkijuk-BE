@@ -23,4 +23,7 @@ public interface RecordService {
     AwardResponse saveAward(Member requestMember, Long recordId, AwardReqDto awardReqDto);
     AwardResponse updateAward(Member requestMember, Long awardId, AwardReqDto awardReqDto);
     Long deleteAward(Member requestMember, Long awardId);
+    SkillResponse saveSkill(Member requestMember, Long recordId, SkillReqDto skillReqDto);
+    SkillResponse updateSkill(Member requestMember, Long skillId, SkillReqDto skillReqDto);
+    Long deleteSkill(Member requestMember, Long skillId);
 }
