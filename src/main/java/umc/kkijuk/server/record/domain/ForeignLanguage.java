@@ -16,11 +16,11 @@ import java.time.YearMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Foreign extends BaseEntity {
+@Table(name="foreign_language")
+public class ForeignLanguage extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "foreign_id")
     private Long id;
 
     @ManyToOne
@@ -28,6 +28,7 @@ public class Foreign extends BaseEntity {
     private Record record;
 
     @NotNull
+    @Size(max = 30)
     private String foreignName;
     @Size(max = 15)
     private String administer;
@@ -36,4 +37,14 @@ public class Foreign extends BaseEntity {
     private YearMonth acquireDate;
     @Size(max = 10)
     private String foreignRank;
+
+    public void changeForeignInfo(String foreignName, String administer, String foreignNumber,
+                                  YearMonth acquireDate, String foreignRank){
+        this.foreignName = foreignName;
+        this.administer = administer;
+        this.foreignNumber = foreignNumber;
+        this.acquireDate = acquireDate;
+        this.foreignRank = foreignRank;
+    }
+
 }

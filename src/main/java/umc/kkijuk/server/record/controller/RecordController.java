@@ -130,41 +130,41 @@ public class RecordController {
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 삭제 완료", "id: " + id));
     }
-//
-//    @PostMapping("/foreign")
-//    @Operation(summary = "외국어 생성")
-//    public ResponseEntity<Object> saveForeignLanguage(
-//            @Login LoginInfo loginInfo,
-//            Long recordId, @RequestBody ForeignLanguageReqDto foreignLanguageReqDto){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        ForeignLanguageResponse foreignLanguageResponse = recordService.saveForeignLanguage(requestMember, recordId, foreignLanguageReqDto);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 생성 완료", foreignLanguageResponse));
-//    }
-//
-//    @PatchMapping("/foreign")
-//    @Operation(summary = "외국어 수정")
-//    public ResponseEntity<Object> patchForeignLanguage(
-//            @Login LoginInfo loginInfo,
-//            Long foreignLanguageId, @RequestBody ForeignLanguageReqDto foreignLanguageReqDto){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        ForeignLanguageResponse foreignLanguageResponse = recordService.updateForeignLanguage(requestMember, foreignLanguageId, foreignLanguageReqDto);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 수정 완료", foreignLanguageResponse));
-//    }
-//
-//    @DeleteMapping("/foreign")
-//    @Operation(summary = "외국어 삭제")
-//    public ResponseEntity<Object> deleteForeignLanguage(@Login LoginInfo loginInfo, Long foreignLanguageId){
-//        Member requestMember = memberService.getById(loginInfo.getMemberId());
-//        Long id = recordService.deleteForeignLanguage(requestMember, foreignLanguageId);
-//        return ResponseEntity
-//                .status(HttpStatus.OK)
-//                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 삭제 완료", "id: " + id));
-//    }
-//
+
+    @PostMapping("/foreign")
+    @Operation(summary = "외국어 생성")
+    public ResponseEntity<Object> saveForeignLanguage(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody ForeignReqDto foreignReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        ForeignResponse foreignResponse = recordService.saveForeign(requestMember, recordId, foreignReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 생성 완료", foreignResponse));
+    }
+
+    @PatchMapping("/foreign")
+    @Operation(summary = "외국어 수정")
+    public ResponseEntity<Object> patchForeignLanguage(
+            @Login LoginInfo loginInfo,
+            Long foreignLanguageId, @RequestBody ForeignReqDto foreignReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        ForeignResponse foreignResponse = recordService.updateForeign(requestMember, foreignLanguageId, foreignReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 수정 완료", foreignResponse));
+    }
+
+    @DeleteMapping("/foreign")
+    @Operation(summary = "외국어 삭제")
+    public ResponseEntity<Object> deleteForeignLanguage(@Login LoginInfo loginInfo, Long foreignLanguageId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteForeign(requestMember, foreignLanguageId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 삭제 완료", "id: " + id));
+    }
+
 //    @PostMapping("/award")
 //    @Operation(summary = "수상 생성")
 //    public ResponseEntity<Object> saveAward(

@@ -21,7 +21,6 @@ public class License extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "license_id")
     private Long id;
 
     @ManyToOne

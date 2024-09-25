@@ -10,11 +10,9 @@ import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
-import umc.kkijuk.server.record.controller.response.EducationResponse;
-import umc.kkijuk.server.record.controller.response.LicenseResponse;
-import umc.kkijuk.server.record.controller.response.RecordListResponse;
-import umc.kkijuk.server.record.controller.response.RecordResponse;
+import umc.kkijuk.server.record.controller.response.*;
 import umc.kkijuk.server.record.domain.Education;
+import umc.kkijuk.server.record.domain.ForeignLanguage;
 import umc.kkijuk.server.record.domain.License;
 import umc.kkijuk.server.record.repository.*;
 import umc.kkijuk.server.record.domain.Record;
@@ -239,6 +237,72 @@ public class RecordServiceImpl implements RecordService {
 
         return license.getId();
     }
+
+
+    @Override
+    @Transactional
+    public ForeignResponse saveForeign(Member requestMember, Long recordId, ForeignReqDto foreignReqDto) {
+
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        ForeignLanguage foreignLanguage = ForeignLanguage.builder()
+                .record(record)
+                .foreignName(foreignReqDto.getForeignName())
+                .administer(foreignReqDto.getAdminister())
+                .foreignNumber(foreignReqDto.getForeignNumber())
+                .acquireDate(foreignReqDto.getAcquireDate())
+                .foreignRank(foreignReqDto.getForeignRank())
+                .build();
+
+        foreignRepository.save(foreignLanguage);
+
+        return new ForeignResponse(foreignLanguage);
+    }
+
+    @Override
+    @Transactional
+    public ForeignResponse updateForeign(Member requestMember, Long foreignId, ForeignReqDto foreignReqDto) {
+
+        ForeignLanguage foreignLanguage = foreignRepository.findById(foreignId)
+                .orElseThrow(() -> new ResourceNotFoundException("ForeignLanguage", foreignId));
+
+        if (!foreignLanguage.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        foreignLanguage.changeForeignInfo(
+                foreignReqDto.getForeignName(),
+                foreignReqDto.getAdminister(),
+                foreignReqDto.getForeignNumber(),
+                foreignReqDto.getAcquireDate(),
+                foreignReqDto.getForeignRank()
+        );
+
+        return new ForeignResponse(foreignLanguage);
+    }
+
+    @Override
+    @Transactional
+    public Long deleteForeign(Member requestMember, Long foreignId) {
+
+        ForeignLanguage foreignLanguage = foreignRepository.findById(foreignId)
+                .orElseThrow(() -> new ResourceNotFoundException("ForeignLanguage", foreignId));
+
+        if (!foreignLanguage.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        foreignRepository.delete(foreignLanguage);
+
+        return foreignLanguage.getId();
+    }
+
+
 
 
 }

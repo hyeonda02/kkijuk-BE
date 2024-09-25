@@ -3,9 +3,11 @@ package umc.kkijuk.server.record.service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.record.controller.response.EducationResponse;
+import umc.kkijuk.server.record.controller.response.ForeignResponse;
 import umc.kkijuk.server.record.controller.response.LicenseResponse;
 import umc.kkijuk.server.record.controller.response.RecordResponse;
 import umc.kkijuk.server.record.dto.EducationReqDto;
+import umc.kkijuk.server.record.dto.ForeignReqDto;
 import umc.kkijuk.server.record.dto.LicenseReqDto;
 import umc.kkijuk.server.record.dto.RecordReqDto;
 
@@ -29,4 +31,7 @@ public interface RecordService {
     LicenseResponse updateLicense(Member requestMember, Long licenseId, LicenseReqDto licenseReqDto);
 
     Long deleteLicense(Member requestMember, Long licenseId);
+    ForeignResponse saveForeign(Member requestMember, Long recordId, ForeignReqDto foreignReqDto);
+    ForeignResponse updateForeign(Member requestMember, Long foreignLanguageId, ForeignReqDto foreignReqDto);
+    Long deleteForeign(Member requestMember, Long foreignLanguageId);
 }
