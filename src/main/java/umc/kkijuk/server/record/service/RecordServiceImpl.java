@@ -11,12 +11,13 @@ import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
 import umc.kkijuk.server.record.controller.response.EducationResponse;
+import umc.kkijuk.server.record.controller.response.LicenseResponse;
 import umc.kkijuk.server.record.controller.response.RecordListResponse;
 import umc.kkijuk.server.record.controller.response.RecordResponse;
 import umc.kkijuk.server.record.domain.Education;
-import umc.kkijuk.server.record.repository.EducationRepository;
+import umc.kkijuk.server.record.domain.License;
+import umc.kkijuk.server.record.repository.*;
 import umc.kkijuk.server.record.domain.Record;
-import umc.kkijuk.server.record.repository.RecordRepository;
 import umc.kkijuk.server.record.dto.*;
 
 import java.util.*;
@@ -30,6 +31,10 @@ public class RecordServiceImpl implements RecordService {
     private final RecordRepository recordRepository;
     private final MemberRepository memberRepository;
     private final EducationRepository educationRepository;
+    private final LicenseRepository licenseRepository;
+    private final AwardRepository awardRepository;
+    private final ForeignRepository foreignRepository;
+    private final SkillRepository skillRepository;
 
     @Override
     @Transactional
@@ -47,63 +52,6 @@ public class RecordServiceImpl implements RecordService {
         recordRepository.save(record);
 
         return new RecordResponse(record, requestMember, null, null, null);
-    }
-
-    @Override
-    @Transactional
-    public EducationResponse saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto) {
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
-        if (!record.getMemberId().equals(requestMember.getId())) {
-            throw new IntroOwnerMismatchException();
-        }
-
-        Education education = Education.builder()
-                .record(record)
-                .category(educationReqDto.getCategory())
-                .schoolName(educationReqDto.getSchoolName())
-                .major(educationReqDto.getMajor())
-                .state(educationReqDto.getState())
-                .admissionDate(educationReqDto.getAdmissionDate())
-                .graduationDate(educationReqDto.getGraduationDate())
-                .build();
-
-        educationRepository.save(education);
-
-        return new EducationResponse(education);
-    }
-
-    @Override
-    @Transactional
-    public Long deleteEducation(Member requestMember, Long educationId) {
-        Education education = educationRepository.findById(educationId)
-                .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
-        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
-            throw new IntroOwnerMismatchException();
-        }
-
-        educationRepository.delete(education);
-
-        return education.getId();
-    }
-
-    @Override
-    @Transactional
-    public EducationResponse updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
-        Education education = educationRepository.findById(educationId)
-                .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
-        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
-            throw new IntroOwnerMismatchException();
-        }
-        education.update(
-                educationReqDto.getCategory(),
-                educationReqDto.getSchoolName(),
-                educationReqDto.getMajor(),
-                educationReqDto.getState(),
-                educationReqDto.getAdmissionDate(),
-                educationReqDto.getGraduationDate());
-
-        return new EducationResponse(education);
     }
 
     @Override
@@ -177,4 +125,120 @@ public class RecordServiceImpl implements RecordService {
 
         return new RecordResponse(record, member, educationList, activitiesAndExperiences, jobs);
     }
+
+    @Override
+    @Transactional
+    public EducationResponse saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto) {
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        Education education = Education.builder()
+                .record(record)
+                .category(educationReqDto.getCategory())
+                .schoolName(educationReqDto.getSchoolName())
+                .major(educationReqDto.getMajor())
+                .state(educationReqDto.getState())
+                .admissionDate(educationReqDto.getAdmissionDate())
+                .graduationDate(educationReqDto.getGraduationDate())
+                .build();
+
+        educationRepository.save(education);
+
+        return new EducationResponse(education);
+    }
+
+    @Override
+    @Transactional
+    public EducationResponse updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
+        Education education = educationRepository.findById(educationId)
+                .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
+        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+        education.changeEducationInfo(
+                educationReqDto.getCategory(),
+                educationReqDto.getSchoolName(),
+                educationReqDto.getMajor(),
+                educationReqDto.getState(),
+                educationReqDto.getAdmissionDate(),
+                educationReqDto.getGraduationDate());
+
+        return new EducationResponse(education);
+    }
+    @Override
+    @Transactional
+    public Long deleteEducation(Member requestMember, Long educationId) {
+        Education education = educationRepository.findById(educationId)
+                .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
+        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        educationRepository.delete(education);
+
+        return education.getId();
+    }
+
+    @Override
+    @Transactional
+    public LicenseResponse saveLicense(Member requestMember, Long recordId, LicenseReqDto licenseReqDto) {
+        Record record = recordRepository.findById(recordId)
+                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+
+        if (!record.getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        License license = License.builder()
+                .record(record)
+                .licenseName(licenseReqDto.getLicenseName())
+                .administer(licenseReqDto.getAdminister())
+                .licenseNumber(licenseReqDto.getLicenseNumber())
+                .acquireDate(licenseReqDto.getAcquireDate())
+                .build();
+
+        licenseRepository.save(license);
+
+        return new LicenseResponse(license);
+    }
+
+    @Override
+    @Transactional
+    public LicenseResponse updateLicense(Member requestMember, Long licenseId, LicenseReqDto licenseReqDto) {
+
+        License license = licenseRepository.findById(licenseId)
+                .orElseThrow(() -> new ResourceNotFoundException("License", licenseId));
+
+        if (!license.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        license.changeLicenseInfo(licenseReqDto.getLicenseName(),
+                licenseReqDto.getAdminister(),
+                licenseReqDto.getLicenseNumber(),
+                licenseReqDto.getAcquireDate());
+
+        return new LicenseResponse(license);
+    }
+
+    @Override
+    @Transactional
+    public Long deleteLicense(Member requestMember, Long licenseId) {
+
+        License license = licenseRepository.findById(licenseId)
+                .orElseThrow(() -> new ResourceNotFoundException("License", licenseId));
+
+        if (!license.getRecord().getMemberId().equals(requestMember.getId())) {
+            throw new IntroOwnerMismatchException();
+        }
+
+        licenseRepository.delete(license);
+
+        return license.getId();
+    }
+
+
 }

@@ -16,11 +16,12 @@ import java.time.YearMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="license")
 public class License extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "license_id")
+    //@Column(name = "license_id")
     private Long id;
 
     @ManyToOne
@@ -34,5 +35,13 @@ public class License extends BaseEntity {
     @Size(max = 30)
     private String licenseNumber;
     private YearMonth acquireDate;
+
+
+    public void changeLicenseInfo(String licenseName, String administer, String licenseNumber, YearMonth acquireDate){
+        this.licenseName = licenseName;
+        this.administer = administer;
+        this.licenseNumber = licenseNumber;
+        this.acquireDate = acquireDate;
+    }
 
 }

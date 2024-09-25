@@ -25,7 +25,10 @@ public class Record extends BaseEntity {
     private String profileImageUrl;
 
     @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Education> educations = new ArrayList<>();;
+    private List<Education> educations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "record", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<License> licenses = new ArrayList<>();
 
     @Builder
     public Record(Long memberId, String address, String profileImageUrl, List<Education> educations) {

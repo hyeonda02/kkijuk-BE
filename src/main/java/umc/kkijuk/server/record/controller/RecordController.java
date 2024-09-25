@@ -12,10 +12,8 @@ import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
-import umc.kkijuk.server.record.controller.response.EducationResponse;
-import umc.kkijuk.server.record.controller.response.RecordResponse;
-import umc.kkijuk.server.record.dto.EducationReqDto;
-import umc.kkijuk.server.record.dto.RecordReqDto;
+import umc.kkijuk.server.record.controller.response.*;
+import umc.kkijuk.server.record.dto.*;
 import umc.kkijuk.server.record.service.RecordService;
 
 @Tag(name = "record", description = "이력서 API")
@@ -97,4 +95,142 @@ public class RecordController {
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 삭제 완료", "id: "+id));
     }
+
+
+    @PostMapping("/license")
+    @Operation(summary = "자격증 생성")
+    public ResponseEntity<Object> saveLicense(
+            @Login LoginInfo loginInfo,
+            Long recordId, @RequestBody LicenseReqDto licenseReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        LicenseResponse licenseResponse = recordService.saveLicense(requestMember, recordId, licenseReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 생성 완료", licenseResponse));
+    }
+
+    @PatchMapping("/license")
+    @Operation(summary = "자격증 수정")
+    public ResponseEntity<Object> patchLicense(
+            @Login LoginInfo loginInfo,
+            Long licenseId, @RequestBody LicenseReqDto licenseReqDto){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        LicenseResponse licenseResponse = recordService.updateLicense(requestMember, licenseId, licenseReqDto);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 수정 완료", licenseResponse));
+    }
+
+    @DeleteMapping("/license")
+    @Operation(summary = "자격증 삭제")
+    public ResponseEntity<Object> deleteLicense(@Login LoginInfo loginInfo, Long licenseId){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Long id = recordService.deleteLicense(requestMember, licenseId);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 삭제 완료", "id: " + id));
+    }
+//
+//    @PostMapping("/foreign")
+//    @Operation(summary = "외국어 생성")
+//    public ResponseEntity<Object> saveForeignLanguage(
+//            @Login LoginInfo loginInfo,
+//            Long recordId, @RequestBody ForeignLanguageReqDto foreignLanguageReqDto){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        ForeignLanguageResponse foreignLanguageResponse = recordService.saveForeignLanguage(requestMember, recordId, foreignLanguageReqDto);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 생성 완료", foreignLanguageResponse));
+//    }
+//
+//    @PatchMapping("/foreign")
+//    @Operation(summary = "외국어 수정")
+//    public ResponseEntity<Object> patchForeignLanguage(
+//            @Login LoginInfo loginInfo,
+//            Long foreignLanguageId, @RequestBody ForeignLanguageReqDto foreignLanguageReqDto){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        ForeignLanguageResponse foreignLanguageResponse = recordService.updateForeignLanguage(requestMember, foreignLanguageId, foreignLanguageReqDto);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 수정 완료", foreignLanguageResponse));
+//    }
+//
+//    @DeleteMapping("/foreign")
+//    @Operation(summary = "외국어 삭제")
+//    public ResponseEntity<Object> deleteForeignLanguage(@Login LoginInfo loginInfo, Long foreignLanguageId){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        Long id = recordService.deleteForeignLanguage(requestMember, foreignLanguageId);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "외국어 삭제 완료", "id: " + id));
+//    }
+//
+//    @PostMapping("/award")
+//    @Operation(summary = "수상 생성")
+//    public ResponseEntity<Object> saveAward(
+//            @Login LoginInfo loginInfo,
+//            Long recordId, @RequestBody AwardReqDto awardReqDto){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        AwardResponse awardResponse = recordService.saveAward(requestMember, recordId, awardReqDto);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 생성 완료", awardResponse));
+//    }
+//
+//    @PatchMapping("/award")
+//    @Operation(summary = "수상 수정")
+//    public ResponseEntity<Object> patchAward(
+//            @Login LoginInfo loginInfo,
+//            Long awardId, @RequestBody AwardReqDto awardReqDto){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        AwardResponse awardResponse = recordService.updateAward(requestMember, awardId, awardReqDto);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 수정 완료", awardResponse));
+//    }
+//
+//    @DeleteMapping("/award")
+//    @Operation(summary = "수상 삭제")
+//    public ResponseEntity<Object> deleteAward(@Login LoginInfo loginInfo, Long awardId){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        Long id = recordService.deleteAward(requestMember, awardId);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 삭제 완료", "id: " + id));
+//    }
+//
+//    @PostMapping("/skill")
+//    @Operation(summary = "스킬 생성")
+//    public ResponseEntity<Object> saveSkill(
+//            @Login LoginInfo loginInfo,
+//            Long recordId, @RequestBody SkillReqDto skillReqDto){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        SkillResponse skillResponse = recordService.saveSkill(requestMember, recordId, skillReqDto);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 생성 완료", skillResponse));
+//    }
+//
+//    @PatchMapping("/skill")
+//    @Operation(summary = "스킬 수정")
+//    public ResponseEntity<Object> patchSkill(
+//            @Login LoginInfo loginInfo,
+//            Long skillId, @RequestBody SkillReqDto skillReqDto){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        SkillResponse skillResponse = recordService.updateSkill(requestMember, skillId, skillReqDto);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 수정 완료", skillResponse));
+//    }
+//
+//    @DeleteMapping("/skill")
+//    @Operation(summary = "스킬 삭제")
+//    public ResponseEntity<Object> deleteSkill(@Login LoginInfo loginInfo, Long skillId){
+//        Member requestMember = memberService.getById(loginInfo.getMemberId());
+//        Long id = recordService.deleteSkill(requestMember, skillId);
+//        return ResponseEntity
+//                .status(HttpStatus.OK)
+//                .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 삭제 완료", "id: " + id));
+//    }
+
 }
