@@ -2,9 +2,13 @@ package umc.kkijuk.server.career.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 import umc.kkijuk.server.common.domian.base.BaseEntity;
+import umc.kkijuk.server.detail.domain.BaseCareerDetail;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -28,8 +32,8 @@ public abstract class BaseCareer extends BaseEntity {
     private LocalDate startdate;
     private LocalDate enddate;
 
-//    @OneToMany(mappedBy = "career", cascade = CascadeType.ALL)
-//    private List<CareerDetail> careerDetailList = new ArrayList<>();
+    @OneToMany(mappedBy = "baseCareer", cascade = CascadeType.ALL)
+    private List<BaseCareerDetail> baseCareerDetailList = new ArrayList<>();
 
     public BaseCareer(Long memberId, String name, String alias, Boolean unknown,
                       String summary, LocalDate startdate, LocalDate enddate) {

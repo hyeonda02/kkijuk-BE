@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import umc.kkijuk.server.careerdetail.domain.mapping.CareerTag;
+import umc.kkijuk.server.detail.domain.mapping.CareerDetailTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,11 @@ public class Tag {
     @Column(nullable = false)
     private Long memberId;
 
+    @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
+    private List<CareerDetailTag> careerDetailTagList = new ArrayList<>();
+
+
+    //지워야 되는 부분
     @OneToMany(mappedBy = "tag", cascade = CascadeType.ALL)
     private List<CareerTag> careerTagList = new ArrayList<>();
 
