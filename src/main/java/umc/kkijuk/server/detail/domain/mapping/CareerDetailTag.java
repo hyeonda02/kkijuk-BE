@@ -16,7 +16,7 @@ public class CareerDetailTag {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="base_career_detail_id")
+    @JoinColumn(name="basecareer_detail_id")
     private BaseCareerDetail baseCareerDetail;
 
     @ManyToOne(fetch = FetchType.LAZY)
