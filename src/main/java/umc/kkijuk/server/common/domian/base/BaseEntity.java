@@ -1,4 +1,4 @@
-package umc.kkijuk.server.career.domain.base;
+package umc.kkijuk.server.common.domian.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

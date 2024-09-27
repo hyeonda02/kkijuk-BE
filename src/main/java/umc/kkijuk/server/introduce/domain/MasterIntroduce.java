@@ -1,17 +1,11 @@
 package umc.kkijuk.server.introduce.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.kkijuk.server.career.domain.base.BaseEntity;
-import umc.kkijuk.server.member.domain.Member;
-import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import umc.kkijuk.server.common.domian.base.BaseEntity;
 
 @Entity
 @Table(name = "master_introduce")

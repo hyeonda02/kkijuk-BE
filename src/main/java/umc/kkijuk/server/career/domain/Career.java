@@ -2,7 +2,7 @@ package umc.kkijuk.server.career.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.common.domian.base.BaseEntity;
 import umc.kkijuk.server.careerdetail.domain.CareerDetail;
 
 import java.time.LocalDate;
