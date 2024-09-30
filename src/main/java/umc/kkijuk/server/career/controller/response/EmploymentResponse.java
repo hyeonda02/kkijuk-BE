@@ -3,15 +3,19 @@ package umc.kkijuk.server.career.controller.response;
 import lombok.*;
 import umc.kkijuk.server.career.domain.Employment;
 import umc.kkijuk.server.career.domain.JobType;
+import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
+import umc.kkijuk.server.detail.domain.BaseCareerDetail;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Getter
 @Setter
 @Builder
 @AllArgsConstructor
-public class EmploymentResponse {
+public class EmploymentResponse implements BaseCareerResponse{
     private String name;
     private String alias;
     private Boolean unknown;
@@ -22,6 +26,7 @@ public class EmploymentResponse {
     private String workplace;
     private String position;
     private String field;
+    private List<BaseCareerDetailResponse> detailList;
     public EmploymentResponse(Employment employment) {
         this.name = employment.getName();
         this.alias = employment.getAlias();
@@ -34,5 +39,12 @@ public class EmploymentResponse {
         this.position = employment.getPosition();
         this.field = employment.getField();
 
+    }
+
+    public EmploymentResponse(Employment emp, List<BaseCareerDetail> details) {
+        this(emp);
+        this.detailList = details.stream()
+                .map(BaseCareerDetailResponse::new)
+                .collect(Collectors.toList());
     }
 }

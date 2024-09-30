@@ -226,5 +226,19 @@ public class BaseCareerController {
         );
 
     }
+    @GetMapping("/{careerId}")
+    @Operation(summary = "활동 상세", description = "활동 ID에 해당하는 활동의 세부 내용과, 활동 기록을 조회합니다.")
+    @Parameter(name = "careerId", description = "활동 Id, path variable 입니다.", example = "1")
+    public CareerResponse<Object> findCareer(
+            @Login LoginInfo loginInfo,
+            @PathVariable Long careerId
+    ){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        return CareerResponse.success(
+          CareerResponseMessage.CAREER_FINDALL_SUCCESS, baseCareerService.findCareer(requestMember, careerId)
+        );
+    }
+
+
 
 }

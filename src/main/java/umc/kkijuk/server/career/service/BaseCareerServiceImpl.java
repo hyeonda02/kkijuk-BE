@@ -10,6 +10,8 @@ import umc.kkijuk.server.career.dto.converter.BaseCareerConverter;
 import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import umc.kkijuk.server.detail.repository.BaseCareerDetailRepository;
 import umc.kkijuk.server.member.domain.Member;
 
 import java.time.LocalDate;
@@ -27,6 +29,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
     private final ProjectRepository projectRepository;
     private final EmploymentRepository employmentRepository;
     private final BaseCareerRepository baseCareerRepository;
+    private final BaseCareerDetailRepository detailRepository;
 
     @Override
     @Transactional
@@ -378,6 +381,59 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         }
         return result;
     }
+    @Override
+    public BaseCareerResponse findCareer(Member requestMember, Long careerId) {
+        BaseCareer baseCareer = baseCareerRepository.findById(careerId)
+                .orElseThrow(() -> new ResourceNotFoundException("BaseCareer", careerId));
+
+        if(baseCareer instanceof Activity){
+            return getActivityResponse((Activity) baseCareer);
+        }else if(baseCareer instanceof Circle){
+            return getCircleResponse((Circle) baseCareer);
+        }else if (baseCareer instanceof Project){
+            return getProjectResponse((Project) baseCareer);
+        }else if (baseCareer instanceof EduCareer){
+            return getEduCareerResponse((EduCareer) baseCareer);
+        }else if (baseCareer instanceof Employment){
+            return getEmploymentResponse((Employment) baseCareer);
+        } else if (baseCareer instanceof Competition){
+            return getCompetitionResponse((Competition) baseCareer);
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 활동 유형입니다.");
+        }
+
+    }
+
+    private BaseCareerResponse getCompetitionResponse(Competition competition) {
+        List<BaseCareerDetail> details = detailRepository.findByBaseCareer(competition);
+        return new CompetitionResponse(competition, details);
+    }
+
+    private BaseCareerResponse getEmploymentResponse(Employment emp) {
+        List<BaseCareerDetail> details = detailRepository.findByBaseCareer(emp);
+        return new EmploymentResponse(emp, details);
+    }
+
+    private BaseCareerResponse getEduCareerResponse(EduCareer edu) {
+        List<BaseCareerDetail> details = detailRepository.findByBaseCareer(edu);
+        return new EduCareerResponse(edu, details);
+    }
+
+    private BaseCareerResponse getProjectResponse(Project project) {
+        List<BaseCareerDetail> details = detailRepository.findByBaseCareer(project);
+        return new ProjectResponse(project, details);
+    }
+
+    private BaseCareerResponse getCircleResponse(Circle circle) {
+        List<BaseCareerDetail> details = detailRepository.findByBaseCareer(circle);
+        return new CircleResponse(circle, details);
+    }
+
+    private BaseCareerResponse getActivityResponse(Activity activity) {
+        List<BaseCareerDetail> details = detailRepository.findByBaseCareer(activity);
+        return new ActivityResponse(activity, details);
+    }
+
     private <T extends BaseCareer> void setCommonFields(T activity) {
         if (activity.getUnknown()) {
             activity.setEnddate(LocalDate.now());

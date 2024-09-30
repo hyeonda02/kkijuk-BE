@@ -47,4 +47,6 @@ public interface BaseCareerService {
     void deleteBaseCareer(Member requestMember, Long careerId, String type);
     Map<String, List<?>>  findAllCareerGroupedCategory(Long id);
     Map<String, List<?>> findAllCareerGroupedYear(Long id);
+
+    BaseCareerResponse findCareer(Member requestMember, Long careerId);
 }
