@@ -4,6 +4,7 @@ import lombok.*;
 import umc.kkijuk.server.career.domain.Competition;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import umc.kkijuk.server.detail.domain.CareerType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class CompetitionResponse implements BaseCareerResponse {
+    private String category;
     private String name;
     private String alias;
     private Boolean unknown;
@@ -27,6 +29,7 @@ public class CompetitionResponse implements BaseCareerResponse {
     private Boolean isTeam;
     private List<BaseCareerDetailResponse> detailList;
     public CompetitionResponse(Competition competition) {
+        this.category = CareerType.COM.getDescription();
         this.name = competition.getName();
         this.alias = competition.getAlias();
         this.unknown = competition.getUnknown();

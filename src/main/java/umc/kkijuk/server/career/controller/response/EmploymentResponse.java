@@ -5,6 +5,7 @@ import umc.kkijuk.server.career.domain.Employment;
 import umc.kkijuk.server.career.domain.JobType;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import umc.kkijuk.server.detail.domain.CareerType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class EmploymentResponse implements BaseCareerResponse{
+    private String category;
     private String name;
     private String alias;
     private Boolean unknown;
@@ -28,6 +30,7 @@ public class EmploymentResponse implements BaseCareerResponse{
     private String field;
     private List<BaseCareerDetailResponse> detailList;
     public EmploymentResponse(Employment employment) {
+        this.category = CareerType.EMP.getDescription();
         this.name = employment.getName();
         this.alias = employment.getAlias();
         this.unknown = employment.getUnknown();

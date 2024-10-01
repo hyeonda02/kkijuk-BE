@@ -4,6 +4,7 @@ import lombok.*;
 import umc.kkijuk.server.career.domain.Circle;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import umc.kkijuk.server.detail.domain.CareerType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class CircleResponse implements BaseCareerResponse{
+    private String category;
     private String name;
     private String alias;
     private Boolean unknown;
@@ -25,6 +27,7 @@ public class CircleResponse implements BaseCareerResponse{
     private String role;
     private List<BaseCareerDetailResponse> detailList;
     public CircleResponse(Circle circle) {
+        this.category = CareerType.CIRCLE.getDescription();
         this.name = circle.getName();
         this.alias = circle.getAlias();
         this.unknown = circle.getUnknown();

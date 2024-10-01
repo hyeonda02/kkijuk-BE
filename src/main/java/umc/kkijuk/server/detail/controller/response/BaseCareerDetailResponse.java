@@ -23,11 +23,9 @@ public class BaseCareerDetailResponse {
     private String content;
     private LocalDate startDate;
     private LocalDate endDate;
-    private CareerType careerType;
     private List<TagResponse> detailTag;
 
     public BaseCareerDetailResponse(BaseCareerDetail detail) {
-        this.careerType = detail.getCareerType();
         this.title = detail.getTitle();
         this.content = detail.getContent();
         this.startDate = detail.getStartDate();

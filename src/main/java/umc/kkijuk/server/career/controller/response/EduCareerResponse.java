@@ -4,6 +4,7 @@ import lombok.*;
 import umc.kkijuk.server.career.domain.EduCareer;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import umc.kkijuk.server.detail.domain.CareerType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class EduCareerResponse implements BaseCareerResponse {
+    private String category;
     private String name;
     private String alias;
     private Boolean unknown;
@@ -25,6 +27,7 @@ public class EduCareerResponse implements BaseCareerResponse {
     private int time;
     private List<BaseCareerDetailResponse> detailList;
     public EduCareerResponse(EduCareer eduCareer) {
+        this.category = CareerType.EDU.getDescription();
         this.name = eduCareer.getName();
         this.alias = eduCareer.getAlias();
         this.unknown = eduCareer.getUnknown();
