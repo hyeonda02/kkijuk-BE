@@ -8,8 +8,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import umc.kkijuk.server.careerdetail.controller.response.CareerDetailResponse;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
+import umc.kkijuk.server.detail.controller.response.CareerDetailResponse;
 import umc.kkijuk.server.detail.dto.BaseCareerDetailReqDto;
 import umc.kkijuk.server.detail.service.BaseCareerDetailService;
 import umc.kkijuk.server.login.argumentresolver.Login;
@@ -17,10 +17,10 @@ import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
 
-@Tag(name="basecareer-detail",description = "내커리어 활동 기록 관련 API")
+@Tag(name="careerdetail",description = "내커리어 활동 기록 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/basecareer/detail")
+@RequestMapping("/career/detail")
 public class BaseCareerDetailController {
     private final MemberService memberService;
     private final BaseCareerDetailService careerDetailService;

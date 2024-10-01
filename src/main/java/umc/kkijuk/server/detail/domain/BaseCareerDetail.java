@@ -3,7 +3,6 @@ package umc.kkijuk.server.detail.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import umc.kkijuk.server.career.domain.BaseCareer;
-import umc.kkijuk.server.careerdetail.domain.mapping.CareerTag;
 import umc.kkijuk.server.common.domian.base.BaseEntity;
 import umc.kkijuk.server.detail.domain.mapping.CareerDetailTag;
 

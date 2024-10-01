@@ -19,7 +19,7 @@ import umc.kkijuk.server.member.service.MemberService;
 @Tag(name="basecareer",description = "활동 관련 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/basecareer")
+@RequestMapping("/career")
 public class BaseCareerController {
     private final BaseCareerService baseCareerService;
     private final MemberService memberService;

@@ -6,7 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import umc.kkijuk.server.career.repository.CareerRepository;
+import umc.kkijuk.server.career.repository.BaseCareerRepository;
 import umc.kkijuk.server.dashboard.controller.port.DashBoardService;
 import umc.kkijuk.server.dashboard.controller.response.DashBoardUserInfoResponse;
 import umc.kkijuk.server.dashboard.controller.response.IntroduceRemindResponse;
@@ -25,13 +25,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DashBoardServiceImpl implements DashBoardService {
     private final RecruitService recruitService;
-    private final CareerRepository careerRepository;
+    private final BaseCareerRepository careerRepository;
     private final IntroduceRepository introduceRepository;
 
     @Override
     public DashBoardUserInfoResponse getUserInfo(Member requestMember) {
         long recruitCount = recruitService.findAllValidRecruitByMember(requestMember, LocalDateTime.now()).size();
-        long careerCount = careerRepository.findAllCareerByMemberId(requestMember.getId()).size();
+        long careerCount = careerRepository.findByMemberId(requestMember.getId()).size();
         return DashBoardUserInfoResponse.from(requestMember, careerCount, recruitCount);
     }
 

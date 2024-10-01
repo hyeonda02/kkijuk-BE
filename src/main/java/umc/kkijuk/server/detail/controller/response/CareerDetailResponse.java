@@ -1,11 +1,10 @@
-package umc.kkijuk.server.careerdetail.controller.response;
+package umc.kkijuk.server.detail.controller.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-
 
 @Getter
 @Builder
