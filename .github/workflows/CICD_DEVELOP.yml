@@ -17,6 +17,16 @@ jobs:
       contents: read
 
     steps:
+      - name: Get short SHA
+        id: slug
+        run: echo "sha7=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
+
+      - name: Discord Webhook Action
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: "New Commit[${{ steps.slug.outputs.sha7 }}] detected"
+
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -35,10 +45,6 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5 # v3.1.0
-
-      - name: Get short SHA
-        id: slug
-        run: echo "sha7=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
 
       - name: Generate application.properties
         run: |
@@ -123,6 +129,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Get short SHA
+        id: slug
+        run: echo "sha7=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
+
       - name: Executing remote ssh commands
         uses: appleboy/ssh-action@v0.1.6 # ssh 접속하는 오픈소스
         with:
@@ -133,3 +143,9 @@ jobs:
           script: | # 실행할 스크립트
             cd /home/ubuntu/scripts
             ./rolling-update.sh
+
+      - name: Discord Webhook Action
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: "Server updated to Commit[${{ steps.slug.outputs.sha7 }}]"
