@@ -6,11 +6,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.common.domian.base.BaseEntity;
 import umc.kkijuk.server.common.converter.StringListToStringConverter;
 
 @Entity

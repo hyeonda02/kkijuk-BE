@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.common.domian.base.BaseEntity;
 
 import java.util.ArrayList;
 import java.util.List;

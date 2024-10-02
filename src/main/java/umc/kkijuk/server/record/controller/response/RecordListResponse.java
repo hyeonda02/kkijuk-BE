@@ -1,7 +1,6 @@
 package umc.kkijuk.server.record.controller.response;
 
 import lombok.*;
-import umc.kkijuk.server.career.domain.Career;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -21,18 +20,18 @@ public class RecordListResponse {
     private String summary;
     private Boolean isCurrent;
 
-    @Builder
-    public RecordListResponse(Career career) {
-        this.careerId = career.getId();
-        this.careerName=career.getName();
-        this.alias=career.getAlias();
-        this.category=career.getCategory().getName();
-        this.startDate=career.getStartdate();
-        this.endDate = career.getEnddate();
-        this.period=calculatePeriodInMonths(startDate, endDate);
-        this.summary=career.getSummary();
-        this.isCurrent=determineIsCurrent(endDate);
-    }
+//    @Builder
+//    public RecordListResponse(Career career) {
+//        this.careerId = career.getId();
+//        this.careerName=career.getName();
+//        this.alias=career.getAlias();
+//        this.category=career.getCategory().getName();
+//        this.startDate=career.getStartdate();
+//        this.endDate = career.getEnddate();
+//        this.period=calculatePeriodInMonths(startDate, endDate);
+//        this.summary=career.getSummary();
+//        this.isCurrent=determineIsCurrent(endDate);
+//    }
 
     private static int calculatePeriodInMonths(LocalDate startDate, LocalDate endDate) {
         return Period.between(startDate, endDate).getMonths();

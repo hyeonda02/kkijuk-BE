@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import umc.kkijuk.server.career.domain.base.BaseEntity;
+import umc.kkijuk.server.common.domian.base.BaseEntity;
 
 @Entity
 @Table(name="question")

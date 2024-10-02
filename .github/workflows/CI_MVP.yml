@@ -18,6 +18,7 @@ on:
       - feature/errorFix
       - fix/credential
       - feature/dashboard
+      - feature/career-refactor
 
 jobs:
   CI:

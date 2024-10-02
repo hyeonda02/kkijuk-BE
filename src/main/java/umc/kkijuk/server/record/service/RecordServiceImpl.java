@@ -1,10 +1,11 @@
 package umc.kkijuk.server.record.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import umc.kkijuk.server.career.domain.Career;
-import umc.kkijuk.server.career.repository.CareerRepository;
+import org.springframework.transaction.annotation.Transactional;
+import umc.kkijuk.server.career.controller.response.*;
+import umc.kkijuk.server.career.domain.*;
+import umc.kkijuk.server.career.repository.BaseCareerRepository;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
@@ -19,11 +20,12 @@ import umc.kkijuk.server.record.dto.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
+
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RecordServiceImpl implements RecordService {
 
-    private final CareerRepository careerRepository;
     private final RecordRepository recordRepository;
     private final MemberRepository memberRepository;
     private final EducationRepository educationRepository;
@@ -31,6 +33,8 @@ public class RecordServiceImpl implements RecordService {
     private final AwardRepository awardRepository;
     private final ForeignRepository foreignRepository;
     private final SkillRepository skillRepository;
+
+    private final BaseCareerRepository baseCareerRepository;
 
     @Override
     @Transactional
@@ -47,7 +51,7 @@ public class RecordServiceImpl implements RecordService {
 
         recordRepository.save(record);
 
-        return new RecordResponse(record, requestMember, null, null, null);
+        return new RecordResponse(record, requestMember, null, null, null,null,null);
     }
 
     @Override
@@ -57,30 +61,68 @@ public class RecordServiceImpl implements RecordService {
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
         Record record = recordRepository.findByMemberId(requestMember.getId());
-        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
 
-        List<RecordListResponse> activitiesAndExperiences = careers.stream()
-                .filter(career -> Arrays.asList(1L, 2L, 3L, 4L, 6L, 7L).contains(career.getCategory().getId()))
-                .map(RecordListResponse::new)
-                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
-                .collect(Collectors.toList());
+        List<BaseCareer> baseCareers = baseCareerRepository.findByMemberId(requestMember.getId());
 
-        List<RecordListResponse> jobs = careers.stream()
-                .filter(career -> career.getCategory().getId().equals(5L))
-                .map(RecordListResponse::new)
-                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
-                .collect(Collectors.toList());
+        //경력 - 경력
+        List<EmploymentResponse> employments = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof Employment)
+                .map(baseCareer -> new EmploymentResponse((Employment) baseCareer))
+                .toList();
 
+        //활동 및 경험 ( 동아리, 대외활동)
+        List<BaseCareerResponse> activitiesAndExperiences = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof Activity || baseCareer instanceof Circle)
+                .map(baseCareer -> {
+                    if(baseCareer instanceof Activity){
+                        return new ActivityResponse((Activity) baseCareer);
+                    }else{
+                        return new CircleResponse((Circle) baseCareer);
+                    }
+                }).collect(Collectors.toList());
+
+        //프로젝트 ( 프로젝트, 공모전/대회)
+        List<BaseCareerResponse> projects = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof Project || baseCareer instanceof Competition)
+                .map(baseCareer -> {
+                    if(baseCareer instanceof Project){
+                        return new ProjectResponse((Project) baseCareer);
+                    }else{
+                        return new CompetitionResponse((Competition) baseCareer);
+                    }
+                }).collect(Collectors.toList());
+
+        //교육 ( 교육)
+        List<EduCareerResponse> eduCareers = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof EduCareer)
+                .map(baseCareer -> new EduCareerResponse((EduCareer) baseCareer))
+                .toList();
+
+
+//        List<RecordListResponse> activitiesAndExperiences = careers.stream()
+//                .filter(career -> Arrays.asList(1L, 2L, 3L, 4L, 6L, 7L).contains(career.getCategory().getId()))
+//                .map(RecordListResponse::new)
+//                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
+//                .collect(Collectors.toList());
+//
+//        List<RecordListResponse> jobs = careers.stream()
+//                .filter(career -> career.getCategory().getId().equals(5L))
+//                .map(RecordListResponse::new)
+//                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
+//                .collect(Collectors.toList());
+
+
+        //만약 이력서가 존재한다면
         if (record != null) {
+            // 학력
             List<EducationResponse> educationList = record.getEducations()
                     .stream()
                     .map(EducationResponse::new)
                     .collect(Collectors.toList());
 
-            return new RecordResponse(record, member, educationList, activitiesAndExperiences, jobs);
+            return new RecordResponse(record, member, educationList, employments,activitiesAndExperiences, projects,eduCareers);
         }
-
-        return new RecordResponse(member, activitiesAndExperiences, jobs);
+        return new RecordResponse(member, employments,activitiesAndExperiences, projects,eduCareers);
     }
 
     @Override
@@ -88,7 +130,6 @@ public class RecordServiceImpl implements RecordService {
     public RecordResponse updateRecord(Member requestMember, Long recordId, RecordReqDto recordReqDto) {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("record ", recordId));
-
         if (!record.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
@@ -96,19 +137,41 @@ public class RecordServiceImpl implements RecordService {
         Member member = memberRepository.findById(requestMember.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
 
-        List<Career> careers = careerRepository.findAllCareerByMemberId(requestMember.getId());
+        List<BaseCareer> baseCareers = baseCareerRepository.findByMemberId(requestMember.getId());
 
-        List<RecordListResponse> activitiesAndExperiences = careers.stream()
-                .filter(career -> Arrays.asList(1L, 2L, 3L, 4L, 6L, 7L).contains(career.getCategory().getId()))
-                .map(RecordListResponse::new)
-                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
-                .collect(Collectors.toList());
+        //경력 - 경력
+        List<EmploymentResponse> employments = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof Employment)
+                .map(baseCareer -> new EmploymentResponse((Employment) baseCareer))
+                .toList();
 
-        List<RecordListResponse> jobs = careers.stream()
-                .filter(career -> career.getCategory().getId().equals(5L))
-                .map(RecordListResponse::new)
-                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
-                .collect(Collectors.toList());
+        //활동 및 경험 ( 동아리, 대외활동)
+        List<BaseCareerResponse> activitiesAndExperiences = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof Activity || baseCareer instanceof Circle)
+                .map(baseCareer -> {
+                    if(baseCareer instanceof Activity){
+                        return new ActivityResponse((Activity) baseCareer);
+                    }else{
+                        return new CircleResponse((Circle) baseCareer);
+                    }
+                }).collect(Collectors.toList());
+
+        //프로젝트 ( 프로젝트, 공모전/대회)
+        List<BaseCareerResponse> projects = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof Project || baseCareer instanceof Competition)
+                .map(baseCareer -> {
+                    if(baseCareer instanceof Project){
+                        return new ProjectResponse((Project) baseCareer);
+                    }else{
+                        return new CompetitionResponse((Competition) baseCareer);
+                    }
+                }).collect(Collectors.toList());
+
+        //교육 ( 교육)
+        List<EduCareerResponse> eduCareers = baseCareers.stream()
+                .filter(baseCareer -> baseCareer instanceof EduCareer)
+                .map(baseCareer -> new EduCareerResponse((EduCareer) baseCareer))
+                .toList();
 
         record.update(
                 recordReqDto.getAddress(),
@@ -119,8 +182,11 @@ public class RecordServiceImpl implements RecordService {
                 .map(EducationResponse::new)
                 .collect(Collectors.toList());
 
-        return new RecordResponse(record, member, educationList, activitiesAndExperiences, jobs);
+        return new RecordResponse(record, member, educationList, employments,activitiesAndExperiences, projects,eduCareers);
     }
+
+
+
 
     @Override
     @Transactional

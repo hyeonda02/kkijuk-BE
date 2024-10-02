@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import umc.kkijuk.server.career.domain.base.BaseEntity;
-import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.common.domian.base.BaseEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import java.util.List;
 
