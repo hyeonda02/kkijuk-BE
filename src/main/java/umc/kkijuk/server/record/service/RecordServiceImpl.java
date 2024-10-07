@@ -68,6 +68,7 @@ public class RecordServiceImpl implements RecordService {
         List<EmploymentResponse> employments = baseCareers.stream()
                 .filter(baseCareer -> baseCareer instanceof Employment)
                 .map(baseCareer -> new EmploymentResponse((Employment) baseCareer))
+                .sorted(Comparator.comparing(EmploymentResponse::getEndDate).reversed())
                 .toList();
 
         //활동 및 경험 ( 동아리, 대외활동)
@@ -79,7 +80,8 @@ public class RecordServiceImpl implements RecordService {
                     }else{
                         return new CircleResponse((Circle) baseCareer);
                     }
-                }).collect(Collectors.toList());
+                }).sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed())
+                .collect(Collectors.toList());
 
         //프로젝트 ( 프로젝트, 공모전/대회)
         List<BaseCareerResponse> projects = baseCareers.stream()
@@ -90,29 +92,16 @@ public class RecordServiceImpl implements RecordService {
                     }else{
                         return new CompetitionResponse((Competition) baseCareer);
                     }
-                }).collect(Collectors.toList());
+                }).sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed())
+                .collect(Collectors.toList());
 
         //교육 ( 교육)
         List<EduCareerResponse> eduCareers = baseCareers.stream()
                 .filter(baseCareer -> baseCareer instanceof EduCareer)
                 .map(baseCareer -> new EduCareerResponse((EduCareer) baseCareer))
+                .sorted(Comparator.comparing(EduCareerResponse::getEndDate).reversed())
                 .toList();
 
-
-//        List<RecordListResponse> activitiesAndExperiences = careers.stream()
-//                .filter(career -> Arrays.asList(1L, 2L, 3L, 4L, 6L, 7L).contains(career.getCategory().getId()))
-//                .map(RecordListResponse::new)
-//                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
-//                .collect(Collectors.toList());
-//
-//        List<RecordListResponse> jobs = careers.stream()
-//                .filter(career -> career.getCategory().getId().equals(5L))
-//                .map(RecordListResponse::new)
-//                .sorted(Comparator.comparing(RecordListResponse::getEndDate).reversed())
-//                .collect(Collectors.toList());
-
-
-        //만약 이력서가 존재한다면
         if (record != null) {
             // 학력
             List<EducationResponse> educationList = record.getEducations()
@@ -143,6 +132,7 @@ public class RecordServiceImpl implements RecordService {
         List<EmploymentResponse> employments = baseCareers.stream()
                 .filter(baseCareer -> baseCareer instanceof Employment)
                 .map(baseCareer -> new EmploymentResponse((Employment) baseCareer))
+                .sorted(Comparator.comparing(EmploymentResponse::getEndDate).reversed())
                 .toList();
 
         //활동 및 경험 ( 동아리, 대외활동)
@@ -154,7 +144,8 @@ public class RecordServiceImpl implements RecordService {
                     }else{
                         return new CircleResponse((Circle) baseCareer);
                     }
-                }).collect(Collectors.toList());
+                }).sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed())
+                .sorted().collect(Collectors.toList());
 
         //프로젝트 ( 프로젝트, 공모전/대회)
         List<BaseCareerResponse> projects = baseCareers.stream()
@@ -165,12 +156,15 @@ public class RecordServiceImpl implements RecordService {
                     }else{
                         return new CompetitionResponse((Competition) baseCareer);
                     }
-                }).collect(Collectors.toList());
+                }).sorted(Comparator.comparing(BaseCareerResponse::getEndDate))
+                .collect(Collectors.toList());
+
 
         //교육 ( 교육)
         List<EduCareerResponse> eduCareers = baseCareers.stream()
                 .filter(baseCareer -> baseCareer instanceof EduCareer)
                 .map(baseCareer -> new EduCareerResponse((EduCareer) baseCareer))
+                .sorted(Comparator.comparing(EduCareerResponse::getEndDate).reversed())
                 .toList();
 
         record.update(

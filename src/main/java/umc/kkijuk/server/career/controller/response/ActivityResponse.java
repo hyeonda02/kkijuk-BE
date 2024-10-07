@@ -53,4 +53,9 @@ public class ActivityResponse implements BaseCareerResponse{
                     .collect(Collectors.toList());
         }
     }
+
+    @Override
+    public LocalDate getEndDate() {
+        return enddate;
+    }
 }

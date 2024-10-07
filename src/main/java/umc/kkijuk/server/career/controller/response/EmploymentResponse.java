@@ -50,4 +50,9 @@ public class EmploymentResponse implements BaseCareerResponse{
                 .map(BaseCareerDetailResponse::new)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public LocalDate getEndDate() {
+        return enddate;
+    }
 }

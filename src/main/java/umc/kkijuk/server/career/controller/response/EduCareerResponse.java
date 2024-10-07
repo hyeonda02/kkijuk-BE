@@ -1,6 +1,7 @@
 package umc.kkijuk.server.career.controller.response;
 
 import lombok.*;
+import umc.kkijuk.server.career.domain.BaseCareer;
 import umc.kkijuk.server.career.domain.EduCareer;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
@@ -43,5 +44,10 @@ public class EduCareerResponse implements BaseCareerResponse {
         this.detailList = details.stream()
                 .map(BaseCareerDetailResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public LocalDate getEndDate() {
+        return enddate;
     }
 }
