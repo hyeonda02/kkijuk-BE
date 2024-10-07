@@ -32,7 +32,7 @@ public class EduCareerResponse implements BaseCareerResponse {
         this.name = eduCareer.getName();
         this.alias = eduCareer.getAlias();
         this.unknown = eduCareer.getUnknown();
-        this.summary = eduCareer.getName();
+        this.summary = eduCareer.getSummary();
         this.startdate = eduCareer.getStartdate();
         this.enddate = eduCareer.getEnddate();
         this.organizer = eduCareer.getOrganizer();

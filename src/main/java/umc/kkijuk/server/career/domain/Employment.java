@@ -17,12 +17,16 @@ public class Employment extends BaseCareer{
     private String workplace;
     private String position;
     private String field;
+    @Override
+    public void setSummary(String summary) {
+        super.setSummary(summary);
+    }
 
     @Builder
     public Employment(Long memberId, String name, String alias, Boolean unknown,
-                      String summary, LocalDate startdate, LocalDate enddate,
+                      LocalDate startdate, LocalDate enddate,
                       JobType type, String workplace, String position, String field) {
-        super(memberId, name, alias, unknown, summary, startdate, enddate);
+        super(memberId, name, alias, unknown, startdate, enddate);
         this.type = type;
         this.workplace = workplace;
         this.position = position;
@@ -30,9 +34,9 @@ public class Employment extends BaseCareer{
     }
 
     public void updateEmployment(String name, String alias, Boolean unknown,
-                                 String summary, LocalDate startdate, LocalDate enddate,
+                                 LocalDate startdate, LocalDate enddate,
                                  JobType type, String workplace, String position, String field) {
-        this.updateBaseCareer(name, alias, unknown, summary, startdate, enddate);
+        this.updateBaseCareer(name, alias, unknown, startdate, enddate);
         this.type = type;
         this.workplace = workplace;
         this.position = position;

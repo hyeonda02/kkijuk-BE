@@ -35,30 +35,30 @@ public abstract class BaseCareer extends BaseEntity {
     private List<BaseCareerDetail> baseCareerDetailList = new ArrayList<>();
 
     public BaseCareer(Long memberId, String name, String alias, Boolean unknown,
-                      String summary, LocalDate startdate, LocalDate enddate) {
+                      LocalDate startdate, LocalDate enddate) {
         this.memberId = memberId;
         this.name = name;
         this.alias = alias;
         this.unknown = unknown;
-        this.summary = summary;
         this.startdate = startdate;
         this.enddate = enddate;
     }
 
     public void updateBaseCareer(String name, String alias, Boolean unknown,
-                                 String summary, LocalDate startdate, LocalDate enddate) {
+                                 LocalDate startdate, LocalDate enddate) {
         this.name = name;
         this.alias = alias;
         this.unknown = unknown;
-        this.summary = summary;
         this.startdate = startdate;
         this.enddate = enddate;
     }
     public void setEnddate(LocalDate enddate) {
         this.enddate = enddate;
     }
-
     public void setYear(int year) {
         this.year = year;
+    }
+    public void setSummary(String summary) {
+        this.summary = summary;
     }
 }

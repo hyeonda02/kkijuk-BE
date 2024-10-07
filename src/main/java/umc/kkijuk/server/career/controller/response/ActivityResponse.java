@@ -35,7 +35,7 @@ public class ActivityResponse implements BaseCareerResponse{
         this.name = activity.getName();
         this.alias = activity.getAlias();
         this.unknown = activity.getUnknown();
-        this.summary = activity.getName();
+        this.summary = activity.getSummary();
         this.startdate = activity.getStartdate();
         this.enddate = activity.getEnddate();
         this.organizer = activity.getOrganizer();

@@ -34,7 +34,7 @@ public class ProjectResponse implements BaseCareerResponse {
         this.name = project.getName();
         this.alias = project.getAlias();
         this.unknown = project.getUnknown();
-        this.summary = project.getName();
+        this.summary = project.getSummary();
         this.startdate = project.getStartdate();
         this.enddate = project.getEnddate();
         this.teamSize = project.getTeamSize();

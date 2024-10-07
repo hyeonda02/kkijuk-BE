@@ -235,9 +235,25 @@ public class BaseCareerController {
     ){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
-          CareerResponseMessage.CAREER_FINDALL_SUCCESS, baseCareerService.findCareer(requestMember, careerId)
+          CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                baseCareerService.findCareer(requestMember, careerId)
         );
     }
+    @PatchMapping("/{careerId}")
+    @Operation(summary = "활동 내역 수정", description = "활동 ID에 해당하는 활동에 활동 내역을 추가합니다.")
+    @Parameter(name = "careerId", description = "활동 Id, path variable 입니다.", example = "1")
+    public CareerResponse<Object> createSummary(
+            @Login LoginInfo loginInfo,
+            @PathVariable Long careerId,
+            @Valid @RequestBody CareerSummaryReqDto request
+    ){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        return CareerResponse.success(
+                CareerResponseMessage.CAREER_CREATE_SUCCESS,
+                baseCareerService.createSummary(requestMember,careerId,request)
+        );
+    }
+
 
 
 

@@ -103,10 +103,6 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
 
 
 
-
-
-
-
     private BaseCareer findBaseCareerByType(CareerType careerType, Long careerId) {
         return switch (careerType) {
             case ACTIVITY -> activityRepository.findById(careerId)

@@ -179,7 +179,6 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 request.getName(),
                 request.getAlias(),
                 request.getUnknown(),
-                request.getSummary(),
                 request.getStartdate(),
                 request.getEnddate(),
                 request.getOrganizer(),
@@ -205,7 +204,6 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 request.getName(),
                 request.getAlias(),
                 request.getUnknown(),
-                request.getSummary(),
                 request.getStartdate(),
                 request.getEnddate(),
                 request.getLocation(),
@@ -227,7 +225,6 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 request.getName(),
                 request.getAlias(),
                 request.getUnknown(),
-                request.getSummary(),
                 request.getStartdate(),
                 request.getEnddate(),
                 request.getOrganizer(),
@@ -252,7 +249,6 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 request.getName(),
                 request.getAlias(),
                 request.getUnknown(),
-                request.getSummary(),
                 request.getStartdate(),
                 request.getEnddate(),
                 request.getOrganizer(),
@@ -274,7 +270,6 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 request.getName(),
                 request.getAlias(),
                 request.getUnknown(),
-                request.getSummary(),
                 request.getStartdate(),
                 request.getEnddate(),
                 request.getType(),
@@ -299,7 +294,6 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 request.getName(),
                 request.getAlias(),
                 request.getUnknown(),
-                request.getSummary(),
                 request.getStartdate(),
                 request.getEnddate(),
                 request.getTeamSize(),
@@ -310,6 +304,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         );
         return new ProjectResponse(updateProject);
     }
+
 
     @Override
     public Map<String, List<?>> findAllCareerGroupedCategory(Long memberId) {
@@ -385,6 +380,9 @@ public class BaseCareerServiceImpl implements BaseCareerService{
     public BaseCareerResponse findCareer(Member requestMember, Long careerId) {
         BaseCareer baseCareer = baseCareerRepository.findById(careerId)
                 .orElseThrow(() -> new ResourceNotFoundException("BaseCareer", careerId));
+        if(!baseCareer.getMemberId().equals(requestMember.getId())){
+            throw new OwnerMismatchException();
+        }
 
         if(baseCareer instanceof Activity){
             return getActivityResponse((Activity) baseCareer);
@@ -403,6 +401,34 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         }
 
     }
+    @Override
+    @Transactional
+    public BaseCareerResponse createSummary(Member requestMember, Long careerId, CareerSummaryReqDto request) {
+        BaseCareer baseCareer = baseCareerRepository.findById(careerId)
+                .orElseThrow(() -> new ResourceNotFoundException("BaseCareer", careerId));
+        if(!baseCareer.getMemberId().equals(requestMember.getId())){
+            throw new OwnerMismatchException();
+        }
+        baseCareer.setSummary(request.getSummary());
+
+        if(baseCareer instanceof Activity){
+            return getActivityResponse((Activity) baseCareer);
+        }else if(baseCareer instanceof Circle){
+            return getCircleResponse((Circle) baseCareer);
+        }else if (baseCareer instanceof Project){
+            return getProjectResponse((Project) baseCareer);
+        }else if (baseCareer instanceof EduCareer){
+            return getEduCareerResponse((EduCareer) baseCareer);
+        }else if (baseCareer instanceof Employment){
+            return getEmploymentResponse((Employment) baseCareer);
+        } else if (baseCareer instanceof Competition){
+            return getCompetitionResponse((Competition) baseCareer);
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 활동 유형입니다.");
+        }
+    }
+
+
 
     private BaseCareerResponse getCompetitionResponse(Competition competition) {
         List<BaseCareerDetail> details = detailRepository.findByBaseCareer(competition);

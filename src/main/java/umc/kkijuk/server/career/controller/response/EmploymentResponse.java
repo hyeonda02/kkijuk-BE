@@ -34,7 +34,7 @@ public class EmploymentResponse implements BaseCareerResponse{
         this.name = employment.getName();
         this.alias = employment.getAlias();
         this.unknown = employment.getUnknown();
-        this.summary = employment.getName();
+        this.summary = employment.getSummary();
         this.startdate = employment.getStartdate();
         this.enddate = employment.getEnddate();
         this.type = employment.getType();

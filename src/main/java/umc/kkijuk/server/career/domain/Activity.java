@@ -19,24 +19,28 @@ public class Activity extends BaseCareer {
     private int teamSize;
     private int contribution;
     private Boolean isTeam;
+    @Override
+    public void setSummary(String summary) {
+        super.setSummary(summary);
+    }
     @Builder
     public Activity(Long memberId, String name, String alias, Boolean unknown,
                     String summary, LocalDate startdate,
                     LocalDate enddate, String organizer,
                     String role, int teamSize, int contribution,
                     Boolean isTeam) {
-        super(memberId, name, alias, unknown, summary, startdate, enddate);
+        super(memberId, name, alias, unknown,startdate, enddate);
         this.organizer = organizer;
         this.role = role;
         this.teamSize = teamSize;
         this.contribution = contribution;
         this.isTeam = isTeam;
     }
-    public void updateActivity(String name, String alias, Boolean unknown, String summary, LocalDate startdate,
+    public void updateActivity(String name, String alias, Boolean unknown,LocalDate startdate,
                                LocalDate enddate, String organizer, String role, int teamSize,
                                int contribution, Boolean isTeam) {
 
-        this.updateBaseCareer(name, alias, unknown, summary, startdate, enddate);
+        this.updateBaseCareer(name, alias, unknown, startdate, enddate);
         this.organizer = organizer;
         this.role = role;
         this.teamSize = teamSize;

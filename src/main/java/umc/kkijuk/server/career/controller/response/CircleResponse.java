@@ -31,7 +31,7 @@ public class CircleResponse implements BaseCareerResponse{
         this.name = circle.getName();
         this.alias = circle.getAlias();
         this.unknown = circle.getUnknown();
-        this.summary = circle.getName();
+        this.summary = circle.getSummary();
         this.startdate = circle.getStartdate();
         this.enddate = circle.getEnddate();
         this.location = circle.getLocation();

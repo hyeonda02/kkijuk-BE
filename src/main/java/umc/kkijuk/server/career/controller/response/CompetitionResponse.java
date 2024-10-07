@@ -33,7 +33,7 @@ public class CompetitionResponse implements BaseCareerResponse {
         this.name = competition.getName();
         this.alias = competition.getAlias();
         this.unknown = competition.getUnknown();
-        this.summary = competition.getName();
+        this.summary = competition.getSummary();
         this.startdate = competition.getStartdate();
         this.enddate = competition.getEnddate();
         this.organizer = competition.getOrganizer();
