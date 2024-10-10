@@ -24,11 +24,16 @@ public class Skill extends BaseEntity {
     private Record record;
 
     @NotNull
+    private SkillTag skillTag;
+
+    @NotNull
     @Size(max = 30)
     private String skillName;
+    @NotNull
     private Workmanship workmanship;
 
-    public void changeSkillInfo(String skillName, Workmanship workmanship){
+    public void changeSkillInfo(SkillTag skillTag, String skillName, Workmanship workmanship){
+        this.skillTag = skillTag;
         this.skillName = skillName;
         this.workmanship = workmanship;
     }

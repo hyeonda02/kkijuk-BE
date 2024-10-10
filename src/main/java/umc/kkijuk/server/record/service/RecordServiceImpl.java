@@ -31,7 +31,6 @@ public class RecordServiceImpl implements RecordService {
     private final EducationRepository educationRepository;
     private final LicenseRepository licenseRepository;
     private final AwardRepository awardRepository;
-    private final ForeignRepository foreignRepository;
     private final SkillRepository skillRepository;
 
     private final BaseCareerRepository baseCareerRepository;
@@ -256,9 +255,11 @@ public class RecordServiceImpl implements RecordService {
 
         License license = License.builder()
                 .record(record)
+                .licenseTag((licenseReqDto.getLicenseTag()))
                 .licenseName(licenseReqDto.getLicenseName())
                 .administer(licenseReqDto.getAdminister())
                 .licenseNumber(licenseReqDto.getLicenseNumber())
+                .licenseGrade(licenseReqDto.getLicenseGrade())
                 .acquireDate(licenseReqDto.getAcquireDate())
                 .build();
 
@@ -278,9 +279,12 @@ public class RecordServiceImpl implements RecordService {
             throw new IntroOwnerMismatchException();
         }
 
-        license.changeLicenseInfo(licenseReqDto.getLicenseName(),
+        license.changeLicenseInfo(
+                licenseReqDto.getLicenseTag(),
+                licenseReqDto.getLicenseName(),
                 licenseReqDto.getAdminister(),
                 licenseReqDto.getLicenseNumber(),
+                licenseReqDto.getLicenseGrade(),
                 licenseReqDto.getAcquireDate());
 
         return new LicenseResponse(license);
@@ -303,68 +307,6 @@ public class RecordServiceImpl implements RecordService {
     }
 
 
-    @Override
-    @Transactional
-    public ForeignResponse saveForeign(Member requestMember, Long recordId, ForeignReqDto foreignReqDto) {
-
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
-
-        if (!record.getMemberId().equals(requestMember.getId())) {
-            throw new IntroOwnerMismatchException();
-        }
-
-        ForeignLanguage foreignLanguage = ForeignLanguage.builder()
-                .record(record)
-                .foreignName(foreignReqDto.getForeignName())
-                .administer(foreignReqDto.getAdminister())
-                .foreignNumber(foreignReqDto.getForeignNumber())
-                .acquireDate(foreignReqDto.getAcquireDate())
-                .foreignRank(foreignReqDto.getForeignRank())
-                .build();
-
-        foreignRepository.save(foreignLanguage);
-
-        return new ForeignResponse(foreignLanguage);
-    }
-
-    @Override
-    @Transactional
-    public ForeignResponse updateForeign(Member requestMember, Long foreignId, ForeignReqDto foreignReqDto) {
-
-        ForeignLanguage foreignLanguage = foreignRepository.findById(foreignId)
-                .orElseThrow(() -> new ResourceNotFoundException("ForeignLanguage", foreignId));
-
-        if (!foreignLanguage.getRecord().getMemberId().equals(requestMember.getId())) {
-            throw new IntroOwnerMismatchException();
-        }
-
-        foreignLanguage.changeForeignInfo(
-                foreignReqDto.getForeignName(),
-                foreignReqDto.getAdminister(),
-                foreignReqDto.getForeignNumber(),
-                foreignReqDto.getAcquireDate(),
-                foreignReqDto.getForeignRank()
-        );
-
-        return new ForeignResponse(foreignLanguage);
-    }
-
-    @Override
-    @Transactional
-    public Long deleteForeign(Member requestMember, Long foreignId) {
-
-        ForeignLanguage foreignLanguage = foreignRepository.findById(foreignId)
-                .orElseThrow(() -> new ResourceNotFoundException("ForeignLanguage", foreignId));
-
-        if (!foreignLanguage.getRecord().getMemberId().equals(requestMember.getId())) {
-            throw new IntroOwnerMismatchException();
-        }
-
-        foreignRepository.delete(foreignLanguage);
-
-        return foreignLanguage.getId();
-    }
 
     @Override
     @Transactional
@@ -440,6 +382,7 @@ public class RecordServiceImpl implements RecordService {
 
         Skill skill = Skill.builder()
                 .record(record)
+                .skillTag(skillReqDto.getSkillTag())
                 .skillName(skillReqDto.getSkillName())
                 .workmanship(skillReqDto.getWorkmanship())
                 .build();
@@ -461,6 +404,7 @@ public class RecordServiceImpl implements RecordService {
         }
 
         skill.changeSkillInfo(
+                skillReqDto.getSkillTag(),
                 skillReqDto.getSkillName(),
                 skillReqDto.getWorkmanship()
         );

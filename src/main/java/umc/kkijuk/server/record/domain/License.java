@@ -28,18 +28,26 @@ public class License extends BaseEntity {
     private Record record;
 
     @NotNull
+    private LicenseTag licenseTag;
+
+    @NotNull
+    @Size(max = 30)
     private String licenseName;
     @Size(max = 15)
     private String administer;
     @Size(max = 30)
     private String licenseNumber;
+    @Size(max = 10)
+    private String licenseGrade;
     private YearMonth acquireDate;
 
 
-    public void changeLicenseInfo(String licenseName, String administer, String licenseNumber, YearMonth acquireDate){
+    public void changeLicenseInfo(LicenseTag licenseTag, String licenseName, String administer, String licenseNumber, String licenseGrade, YearMonth acquireDate){
+        this.licenseTag = licenseTag;
         this.licenseName = licenseName;
         this.administer = administer;
         this.licenseNumber = licenseNumber;
+        this.licenseGrade = licenseGrade;
         this.acquireDate = acquireDate;
     }
 
