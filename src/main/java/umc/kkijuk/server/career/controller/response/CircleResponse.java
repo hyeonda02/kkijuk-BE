@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class CircleResponse implements BaseCareerResponse{
+    private Long id;
     private String category;
     private String name;
     private String alias;
@@ -27,6 +28,7 @@ public class CircleResponse implements BaseCareerResponse{
     private String role;
     private List<BaseCareerDetailResponse> detailList;
     public CircleResponse(Circle circle) {
+        this.id = circle.getId();
         this.category = CareerType.CIRCLE.getDescription();
         this.name = circle.getName();
         this.alias = circle.getAlias();

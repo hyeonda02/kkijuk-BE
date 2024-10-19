@@ -136,7 +136,7 @@ public class BaseCareerController {
     }
 
     @PostMapping("/employment")
-    @Operation(summary = "커리어(아르바이트/인턴) 생성", description = "주어진 정보를 바탕으로 활동을 추가합니다.")
+    @Operation(summary = "커리어(경력) 생성", description = "주어진 정보를 바탕으로 활동을 추가합니다.")
     public CareerResponse<EmploymentResponse> createEmp(
             @Login LoginInfo loginInfo,
             @Valid @RequestBody EmploymentReqDto employmentReqDto
@@ -148,7 +148,7 @@ public class BaseCareerController {
         );
     }
     @PatchMapping("/employment/{employmentId}")
-    @Operation(summary = "커리어(아르바이트/인턴) 수정", description = "활동 ID에 해당하는 활동을 수정합니다..")
+    @Operation(summary = "커리어(경력) 수정", description = "활동 ID에 해당하는 활동을 수정합니다..")
     @Parameter(name="employmentId", description = "커리어(아르바이트/인턴) Id, path variable 입니다.",example = "1")
     public CareerResponse<EmploymentResponse> updateEmp(
             @Login LoginInfo loginInfo,
@@ -226,17 +226,18 @@ public class BaseCareerController {
         );
 
     }
-    @GetMapping("/{careerId}")
+    @GetMapping("/{type}/{careerId}")
     @Operation(summary = "활동 상세", description = "활동 ID에 해당하는 활동의 세부 내용과, 활동 기록을 조회합니다.")
     @Parameter(name = "careerId", description = "활동 Id, path variable 입니다.", example = "1")
     public CareerResponse<Object> findCareer(
             @Login LoginInfo loginInfo,
+            @PathVariable String type,
             @PathVariable Long careerId
     ){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
-          CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                baseCareerService.findCareer(requestMember, careerId)
+                CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                baseCareerService.findCareer(requestMember, careerId, type)
         );
     }
     @PatchMapping("/{careerId}")

@@ -48,7 +48,7 @@ public interface BaseCareerService {
     Map<String, List<?>>  findAllCareerGroupedCategory(Long id);
     Map<String, List<?>> findAllCareerGroupedYear(Long id);
 
-    BaseCareerResponse findCareer(Member requestMember, Long careerId);
+    BaseCareerResponse findCareer(Member requestMember, Long careerId, String type);
 
     BaseCareerResponse createSummary(Member requestMember, Long careerId, CareerSummaryReqDto request);
 }

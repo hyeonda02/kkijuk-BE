@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class ActivityResponse implements BaseCareerResponse{
+    private Long id;
     private String category;
     private String name;
     private String alias;
@@ -31,6 +32,7 @@ public class ActivityResponse implements BaseCareerResponse{
     private List<BaseCareerDetailResponse> detailList;
 
     public ActivityResponse(Activity activity) {
+        this.id = activity.getId();
         this.category = CareerType.ACTIVITY.getDescription();
         this.name = activity.getName();
         this.alias = activity.getAlias();
@@ -58,4 +60,5 @@ public class ActivityResponse implements BaseCareerResponse{
     public LocalDate getEndDate() {
         return enddate;
     }
+
 }

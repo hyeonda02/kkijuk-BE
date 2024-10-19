@@ -23,7 +23,7 @@ public class CircleReqDto {
 
     @NotBlank(message = "활동 별칭은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
     @Size(max = 20)
-    @Schema(description = "활동 별칭", example = "동아리", type="string")
+    @Schema(description = "활동 별칭", example = "UMC", type="string")
     private String alias;
 
     @NotNull(message = "활동 기간을 알고 있는지 여부를 나타냅니다.")

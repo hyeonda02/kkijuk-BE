@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class BaseCareerDetailConverter {
     public static BaseCareerDetail toBaseCareerDetail(Member requestMember, BaseCareerDetailReqDto request, BaseCareer baseCareer) {
         return BaseCareerDetail.builder()
-                .baseCareer(baseCareer)
+//                .baseCareer(baseCareer)
                 .careerType(request.getCareerType())
                 .memberId(requestMember.getId())
                 .title(request.getTitle())

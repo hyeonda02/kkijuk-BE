@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class CompetitionResponse implements BaseCareerResponse {
+    private Long id;
     private String category;
     private String name;
     private String alias;
@@ -29,6 +30,7 @@ public class CompetitionResponse implements BaseCareerResponse {
     private Boolean isTeam;
     private List<BaseCareerDetailResponse> detailList;
     public CompetitionResponse(Competition competition) {
+        this.id = competition.getId();
         this.category = CareerType.COM.getDescription();
         this.name = competition.getName();
         this.alias = competition.getAlias();

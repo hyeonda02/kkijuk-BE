@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class EmploymentResponse implements BaseCareerResponse{
+    private Long id;
     private String category;
     private String name;
     private String alias;
@@ -25,11 +26,11 @@ public class EmploymentResponse implements BaseCareerResponse{
     private LocalDate startdate;
     private LocalDate enddate;
     private JobType type;
-    private String workplace;
     private String position;
     private String field;
     private List<BaseCareerDetailResponse> detailList;
     public EmploymentResponse(Employment employment) {
+        this.id = employment.getId();
         this.category = CareerType.EMP.getDescription();
         this.name = employment.getName();
         this.alias = employment.getAlias();
@@ -38,7 +39,6 @@ public class EmploymentResponse implements BaseCareerResponse{
         this.startdate = employment.getStartdate();
         this.enddate = employment.getEnddate();
         this.type = employment.getType();
-        this.workplace = employment.getWorkplace();
         this.position = employment.getPosition();
         this.field = employment.getField();
 

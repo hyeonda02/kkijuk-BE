@@ -2,9 +2,6 @@ package umc.kkijuk.server.detail.controller.response;
 
 import lombok.*;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
-import umc.kkijuk.server.detail.domain.CareerType;
-import umc.kkijuk.server.detail.domain.mapping.CareerDetailTag;
-import umc.kkijuk.server.tag.domain.Tag;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -30,7 +27,6 @@ public class BaseCareerDetailResponse {
         this.content = detail.getContent();
         this.startDate = detail.getStartDate();
         this.endDate = detail.getEndDate();
-        this.careerName  = detail.getBaseCareer().getName();
         this.detailTag = Optional.ofNullable(detail.getCareerTagList())
                 .orElse(Collections.emptyList())
                 .stream()

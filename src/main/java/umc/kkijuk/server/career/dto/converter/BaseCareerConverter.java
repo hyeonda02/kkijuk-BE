@@ -27,7 +27,6 @@ public class BaseCareerConverter {
                 .startdate(employmentReqDto.getStartdate())
                 .enddate(employmentReqDto.getEnddate())
                 .type(employmentReqDto.getType())
-                .workplace(employmentReqDto.getWorkplace())
                 .position(employmentReqDto.getPosition())
                 .field(employmentReqDto.getField())
                 .build();

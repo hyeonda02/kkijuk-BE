@@ -1,12 +1,11 @@
 package umc.kkijuk.server.dashboard.service;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import umc.kkijuk.server.career.repository.BaseCareerRepository;
+import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.dashboard.controller.port.DashBoardService;
 import umc.kkijuk.server.dashboard.controller.response.DashBoardUserInfoResponse;
 import umc.kkijuk.server.dashboard.controller.response.IntroduceRemindResponse;
@@ -20,18 +19,24 @@ import umc.kkijuk.server.recruit.domain.Recruit;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
 public class DashBoardServiceImpl implements DashBoardService {
     private final RecruitService recruitService;
-    private final BaseCareerRepository careerRepository;
     private final IntroduceRepository introduceRepository;
+    private final ActivityRepository activityRepository;
+    private final CircleRepository circleRepository;
+    private final CompetitionRepository competitionRepository;
+    private final EduCareerRepository eduCareerRepository;
+    private final EmploymentRepository employmentRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public DashBoardUserInfoResponse getUserInfo(Member requestMember) {
         long recruitCount = recruitService.findAllValidRecruitByMember(requestMember, LocalDateTime.now()).size();
-        long careerCount = careerRepository.findByMemberId(requestMember.getId()).size();
+        long careerCount = getCareerCount(requestMember.getId());
         return DashBoardUserInfoResponse.from(requestMember, careerCount, recruitCount);
     }
 
@@ -49,5 +54,17 @@ public class DashBoardServiceImpl implements DashBoardService {
         return introduces.stream()
                 .map(IntroduceRemindResponse::new)
                 .collect(Collectors.toList());
+    }
+    private long getCareerCount(Long memberId) {
+        return Stream.of(
+                        activityRepository.findByMemberId(memberId),
+                        circleRepository.findByMemberId(memberId),
+                        competitionRepository.findByMemberId(memberId),
+                        eduCareerRepository.findByMemberId(memberId),
+                        employmentRepository.findByMemberId(memberId),
+                        projectRepository.findByMemberId(memberId)
+                )
+                .mapToLong(List::size)
+                .sum();
     }
 }

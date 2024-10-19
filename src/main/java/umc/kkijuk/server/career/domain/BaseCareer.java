@@ -2,22 +2,21 @@ package umc.kkijuk.server.career.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import umc.kkijuk.server.common.domian.base.BaseEntity;
-import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDateTime;
 
-@Entity
+
 @Getter
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "career_type")
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@MappedSuperclass
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class BaseCareer extends BaseEntity {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
+public abstract class BaseCareer {
+
     @Column(nullable = false)
     private Long memberId;
     @Column(length = 20)
@@ -25,14 +24,18 @@ public abstract class BaseCareer extends BaseEntity {
     @Column(length = 20)
     private String alias;
     private Boolean unknown;
-    @Column(length = 50)
+    @Column(length = 100)
     private String summary;
     private int year;
     private LocalDate startdate;
     private LocalDate enddate;
 
-    @OneToMany(mappedBy = "baseCareer", cascade = CascadeType.ALL)
-    private List<BaseCareerDetail> baseCareerDetailList = new ArrayList<>();
+    @CreatedDate
+    @Column(length = 6)
+    private LocalDateTime createdAt;
+    @LastModifiedDate
+    @Column(length = 6)
+    private LocalDateTime updatedAt;
 
     public BaseCareer(Long memberId, String name, String alias, Boolean unknown,
                       LocalDate startdate, LocalDate enddate) {
@@ -61,4 +64,5 @@ public abstract class BaseCareer extends BaseEntity {
     public void setSummary(String summary) {
         this.summary = summary;
     }
+
 }
