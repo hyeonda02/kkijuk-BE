@@ -23,6 +23,10 @@ public class Activity extends BaseCareer {
 
     @OneToMany(mappedBy = "activity", cascade = CascadeType.ALL)
     private List<BaseCareerDetail> detailList = new ArrayList<>();
+    @Override
+    public Long getId() {
+        return id;
+    }
 
     @Override
     public void setSummary(String summary) {

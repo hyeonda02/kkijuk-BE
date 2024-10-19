@@ -65,4 +65,6 @@ public abstract class BaseCareer {
         this.summary = summary;
     }
 
+    public abstract Long getId();
+
 }

@@ -20,6 +20,10 @@ public class Circle extends BaseCareer{
 
     @OneToMany(mappedBy = "circle", cascade = CascadeType.ALL)
     private List<BaseCareerDetail> detailList = new ArrayList<>();
+    @Override
+    public Long getId() {
+        return id;
+    }
 
     @Override
     public void setSummary(String summary) {

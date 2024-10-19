@@ -29,6 +29,10 @@ public class EmploymentResponse implements BaseCareerResponse{
     private String position;
     private String field;
     private List<BaseCareerDetailResponse> detailList;
+    @Override
+    public LocalDate getEndDate() {
+        return enddate;
+    }
     public EmploymentResponse(Employment employment) {
         this.id = employment.getId();
         this.category = CareerType.EMP.getDescription();
@@ -51,8 +55,4 @@ public class EmploymentResponse implements BaseCareerResponse{
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public LocalDate getEndDate() {
-        return enddate;
-    }
 }

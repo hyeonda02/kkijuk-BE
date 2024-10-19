@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class BaseCareerDetailResponse {
-    private String careerName;
     private String title;
     private String content;
     private LocalDate startDate;
