@@ -9,6 +9,7 @@ import java.util.Map;
 
 public interface FileService {
     Map<String, String> getSignUrl (Member requestMember, String fileName);
-
     FileResponse createFile(Member requestMember, FileReqDto request);
+    String findKeyNameByFileName(String fileName);
+    Map<String, String> getDownloadUrl(Member requestMember, String keyName);
 }
