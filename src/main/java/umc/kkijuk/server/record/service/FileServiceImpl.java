@@ -35,7 +35,7 @@ public class FileServiceImpl implements FileService{
     @Override
     public Map<String, String> getSignUrl (Member requestMember, String fileName){
 
-        if (fileRepository.existsByTitle(fileName)) {
+        if (fileRepository.existsByMemberIdAndTitle(requestMember.getId(), fileName)) {
             throw new IllegalArgumentException("이미 존재하는 파일 이름입니다: " + fileName);
         }
 
@@ -60,7 +60,7 @@ public class FileServiceImpl implements FileService{
     @Override
     @Transactional
     public FileResponse createFile(Member requestMember, FileReqDto request) {
-        if (fileRepository.existsByTitle(request.getTitle())) {
+        if (fileRepository.existsByMemberIdAndTitle(requestMember.getId(), request.getTitle())) {
             throw new IllegalArgumentException("이미 존재하는 파일 이름입니다: " + request.getTitle());
         }
         File file = File.builder()
@@ -71,17 +71,14 @@ public class FileServiceImpl implements FileService{
         return new FileResponse(fileRepository.save(file));
     }
 
+
     @Override
-    public String findKeyNameByFileName(String fileName) {
-        File file = fileRepository.findByTitle(fileName)
+    public Map<String, String> getDownloadUrl(Member requestMember, String fileName) {
+
+        File file = fileRepository.findByMemberIdAndTitle(requestMember.getId(), fileName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 파일을 찾을 수 없습니다: " + fileName));
-        return file.getKeyName();
-    }
-    @Override
-    public Map<String, String> getDownloadUrl(Member requestMember, String keyName) {
-        if (fileRepository.existsByTitle(keyName)) {
-            throw new IllegalArgumentException("해당 파일을 찾을 수 없습니다 : " + keyName);
-        }
+        String keyName = file.getKeyName();
+
         GetObjectRequest getObjectRequest = GetObjectRequest.builder()
                 .bucket(bucketName)
                 .key(keyName)

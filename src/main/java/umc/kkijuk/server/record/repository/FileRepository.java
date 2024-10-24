@@ -6,7 +6,7 @@ import umc.kkijuk.server.record.domain.File;
 import java.util.Optional;
 
 public interface FileRepository extends JpaRepository<File,Long> {
-    Optional<File> findByTitle(String title);
+    Optional<File> findByMemberIdAndTitle(Long memberId, String title);
 
-    boolean existsByTitle(String title);
+    boolean existsByMemberIdAndTitle(Long memberId, String title);
 }

@@ -52,10 +52,8 @@ public class FileController {
     @GetMapping("/download")
     @Operation(summary = "파일 다운로드용 URL 생성", description = "fileName에 해당하는 presigned URL을 반환합니다.")
     public ResponseEntity<BaseResponse<Map<String,String>>> getDownloadUrl(@Login LoginInfo loginInfo, @RequestParam String fileName) {
-        String keyName = fileService.findKeyNameByFileName(fileName);
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-
-        Map<String, String> response = fileService.getDownloadUrl(requestMember, keyName);
+        Map<String, String> response = fileService.getDownloadUrl(requestMember, fileName);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
