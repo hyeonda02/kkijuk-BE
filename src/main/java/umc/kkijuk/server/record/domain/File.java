@@ -18,4 +18,5 @@ public class File extends BaseEntity {
     @Column(length = 20)
     private String title;
     private String keyName;
+    private String link;
 }

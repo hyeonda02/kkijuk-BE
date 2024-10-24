@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
@@ -27,6 +28,7 @@ import java.util.UUID;
 public class FileServiceImpl implements FileService{
     private final FileRepository fileRepository;
     private final S3Presigner s3Presigner;
+    private final S3Client s3Client;
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
     @Value("${cloud.aws.s3.bucket-path}")
@@ -95,6 +97,18 @@ public class FileServiceImpl implements FileService{
         response.put("presignedURL", presignedUrl);
         response.put("keyName", keyName);
         return response;
+    }
+
+    @Override
+    @Transactional
+    public FileResponse deleteFile(Member requestMember, String fileName){
+        File file = fileRepository.findByMemberIdAndTitle(requestMember.getId(), fileName)
+                .orElseThrow(() -> new IllegalArgumentException("해당 파일이 존재하지 않습니다: " + fileName));
+
+        s3Client.deleteObject(builder -> builder.bucket(bucketName).key(file.getKeyName()).build());
+        fileRepository.delete(file);
+
+        return new FileResponse(file);
     }
 
 }

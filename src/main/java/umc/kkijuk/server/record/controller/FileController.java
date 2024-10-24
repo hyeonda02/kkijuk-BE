@@ -22,14 +22,13 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/file")
 @Tag(name = "file", description = "File 관련 API")
 public class FileController {
 
     private final FileService fileService;
     private final MemberService memberService;
 
-    @GetMapping(value="")
+    @GetMapping(value="/file")
     @Operation(summary = "파일 업로드를 위한 url 생성 API", description = "S3에 접근하기 위한 Presigned URL을 반환합니다.")
     public ResponseEntity<BaseResponse<Map<String,String>>> createFileUrl(@Login LoginInfo loginInfo, @RequestParam String fileName) {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
@@ -39,7 +38,7 @@ public class FileController {
                 .body(new BaseResponse<>(HttpStatus.CREATED.value(), "Presigned URL 반환 완료", response));
     }
 
-    @PostMapping(value="")
+    @PostMapping(value="/file")
     @Operation(summary = "파일 keyName 저장 API", description = "주어진 keyName을 바탕으로 해당 파일에 대한 정보를 저장합니다.")
     public ResponseEntity<BaseResponse<FileResponse>> createFile(@Login LoginInfo loginInfo, @Valid @RequestBody FileReqDto request) {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
@@ -49,7 +48,7 @@ public class FileController {
                 .body(new BaseResponse<>(HttpStatus.CREATED.value(), "파일 정보 저장 완료",fileResponse));
     }
 
-    @GetMapping("/download")
+    @GetMapping("/file/download")
     @Operation(summary = "파일 다운로드용 URL 생성", description = "fileName에 해당하는 presigned URL을 반환합니다.")
     public ResponseEntity<BaseResponse<Map<String,String>>> getDownloadUrl(@Login LoginInfo loginInfo, @RequestParam String fileName) {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
@@ -59,4 +58,14 @@ public class FileController {
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "파일 다운로드 URL 반환 완료", response));
     }
+
+    @DeleteMapping("/file")
+    @Operation(summary = "버킷 내 파일 삭제 API", description = "fileName으로 S3 버킷에서 파일을 삭제합니다.")
+    public ResponseEntity<BaseResponse<FileResponse>> deleteFile(@Login LoginInfo loginInfo, @RequestParam String fileName){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        FileResponse fileResponse = fileService.deleteFile(requestMember, fileName);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(), "파일 삭제 완료", fileResponse));
+    }
+
 }

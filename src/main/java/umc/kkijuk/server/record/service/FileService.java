@@ -11,4 +11,5 @@ public interface FileService {
     Map<String, String> getSignUrl (Member requestMember, String fileName);
     FileResponse createFile(Member requestMember, FileReqDto request);
     Map<String, String> getDownloadUrl(Member requestMember, String keyName);
+    FileResponse deleteFile(Member requestMember, String fileName);
 }
