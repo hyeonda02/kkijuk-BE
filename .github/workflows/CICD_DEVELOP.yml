@@ -27,7 +27,7 @@ jobs:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           content: |
             New Commit[${{ steps.slug.outputs.sha7 }}] detected on branch ${{ github.ref_name }}
-            Commit Link: https://github.com/${{ github.repository }}/${{ github.ref_name }}/commit/${{ github.sha }}
+            Commit Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
             GitHub Action Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Checkout
@@ -61,6 +61,10 @@ jobs:
           echo "cloud.aws.credentials.secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/test/resources/application.properties
           echo "cloud.aws.s3.bucket=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/test/resources/application.properties
           echo "cloud.aws.s3.bucket-path=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.credentials.accessKey=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.credentials.secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.s3.bucket=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.s3.bucket-path=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/main/resources/application-prod.properties
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
@@ -162,5 +166,5 @@ jobs:
           content: |
             Server updated to Commit[${{ steps.slug.outputs.sha7 }}] on branch ${{ github.ref_name }}
             Commit message: ${{ steps.commit_message.outputs.message }}
-            Commit Link: https://github.com/${{ github.repository }}/${{ github.ref_name }}/commit/${{ github.sha }}
+            Commit Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
             GitHub Action Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
