@@ -7,17 +7,17 @@ import lombok.Getter;
 import umc.kkijuk.server.record.domain.File;
 
 @Data
-@Getter
-@Builder
 @AllArgsConstructor
-public class FileResponse {
+@Builder
+@Getter
+public class UrlResponse {
     private Long memberId;
-    private String fileTitle;
-    private String keyName;
+    private String urlTitle;
+    private String url;
 
-    public FileResponse(File file){
+    public UrlResponse(File file) {
         this.memberId = file.getMemberId();
-        this.fileTitle = file.getFileTitle();
-        this.keyName = file.getKeyName();
+        this.urlTitle = file.getUrlTitle();
+        this.url = file.getUrl();
     }
 }

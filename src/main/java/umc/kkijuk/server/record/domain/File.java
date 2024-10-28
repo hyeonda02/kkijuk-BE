@@ -16,7 +16,8 @@ public class File extends BaseEntity {
     @Column(nullable = false)
     private Long memberId;
     @Column(length = 20)
-    private String title;
+    private String fileTitle;
     private String keyName;
-    private String link;
+    private String urlTitle;
+    private String url;
 }
