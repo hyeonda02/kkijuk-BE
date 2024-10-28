@@ -54,14 +54,14 @@ jobs:
           echo "spring.datasource.username=${{ secrets.DATASOURCE_DB_USERNAME }}" >> ./src/main/resources/application-prod.properties
           echo "spring.datasource.password=${{ secrets.DATASOURCE_DB_PASSWORD }}" >> ./src/main/resources/application-prod.properties
           echo "spring.mail.password=${{ secrets.MAIL_PASSWORD }}" >> ./src/main/resources/application-prod.properties
-          echo "aws.access.key.id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/main/resources/application-prod.properties
-          echo "aws.secret.access.key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/main/resources/application-prod.properties
-          echo "aws.bucket.name=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/main/resources/application-prod.properties
-          echo "aws.bucket.name=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/main/resources/application-prod.properties
-          echo "aws.access.key.id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/test/resources/application.properties
-          echo "aws.secret.access.key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/test/resources/application.properties
-          echo "aws.bucket.name=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/test/resources/application.properties
-          echo "aws.bucket.name=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.credentials.accessKey=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.credentials.secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.s3.bucket=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.s3.bucket-path=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.credentials.accessKey=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.credentials.secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.s3.bucket=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.s3.bucket-path=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/test/resources/application.properties
           
 
       - name: Build with Gradle Wrapper
