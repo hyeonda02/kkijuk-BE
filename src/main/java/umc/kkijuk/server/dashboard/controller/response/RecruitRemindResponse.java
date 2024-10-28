@@ -13,21 +13,19 @@ import java.util.List;
 @Getter
 @Builder
 public class RecruitRemindResponse {
-    List<RecruitTitleEndTime> Recruits;
+    List<RecruitTitleEndTime> recruits;
 
     public static RecruitRemindResponse from(List<Recruit> recruits) {
         List<RecruitTitleEndTime> outputs = new ArrayList<>();
         LocalDate now = LocalDate.now();
-        recruits.forEach(recruit -> {
-            outputs.add(RecruitTitleEndTime.builder()
-                    .id(recruit.getId())
-                    .title(recruit.getTitle())
-                    .endTime(recruit.getEndTime()).dDay(ChronoUnit.DAYS.between(now, recruit.getEndTime()))
-                    .build());
-                }
+        recruits.forEach(recruit -> outputs.add(RecruitTitleEndTime.builder()
+                .id(recruit.getId())
+                .title(recruit.getTitle())
+                .endTime(recruit.getEndTime()).dDay(ChronoUnit.DAYS.between(now, recruit.getEndTime()))
+                .build())
         );
         return RecruitRemindResponse.builder()
-                .Recruits(outputs)
+                .recruits(outputs)
                 .build();
     }
 }

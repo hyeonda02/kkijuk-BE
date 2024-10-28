@@ -54,6 +54,9 @@ jobs:
           echo "spring.datasource.username=${{ secrets.DATASOURCE_DB_USERNAME }}" >> ./src/main/resources/application-prod.properties
           echo "spring.datasource.password=${{ secrets.DATASOURCE_DB_PASSWORD }}" >> ./src/main/resources/application-prod.properties
           echo "spring.mail.password=${{ secrets.MAIL_PASSWORD }}" >> ./src/main/resources/application-prod.properties
+          echo "aws.access.key.id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/main/resources/application-prod.properties
+          echo "aws.secret.access.key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/main/resources/application-prod.properties
+          echo "aws.bucket.name=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/main/resources/application-prod.properties
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
@@ -133,6 +136,10 @@ jobs:
         id: slug
         run: echo "sha7=$(echo ${GITHUB_SHA} | cut -c1-7)" >> $GITHUB_OUTPUT
 
+      - name: Get commit message
+        id: commit_message
+        run: echo "message=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+
       - name: Executing remote ssh commands
         uses: appleboy/ssh-action@v0.1.6 # ssh 접속하는 오픈소스
         with:
@@ -148,4 +155,4 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          content: "Server updated to Commit[${{ steps.slug.outputs.sha7 }}]"
+          content: "Server updated to Commit[${{ steps.slug.outputs.sha7 }}]\nCommit message: ${{ steps.commit_message.outputs.message }}"
