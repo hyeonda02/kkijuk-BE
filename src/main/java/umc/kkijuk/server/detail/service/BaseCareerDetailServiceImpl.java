@@ -1,20 +1,19 @@
 package umc.kkijuk.server.detail.service;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import umc.kkijuk.server.career.domain.BaseCareer;
+import umc.kkijuk.server.career.domain.*;
 import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.common.domian.exception.*;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
-import umc.kkijuk.server.detail.domain.BaseCareerDetail;
-import umc.kkijuk.server.detail.domain.CareerType;
+import umc.kkijuk.server.detail.domain.*;
 import umc.kkijuk.server.detail.domain.mapping.CareerDetailTag;
-import umc.kkijuk.server.detail.dto.BaseCareerDetailReqDto;
-import umc.kkijuk.server.detail.dto.converter.BaseCareerDetailConverter;
-import umc.kkijuk.server.detail.dto.converter.CareerDetailTagConverter;
-import umc.kkijuk.server.detail.repository.BaseCareerDetailRepository;
-import umc.kkijuk.server.detail.repository.CareerDetailTagRepository;
+import umc.kkijuk.server.detail.dto.CareerDetailReqDto;
+import umc.kkijuk.server.detail.dto.CareerDetailUpdateReqDto;
+import umc.kkijuk.server.detail.dto.converter.*;
+import umc.kkijuk.server.detail.repository.*;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.tag.domain.Tag;
 import umc.kkijuk.server.tag.repository.TagRepository;
@@ -37,22 +36,17 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
     private final CompetitionRepository competitionRepository;
     private final TagRepository tagRepository;
 
-
     @Override
     @Transactional
-    public BaseCareerDetailResponse createDetail(Member requestMember, BaseCareerDetailReqDto request, Long careerId) {
-        BaseCareer baseCareer = findBaseCareerByType(request.getCareerType(), careerId);
+    public BaseCareerDetailResponse createDetail(Member requestMember, CareerDetailReqDto request, Long careerId) {
+        BaseCareer career = findBaseCareerByType(request.getCareerType(), careerId);
+        validateOwner(career, requestMember);
 
-        if (!baseCareer.getMemberId().equals(requestMember.getId())) {
-            throw new OwnerMismatchException();
-        }
+        List<CareerDetailTag> detailTagList = returnCareerTagList(request.getTagList());
+        BaseCareerDetail newBaseCareerDetail = BaseCareerDetailConverter.toBaseCareerDetail(requestMember, request, career);
 
-        BaseCareerDetail newBaseCareerDetail =
-                BaseCareerDetailConverter.toBaseCareerDetail(requestMember,request, baseCareer);
-        baseCareer.getBaseCareerDetailList().add(newBaseCareerDetail);
-
-        List<CareerDetailTag> detailTagList =returnCareerTagList(request.getTagList());
-        detailTagList.forEach(careerDetailTag -> careerDetailTag.setBaseCareerDetail(newBaseCareerDetail));
+        addDetailToCareer(career, newBaseCareerDetail);
+        detailTagList.forEach(tag -> tag.setBaseCareerDetail(newBaseCareerDetail));
 
         return new BaseCareerDetailResponse(baseCareerDetailRepository.save(newBaseCareerDetail));
     }
@@ -64,26 +58,21 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
                 () -> new ResourceNotFoundException("BaseCareerDetail", detailId));
 
         BaseCareer baseCareer = findBaseCareerByType(baseCareerDetail.getCareerType(), careerId);
-        if(!baseCareer.getMemberId().equals(requestMember.getId())){
-            throw new OwnerMismatchException();
-        }
+        validateOwner(baseCareer,requestMember);
 
         baseCareerDetailRepository.delete(baseCareerDetail);
     }
 
     @Override
     @Transactional
-    public BaseCareerDetailResponse updateDetail(Member requestMember, BaseCareerDetailReqDto request, Long careerId, Long detailId) {
+    public BaseCareerDetailResponse updateDetail(Member requestMember, CareerDetailUpdateReqDto request, Long careerId, Long detailId) {
         BaseCareerDetail baseCareerDetail = baseCareerDetailRepository.findById(detailId).orElseThrow(
                 () -> new ResourceNotFoundException("BaseCareerDetail", detailId));
-        BaseCareer baseCareer = findBaseCareerByType(request.getCareerType(), careerId);
 
-        if(!baseCareer.getId().equals(careerId)) {
-            throw new CareerValidationException("주어진 활동 기록 Id는 해당 활동에 속하지 않습니다. 활동 Id와 활동 기록 Id를 확인해 주세요.");
-        }
-        if(!baseCareerDetail.getMemberId().equals(requestMember.getId())||!baseCareer.getMemberId().equals(requestMember.getId())){
+        if(!baseCareerDetail.getMemberId().equals(requestMember.getId())){
             throw new OwnerMismatchException();
         }
+
         List<CareerDetailTag> existTags = new ArrayList<>(baseCareerDetail.getCareerTagList());
         baseCareerDetail.getCareerTagList().clear();
         existTags.forEach(careerDetailTag -> careerDetailTagRepository.delete(careerDetailTag));
@@ -97,15 +86,32 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
 
         List<CareerDetailTag> careerDetailTags = returnCareerTagList(request.getTagList());
         careerDetailTags.forEach(careerDetailTag -> careerDetailTag.setBaseCareerDetail(baseCareerDetail));
-
         return new BaseCareerDetailResponse(baseCareerDetailRepository.save(baseCareerDetail));
     }
 
+    private void validateOwner(BaseCareer career, Member requestMember) {
+        if (!career.getMemberId().equals(requestMember.getId())) {
+            throw new OwnerMismatchException();
+        }
+    }
 
-
-
-
-
+    private void addDetailToCareer(BaseCareer career, BaseCareerDetail detail) {
+        if (career instanceof Competition) {
+            ((Competition) career).getDetailList().add(detail);
+        } else if (career instanceof Activity) {
+            ((Activity) career).getDetailList().add(detail);
+        } else if (career instanceof EduCareer) {
+            ((EduCareer) career).getDetailList().add(detail);
+        } else if (career instanceof Employment) {
+            ((Employment) career).getDetailList().add(detail);
+        } else if (career instanceof Circle) {
+            ((Circle) career).getDetailList().add(detail);
+        } else if (career instanceof Project) {
+            ((Project) career).getDetailList().add(detail);
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 활동 유형입니다.");
+        }
+    }
 
     private BaseCareer findBaseCareerByType(CareerType careerType, Long careerId) {
         return switch (careerType) {
@@ -124,7 +130,8 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
             default -> throw new IllegalArgumentException("지원하지 않는 활동 유형입니다");
         };
     }
-    private List<CareerDetailTag> returnCareerTagList(List<Long> tagIdList) {
+
+   private List<CareerDetailTag> returnCareerTagList(List<Long> tagIdList) {
         List<Tag> tagList = tagIdList.stream().map(tagId -> {
             return tagRepository.findById(tagId).orElseThrow(() -> new ResourceNotFoundException("Tag", tagId));
         }).collect(Collectors.toList());

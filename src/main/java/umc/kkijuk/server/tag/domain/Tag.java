@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Tag {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="tag_id")
     private Long id;
     @NotNull
     @Column(name="tag_name", length = 30)

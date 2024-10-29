@@ -17,23 +17,23 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 public class EduCareerReqDto {
-    @NotBlank(message = "활동명은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
+    @NotBlank(message = "교육명은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
     @Size(max = 20)
-    @Schema(description = "활동명", example = "IT 서비스 개발 동아리", type="string")
+    @Schema(description = "교육명", example = "스프링부트 입문 강의 수강", type="string")
     private String name;
 
-    @NotBlank(message = "활동 별칭은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
+    @NotBlank(message = "별칭은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
     @Size(max = 20)
-    @Schema(description = "활동 별칭", example = "동아리", type="string")
+    @Schema(description = "별칭", example = "스프링부트 입문 강의", type="string")
     private String alias;
 
     @NotNull(message = "활동 기간을 알고 있는지 여부를 나타냅니다.")
     @Schema(description = "활동 기간 인지 여부", example = "false", type = "boolean")
     private Boolean unknown;
 
-    @Size(max = 200)
-    @Schema(description = "활동 내역", example = "주요 활동 내용을 요약하여 작성해주세요. 최대 200자 까지 입력 가능 선택사항입니다.", type = "string")
-    private String summary;
+//    @Size(max = 200)
+//    @Schema(description = "활동 내역", example = "주요 활동 내용을 요약하여 작성해주세요. 최대 200자 까지 입력 가능 선택사항입니다.", type = "string")
+//    private String summary;
 
     @NotNull(message = "활동 시작 날짜는 필수 입력 항목입니다.")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
@@ -48,10 +48,10 @@ public class EduCareerReqDto {
     //교육 입력 사항들
     @NotBlank(message = "주최는 필수 입력 항목입니다. 최대 15자 까지 입력 가능")
     @Size(max = 15)
-    @Schema(description = "주최", example = "컴공선배", type="string")
+    @Schema(description = "주최", example = "인프런", type="string")
     private String organizer;
 
     @NotNull(message = "교육시간는 필수 입력 항목입니다. 최대 4자리까지 숫자 입력 가능")
-    @Schema(description = "4자리까지 직접 입력 가능", example = "false", type = "int")
+    @Schema(description = "4자리까지 직접 입력 가능", example = "126", type = "int")
     private Integer time;
 }

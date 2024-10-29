@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.controller.response.CareerDetailResponse;
-import umc.kkijuk.server.detail.dto.BaseCareerDetailReqDto;
+import umc.kkijuk.server.detail.dto.CareerDetailReqDto;
+import umc.kkijuk.server.detail.dto.CareerDetailUpdateReqDto;
 import umc.kkijuk.server.detail.service.BaseCareerDetailService;
 import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
@@ -33,7 +34,7 @@ public class BaseCareerDetailController {
     public CareerDetailResponse<BaseCareerDetailResponse> create(
             @Login LoginInfo loginInfo,
             @PathVariable Long careerId,
-            @RequestBody @Valid BaseCareerDetailReqDto request
+            @RequestBody @Valid CareerDetailReqDto request
     ) {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerDetailResponse.success(HttpStatus.CREATED, "활동 기록을 성공적으로 생성했습니다.",
@@ -66,7 +67,7 @@ public class BaseCareerDetailController {
             @Login LoginInfo loginInfo,
             @PathVariable Long careerId,
             @PathVariable Long detailId,
-            @RequestBody @Valid BaseCareerDetailReqDto request
+            @RequestBody @Valid CareerDetailUpdateReqDto request
     ){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerDetailResponse.success(
@@ -76,4 +77,5 @@ public class BaseCareerDetailController {
         );
 
     }
+
 }

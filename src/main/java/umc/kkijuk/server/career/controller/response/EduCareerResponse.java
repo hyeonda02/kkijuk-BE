@@ -1,6 +1,7 @@
 package umc.kkijuk.server.career.controller.response;
 
 import lombok.*;
+import umc.kkijuk.server.career.domain.BaseCareer;
 import umc.kkijuk.server.career.domain.EduCareer;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class EduCareerResponse implements BaseCareerResponse {
+    private Long id;
     private String category;
     private String name;
     private String alias;
@@ -27,11 +29,12 @@ public class EduCareerResponse implements BaseCareerResponse {
     private int time;
     private List<BaseCareerDetailResponse> detailList;
     public EduCareerResponse(EduCareer eduCareer) {
+        this.id = eduCareer.getId();
         this.category = CareerType.EDU.getDescription();
         this.name = eduCareer.getName();
         this.alias = eduCareer.getAlias();
         this.unknown = eduCareer.getUnknown();
-        this.summary = eduCareer.getName();
+        this.summary = eduCareer.getSummary();
         this.startdate = eduCareer.getStartdate();
         this.enddate = eduCareer.getEnddate();
         this.organizer = eduCareer.getOrganizer();
@@ -43,5 +46,10 @@ public class EduCareerResponse implements BaseCareerResponse {
         this.detailList = details.stream()
                 .map(BaseCareerDetailResponse::new)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public LocalDate getEndDate() {
+        return enddate;
     }
 }

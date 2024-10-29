@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class ProjectResponse implements BaseCareerResponse {
+    private Long id;
     private String category;
     private String name;
     private String alias;
@@ -30,11 +31,12 @@ public class ProjectResponse implements BaseCareerResponse {
     private ProjectType location;
     private List<BaseCareerDetailResponse> detailList;
     public ProjectResponse(Project project) {
+        this.id = project.getId();
         this.category = CareerType.PROJECT.getDescription();
         this.name = project.getName();
         this.alias = project.getAlias();
         this.unknown = project.getUnknown();
-        this.summary = project.getName();
+        this.summary = project.getSummary();
         this.startdate = project.getStartdate();
         this.enddate = project.getEnddate();
         this.teamSize = project.getTeamSize();
@@ -43,11 +45,14 @@ public class ProjectResponse implements BaseCareerResponse {
         this.location = project.getLocation();
 
     }
-
     public ProjectResponse(Project project, List<BaseCareerDetail> details) {
         this(project);
         this.detailList = details.stream()
                 .map(BaseCareerDetailResponse::new)
                 .collect(Collectors.toList());
+    }
+    @Override
+    public LocalDate getEndDate() {
+        return enddate;
     }
 }

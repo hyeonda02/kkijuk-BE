@@ -2,7 +2,7 @@ package umc.kkijuk.server.detail.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
-import umc.kkijuk.server.career.domain.BaseCareer;
+import umc.kkijuk.server.career.domain.*;
 import umc.kkijuk.server.common.domian.base.BaseEntity;
 import umc.kkijuk.server.detail.domain.mapping.CareerDetailTag;
 
@@ -37,9 +37,33 @@ public class BaseCareerDetail extends BaseEntity {
     private List<CareerDetailTag> careerTagList = new ArrayList<>();
 
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="base_career_id")
-    private BaseCareer baseCareer;
+    @JoinColumn(name="activity_id")
+    private Activity activity;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="circle_id")
+    private Circle circle;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="competition_id")
+    private Competition competition;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="edu_id")
+    private EduCareer eduCareer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="employment_id")
+    private Employment employment;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="project_id")
+    private Project project;
+
+
+
 
     public void updateBaseCareerDetail(String title, String content,
                                        LocalDate startDate, LocalDate endDate) {

@@ -8,7 +8,6 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import umc.kkijuk.server.detail.domain.CareerType;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,11 +15,7 @@ import java.util.List;
 @Getter
 @Builder
 @AllArgsConstructor
-public class BaseCareerDetailReqDto {
-    @NotNull(message = "활동 유형은 필수 입력 항목입니다.")
-    @Schema(description = "활동 유형", example = "ACTIVITY", type = "string", allowableValues = {"ACTIVITY", "PROJECT", "EDU", "EMP","COM","CIRCLE"})
-    private CareerType careerType;
-
+public class CareerDetailUpdateReqDto {
     @Size(max = 30)
     @NotBlank(message = "활동 기록 제목은 필수 입력 항목입니다. 최대 30자 까지 입력 가능")
     @Schema(description = "활동 기록 제목", example = "아이디어톤", type="string")

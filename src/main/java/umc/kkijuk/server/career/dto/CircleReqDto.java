@@ -23,16 +23,16 @@ public class CircleReqDto {
 
     @NotBlank(message = "활동 별칭은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
     @Size(max = 20)
-    @Schema(description = "활동 별칭", example = "동아리", type="string")
+    @Schema(description = "활동 별칭", example = "UMC", type="string")
     private String alias;
 
     @NotNull(message = "활동 기간을 알고 있는지 여부를 나타냅니다.")
     @Schema(description = "활동 기간 인지 여부", example = "false", type = "boolean")
     private Boolean unknown;
 
-    @Size(max = 200)
-    @Schema(description = "활동 내역", example = "주요 활동 내용을 요약하여 작성해주세요. 최대 200자 까지 입력 가능 선택사항입니다.", type = "string")
-    private String summary;
+//    @Size(max = 200)
+//    @Schema(description = "활동 내역", example = "주요 활동 내용을 요약하여 작성해주세요. 최대 200자 까지 입력 가능 선택사항입니다.", type = "string")
+//    private String summary;
 
     @NotNull(message = "활동 시작 날짜는 필수 입력 항목입니다.")
     @JsonFormat(shape=JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
