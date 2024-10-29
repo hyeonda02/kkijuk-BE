@@ -51,4 +51,9 @@ public interface BaseCareerService {
     BaseCareerResponse findCareer(Member requestMember, Long careerId, String type);
 
     BaseCareerResponse createSummary(Member requestMember, Long careerId, CareerSummaryReqDto request);
+    List<FindDetailResponse> findAllDetail(Member requestMember, String keyword, String sort);
+
+    List<FindTagResponse> findAllTag(Member requestMember, String keyword);
+
+    List<FindDetailResponse> findAllDetailByTag(Member requestMember, Long tagId, String sort);
 }

@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @Builder
 @AllArgsConstructor
 public class BaseCareerDetailResponse {
+    private Long detailId;
     private String title;
     private String content;
     private LocalDate startDate;
@@ -22,6 +23,7 @@ public class BaseCareerDetailResponse {
     private List<TagResponse> detailTag;
 
     public BaseCareerDetailResponse(BaseCareerDetail detail) {
+        this.detailId = detail.getId();
         this.title = detail.getTitle();
         this.content = detail.getContent();
         this.startDate = detail.getStartDate();

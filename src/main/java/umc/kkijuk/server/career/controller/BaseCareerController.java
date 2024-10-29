@@ -15,6 +15,8 @@ import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
 
+import java.util.List;
+
 
 @Tag(name="basecareer",description = "활동 관련 API")
 @RestController
@@ -229,7 +231,7 @@ public class BaseCareerController {
     @GetMapping("/{type}/{careerId}")
     @Operation(summary = "활동 상세", description = "활동 ID에 해당하는 활동의 세부 내용과, 활동 기록을 조회합니다.")
     @Parameter(name = "careerId", description = "활동 Id, path variable 입니다.", example = "1")
-    public CareerResponse<Object> findCareer(
+    public CareerResponse<BaseCareerResponse> findCareer(
             @Login LoginInfo loginInfo,
             @PathVariable String type,
             @PathVariable Long careerId
@@ -243,7 +245,7 @@ public class BaseCareerController {
     @PatchMapping("/{careerId}")
     @Operation(summary = "활동 내역 수정", description = "활동 ID에 해당하는 활동에 활동 내역을 추가합니다.")
     @Parameter(name = "careerId", description = "활동 Id, path variable 입니다.", example = "1")
-    public CareerResponse<Object> createSummary(
+    public CareerResponse<BaseCareerResponse> createSummary(
             @Login LoginInfo loginInfo,
             @PathVariable Long careerId,
             @Valid @RequestBody CareerSummaryReqDto request
@@ -255,7 +257,53 @@ public class BaseCareerController {
         );
     }
 
+    @GetMapping("/find/detail")
+    @Operation(
+            summary = "활동 검색 - 활동 기록",
+            description = "활동기록을 주어진 조건에 맞추어 조회합니다. query 값으로 검색어(keyword)와 정렬 기준(new,old)을 주세요. " )
+    public CareerResponse<List<FindDetailResponse>> findDetail(
+            @Login LoginInfo loginInfo,
+            @RequestParam(name="keyword")String keyword,
+            @RequestParam(name="sort") String sort
+    ) {
+        Member reqeustMember = memberService.getById(loginInfo.getMemberId());
+        return CareerResponse.success(
+                CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                baseCareerService.findAllDetail(reqeustMember,keyword,sort)
+        );
+    }
 
+    @GetMapping("/find/taglist")
+    @Operation(
+            summary = "활동 검색 - 태그 ( 검색 태그 조회 )",
+            description = "검색어를 포함하는 활동 태그들을 가나다 순으로 조회합니다.  " +
+                    "query 값으로 검색어(keyword)를 주세요. " )
+    public CareerResponse<List<FindTagResponse>> findTag(
+            @Login LoginInfo loginInfo,
+            @RequestParam(name="keyword")String keyword
+    ) {
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        return CareerResponse.success(
+                CareerResponseMessage.CAREER_SEARCH_SUCCESS,
+                baseCareerService.findAllTag(requestMember, keyword)
+        );
+    }
 
+    @GetMapping("/find/tag")
+    @Operation(
+            summary = "활동 검색 - 태그 ( 선택한 태그에 대한 활동 기록 조회 )",
+            description = "선택한 태그를 포함하는 활동 기록들을 조회합니다. " +
+                    " query 값으로 태그의 ID 와 정렬 기준(new,old)을 주세요. " )
+    public CareerResponse<List<FindDetailResponse>> findTagAndDetail(
+            @Login LoginInfo loginInfo,
+            @RequestParam(name="tagId") Long tagId,
+            @RequestParam(name="sort") String sort
+    ){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        return CareerResponse.success(
+                CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                baseCareerService.findAllDetailByTag(requestMember, tagId, sort)
+        );
+    }
 
 }

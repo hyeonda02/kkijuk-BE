@@ -10,12 +10,18 @@ import umc.kkijuk.server.career.dto.converter.BaseCareerConverter;
 import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import umc.kkijuk.server.detail.domain.CareerType;
 import umc.kkijuk.server.detail.repository.BaseCareerDetailRepository;
 import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.tag.domain.Tag;
+import umc.kkijuk.server.tag.repository.TagRepository;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -29,6 +35,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
     private final ProjectRepository projectRepository;
     private final EmploymentRepository employmentRepository;
     private final BaseCareerDetailRepository detailRepository;
+    private final TagRepository tagRepository;
 
     @Override
     @Transactional
@@ -374,42 +381,42 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 if(!activity.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
-                return getActivityResponse(activity);
+                return getResponse(activity, ActivityResponse::new);
             }
             case "circle"  -> {
                 Circle circle = circleRepository.findById(careerId).get();
                 if(!circle.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
-                return getCircleResponse(circle);
+                return getResponse(circle, CircleResponse::new);
             }
             case "project"  -> {
                 Project project = projectRepository.findById(careerId).get();
                 if(!project.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
-                return getProjectResponse(project);
+                return getResponse(project, ProjectResponse::new);
             }
             case "edu"  -> {
                 EduCareer eduCareer = eduCareerRepository.findById(careerId).get();
                 if(!eduCareer.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
-                return getEduCareerResponse(eduCareer);
+                return getResponse(eduCareer, EduCareerResponse::new);
             }
             case "competition"  -> {
                 Competition competition = competitionRepository.findById(careerId).get();
                 if(!competition.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
-                return getCompetitionResponse(competition);
+                return getResponse(competition, CompetitionResponse::new);
             }
             case "employment"  -> {
                 Employment employment = employmentRepository.findById(careerId).get();
                 if(!employment.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
-                return getEmploymentResponse(employment);
+                return getResponse(employment, EmploymentResponse::new);
             }
             default -> throw new IllegalArgumentException("지원하지 않는 활동 유형입니다 : " + type);
         }
@@ -417,8 +424,6 @@ public class BaseCareerServiceImpl implements BaseCareerService{
     @Override
     @Transactional
     public BaseCareerResponse createSummary(Member requestMember, Long careerId, CareerSummaryReqDto request) {
-
-
         switch (request.getType()){
             case ACTIVITY -> {
                 Activity activity = activityRepository.findById(careerId)
@@ -427,7 +432,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                     throw new OwnerMismatchException();
                 }
                 activity.setSummary(request.getSummary());
-                return getActivityResponse(activity);
+                return getResponse(activity, ActivityResponse::new);
             }
             case PROJECT -> {
                 Project project = projectRepository.findById(careerId)
@@ -436,7 +441,8 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                     throw new OwnerMismatchException();
                 }
                 project.setSummary(request.getSummary());
-                return getProjectResponse(project);
+                return getResponse(project, ProjectResponse::new);
+
             }
             case CIRCLE -> {
                 Circle circle = circleRepository.findById(careerId)
@@ -445,7 +451,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                     throw new OwnerMismatchException();
                 }
                 circle.setSummary(request.getSummary());
-                return getCircleResponse(circle);
+                return getResponse(circle, CircleResponse::new);
             }
             case COM -> {
                 Competition competition = competitionRepository.findById(careerId)
@@ -454,7 +460,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                     throw new OwnerMismatchException();
                 }
                 competition.setSummary(request.getSummary());
-                return getCompetitionResponse(competition);
+                return getResponse(competition, CompetitionResponse::new);
             }
             case EDU -> {
                 EduCareer eduCareer = eduCareerRepository.findById(careerId)
@@ -463,7 +469,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                     throw new OwnerMismatchException();
                 }
                 eduCareer.setSummary(request.getSummary());
-                return getEduCareerResponse(eduCareer);
+                return getResponse(eduCareer, EduCareerResponse::new);
             }
             case EMP -> {
                 Employment employment = employmentRepository.findById(careerId)
@@ -472,43 +478,160 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                     throw new OwnerMismatchException();
                 }
                 employment.setSummary(request.getSummary());
-                return getEmploymentResponse(employment);
+                return getResponse(employment,EmploymentResponse::new);
             }
             default -> throw new IllegalArgumentException("지원하지 않는 활동 유형입니다 : " + request.getType());
 
         }
     }
-
-
-
-    private BaseCareerResponse getCompetitionResponse(Competition competition) {
-        List<BaseCareerDetail> details = detailRepository.findByCompetition(competition);
-        return new CompetitionResponse(competition, details);
+    @Override
+    public List<FindTagResponse> findAllTag(Member requestMember, String keyword) {
+        List<Tag> tags = tagRepository.findByKeywordAndMemberId(keyword, requestMember.getId());
+        return tags.stream().map(FindTagResponse::new).collect(Collectors.toList());
+    }
+    @Override
+    public List<FindDetailResponse> findAllDetail(Member requestMember, String keyword, String sort) {
+        List<BaseCareerDetail> detailList = detailRepository.findByMemberIdAndKeyword(requestMember.getId(), keyword);
+        return buildDetailResponse(detailList, sort);
     }
 
-    private BaseCareerResponse getEmploymentResponse(Employment emp) {
-        List<BaseCareerDetail> details = detailRepository.findByEmployment(emp);
-        return new EmploymentResponse(emp, details);
+    @Override
+    public List<FindDetailResponse> findAllDetailByTag(Member requestMember, Long tagId, String sort) {
+        Tag tag = tagRepository.findById(tagId).get();
+        if (!tag.getMemberId().equals(requestMember.getId())) {
+            throw new OwnerMismatchException();
+        }
+        List<BaseCareerDetail> detailList = detailRepository.findByTag(tag.getId());
+        return buildDetailResponse(detailList, sort);
     }
 
-    private BaseCareerResponse getEduCareerResponse(EduCareer edu) {
-        List<BaseCareerDetail> details = detailRepository.findByEduCareer(edu);
-        return new EduCareerResponse(edu, details);
+
+
+
+
+
+    private List<FindDetailResponse> buildDetailResponse(List<BaseCareerDetail> detailList, String sort) {
+        Map<String, Map<Long, List<BaseCareerDetail>>> groupedDetails = new HashMap<>();
+        for (BaseCareerDetail detail : detailList) {
+            String careerType = getCareerType(detail);
+            Long careerId = getCareerId(detail);
+            groupedDetails
+                    .computeIfAbsent(careerType, k -> new HashMap<>())
+                    .computeIfAbsent(careerId, k -> new ArrayList<>())
+                    .add(detail);
+        }
+
+        List<FindDetailResponse> result = new ArrayList<>();
+
+        for(Map.Entry<String, Map<Long, List<BaseCareerDetail>>> entry : groupedDetails.entrySet()) {
+            String type = entry.getKey();
+            Map<Long, List<BaseCareerDetail>> careerMap = entry.getValue();
+
+            for(Map.Entry<Long,List<BaseCareerDetail>> careerEntry : careerMap.entrySet()){
+                Long careerId = careerEntry.getKey();
+                List<BaseCareerDetail> details = careerEntry.getValue();
+                List<BaseCareerDetailResponse> detailResponses = new ArrayList<>();
+                FindDetailInfo detailInfo = extractDetailInfo(details);
+
+                for (BaseCareerDetail detail: details) {
+                    detailResponses.add(new BaseCareerDetailResponse(detail));
+                }
+
+                result.add(new FindDetailResponse(careerId,type,detailInfo.title,detailInfo.alias,detailInfo.startDate,detailInfo.endDate,detailResponses));
+            }
+        }
+        if (sort.equals("new")) {
+            result.stream().sorted(Comparator.comparing(FindDetailResponse::getEndDate).reversed());
+        } else {
+            result.stream().sorted(Comparator.comparing(FindDetailResponse::getEndDate).reversed());
+        }
+        return result;
+
+    }
+    private String getCareerType(BaseCareerDetail detail) {
+        switch (detail.getCareerType()) {
+            case ACTIVITY: return CareerType.ACTIVITY.getDescription();
+            case PROJECT: return CareerType.PROJECT.getDescription();
+            case EMP: return CareerType.EMP.getDescription();
+            case EDU: return CareerType.EDU.getDescription();
+            case COM: return CareerType.COM.getDescription();
+            case CIRCLE: return CareerType.CIRCLE.getDescription();
+            default: return null;
+        }
+    }
+    private Long getCareerId(BaseCareerDetail detail) {
+        switch (detail.getCareerType()) {
+            case ACTIVITY: return detail.getActivity().getId();
+            case PROJECT: return detail.getProject().getId();
+            case EMP: return detail.getEmployment().getId();
+            case EDU: return detail.getEduCareer().getId();
+            case COM: return detail.getCompetition().getId();
+            case CIRCLE: return detail.getCircle().getId();
+            default: return null;
+        }
+    }
+    private FindDetailInfo extractDetailInfo(List<BaseCareerDetail> details) {
+        if (details.isEmpty()) {
+            return new FindDetailInfo(null, null, null, null);
+        }
+
+        BaseCareerDetail firstDetail = details.get(0);
+        String title = null;
+        String alias = null;
+        LocalDate startDate = null;
+        LocalDate endDate = null;
+
+        switch (firstDetail.getCareerType()) {
+            case ACTIVITY -> {
+                title = firstDetail.getActivity().getName();
+                alias = firstDetail.getActivity().getAlias();
+            }
+            case PROJECT -> {
+                title = firstDetail.getProject().getName();
+                alias = firstDetail.getProject().getAlias();
+            }
+            case EMP -> {
+                title = firstDetail.getEmployment().getName();
+                alias = firstDetail.getEmployment().getAlias();
+            }
+            case EDU -> {
+                title = firstDetail.getEduCareer().getName();
+                alias = firstDetail.getEduCareer().getAlias();
+            }
+            case COM -> {
+                title = firstDetail.getCompetition().getName();
+                alias = firstDetail.getCompetition().getAlias();
+            }
+            case CIRCLE -> {
+                title = firstDetail.getCircle().getName();
+                alias = firstDetail.getCircle().getAlias();
+            }
+        }
+
+        startDate = firstDetail.getStartDate();
+        endDate = firstDetail.getEndDate();
+
+        return new FindDetailInfo(title, alias, startDate, endDate);
     }
 
-    private BaseCareerResponse getProjectResponse(Project project) {
-        List<BaseCareerDetail> details = detailRepository.findByProject(project);
-        return new ProjectResponse(project, details);
-    }
-
-    private BaseCareerResponse getCircleResponse(Circle circle) {
-        List<BaseCareerDetail> details = detailRepository.findByCircle(circle);
-        return new CircleResponse(circle, details);
-    }
-
-    private BaseCareerResponse getActivityResponse(Activity activity) {
-        List<BaseCareerDetail> details = detailRepository.findByActivity(activity);
-        return new ActivityResponse(activity, details);
+    private <T extends BaseCareer, R extends BaseCareerResponse> R getResponse(T career,  BiFunction<T, List<BaseCareerDetail>, R> responseConstructor) {
+        List<BaseCareerDetail> details;
+        if (career instanceof Activity) {
+            details = detailRepository.findByActivity((Activity) career);
+        } else if (career instanceof Circle) {
+            details = detailRepository.findByCircle((Circle) career);
+        } else if (career instanceof Competition) {
+            details = detailRepository.findByCompetition((Competition) career);
+        } else if (career instanceof EduCareer) {
+            details = detailRepository.findByEduCareer((EduCareer) career);
+        } else if (career instanceof Employment) {
+            details = detailRepository.findByEmployment((Employment) career);
+        } else if (career instanceof Project) {
+            details = detailRepository.findByProject((Project) career);
+        } else {
+            throw new IllegalArgumentException("지원하지 않는 타입입니다.");
+        }
+        return responseConstructor.apply(career,details);
     }
 
     private <T extends BaseCareer> void setCommonFields(T activity) {
@@ -517,6 +640,19 @@ public class BaseCareerServiceImpl implements BaseCareerService{
             activity.setYear(LocalDate.now().getYear());
         } else {
             activity.setYear(activity.getEnddate().getYear());
+        }
+    }
+    private static class FindDetailInfo {
+        String title;
+        String alias;
+        LocalDate startDate;
+        LocalDate endDate;
+
+        FindDetailInfo(String title, String alias, LocalDate startDate, LocalDate endDate) {
+            this.title = title;
+            this.alias = alias;
+            this.startDate = startDate;
+            this.endDate = endDate;
         }
     }
 
