@@ -34,25 +34,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @SqlGroup({
+        @Sql(value = "/sql/createTestData.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(value = "/sql/deleteTestData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 })
-
-
 public class MemberTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @BeforeEach
-    public void setUp() {
-
-        // 필요한 데이터 삽입
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encodedPassword = passwordEncoder.encode("testPassword");
-
-        jdbcTemplate.update("INSERT INTO member (member_id, email, name, phone_number, birth_date, password, marketing_agree, user_state, field, recruit_tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                1L, "test@test.com", "tester", "010-0000-0000", LocalDate.of(2024, 8, 6), encodedPassword, "BOTH", "ACTIVATE", "[\"game\", \"computer\"]", "[]");
-    }
+//    @BeforeEach
+//    public void setUp() {
+//
+//        // 필요한 데이터 삽입
+//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+//        String encodedPassword = passwordEncoder.encode("testPassword");
+//        System.out.println("encodedPassword = " + encodedPassword);
+//        jdbcTemplate.update("INSERT INTO member (member_id, email, name, phone_number, birth_date, password, marketing_agree, user_state, field, recruit_tags) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+//                1L, "test@test.com", "tester", "010-0000-0000", LocalDate.of(2024, 8, 6), encodedPassword, "BOTH", "ACTIVATE", "[\"game\", \"computer\"]", "[]");
+//    }
 
     @Autowired
     private MockMvc mockMvc;

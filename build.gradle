@@ -23,6 +23,10 @@ repositories {
 	mavenCentral()
 }
 
+test {
+	systemProperty 'spring.profiles.active', 'test_local, test'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
     compileOnly 'org.projectlombok:lombok'
