@@ -3,8 +3,8 @@ name: CI/CD FOR DEVELOP
 on:
   push:
     branches:
-    - develop
-    - example
+      - develop
+      - example
 
 env:
   DOCKERHUB_REPOSITORY: umc-develop-server
@@ -25,7 +25,10 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          content: "New Commit[${{ steps.slug.outputs.sha7 }}] detected"
+          content: |
+            New Commit[${{ steps.slug.outputs.sha7 }}] detected on branch ${{ github.ref_name }}
+            Commit Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            GitHub Action Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -54,6 +57,14 @@ jobs:
           echo "spring.datasource.username=${{ secrets.DATASOURCE_DB_USERNAME }}" >> ./src/main/resources/application-prod.properties
           echo "spring.datasource.password=${{ secrets.DATASOURCE_DB_PASSWORD }}" >> ./src/main/resources/application-prod.properties
           echo "spring.mail.password=${{ secrets.MAIL_PASSWORD }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.credentials.accessKey=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.credentials.secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.s3.bucket=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.s3.bucket-path=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/main/resources/application-prod.properties
+          echo "cloud.aws.credentials.accessKey=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.credentials.secretKey=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.s3.bucket=${{ secrets.AWS_BUCKET_NAME }}" >> ./src/test/resources/application.properties
+          echo "cloud.aws.s3.bucket-path=${{ secrets.AWS_BUCKET_PATH }}" >> ./src/test/resources/application.properties
 
       - name: Build with Gradle Wrapper
         run: ./gradlew build
@@ -148,4 +159,8 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          content: "Server updated to Commit[${{ steps.slug.outputs.sha7 }}]"
+          content: |
+            Server successfully updated to Commit[${{ steps.slug.outputs.sha7 }}] on branch ${{ github.ref_name }}
+            Commit message: ${{ github.event.head_commit.message }}
+            Commit Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            GitHub Action Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
