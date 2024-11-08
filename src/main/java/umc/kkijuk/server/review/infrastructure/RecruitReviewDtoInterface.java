@@ -1,4 +1,4 @@
-package umc.kkijuk.server.review.domain;
+package umc.kkijuk.server.review.infrastructure;
 
 import org.springframework.beans.factory.annotation.Value;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;

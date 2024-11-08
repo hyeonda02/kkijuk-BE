@@ -1,6 +1,5 @@
 package umc.kkijuk.server.recruit.controller.port;
 
-import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.domain.*;
 
@@ -9,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecruitService {
-    @Transactional
     Recruit create(Member member, RecruitCreate recruitCreate);
 
     Recruit update(Member member, Long recruitId, RecruitUpdate recruitUpdate);

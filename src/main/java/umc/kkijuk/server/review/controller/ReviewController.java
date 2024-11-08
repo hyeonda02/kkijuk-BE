@@ -29,10 +29,6 @@ public class ReviewController {
     private final RecruitService recruitService;
     private final MemberService memberService;
 
-//    private final Member requestMember = Member.builder()
-//            .id(LoginUser.get().getId())
-//            .build();
-
     @Operation(
             summary = "지원 공고 후기 추가",
             description = "주어진 지원 공고에 후기를 생성합니다")

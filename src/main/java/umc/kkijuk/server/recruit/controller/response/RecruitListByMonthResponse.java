@@ -3,7 +3,6 @@ package umc.kkijuk.server.recruit.controller.response;
 import lombok.Builder;
 import lombok.Getter;
 import umc.kkijuk.server.recruit.domain.RecruitListByMonthDto;
-import umc.kkijuk.server.recruit.domain.RecruitStatus;
 
 import java.util.ArrayList;
 import java.util.Comparator;

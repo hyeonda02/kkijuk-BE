@@ -3,6 +3,7 @@ package umc.kkijuk.server.review.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
+import umc.kkijuk.server.review.infrastructure.RecruitReviewDtoInterface;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
