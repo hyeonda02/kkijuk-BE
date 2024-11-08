@@ -15,9 +15,9 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import umc.kkijuk.server.introduce.controller.response.IntroduceResponse;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.IntroduceReqDto;
-import umc.kkijuk.server.introduce.dto.IntroduceResDto;
 import umc.kkijuk.server.introduce.dto.QuestionDto;
 import umc.kkijuk.server.introduce.service.IntroduceService;
 import umc.kkijuk.server.login.controller.SessionConst;
@@ -166,7 +166,7 @@ class IntroduceControllerTest {
 
         //when
 
-        IntroduceResDto result = introduceService.updateIntro(requestMember, introId, introduceReqDto);
+        IntroduceResponse result = introduceService.updateIntro(requestMember, introId, introduceReqDto);
 
         //then
         assertAll(

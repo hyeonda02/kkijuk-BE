@@ -7,6 +7,8 @@ import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.introduce.controller.response.IntroduceListResponse;
+import umc.kkijuk.server.introduce.controller.response.IntroduceResponse;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.member.domain.Member;
@@ -26,7 +28,7 @@ public class IntroduceService {
     private final QuestionRepository questionRepository;
 
     @Transactional
-    public IntroduceResDto saveIntro(Member requestMember, Long recruitId, IntroduceReqDto introduceReqDto){
+    public IntroduceResponse saveIntro(Member requestMember, Long recruitId, IntroduceReqDto introduceReqDto){
         RecruitEntity recruit=recruitJpaRepository.findById(recruitId)
                 .orElseThrow(()-> new ResourceNotFoundException("recruit ", recruitId));
         if (introduceRepository.findByRecruitId(recruitId).isPresent()) {
@@ -46,11 +48,11 @@ public class IntroduceService {
 
         introduceRepository.save(introduce);
         /*List<String> introduceList=getIntroduceTitles();*/
-        return new IntroduceResDto(introduce, introduceReqDto.getQuestionList()/*,introduceList*/);
+        return new IntroduceResponse(introduce, introduceReqDto.getQuestionList()/*,introduceList*/);
     }
 
     @Transactional
-    public IntroduceResDto getIntro(Member requestMember, Long introId){
+    public IntroduceResponse getIntro(Member requestMember, Long introId){
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
         if (!introduce.getMemberId().equals(requestMember.getId())) {
@@ -64,21 +66,21 @@ public class IntroduceService {
 
         /*List<String> introduceList=getIntroduceTitles();*/
 
-        return new IntroduceResDto(introduce, questionList/*, introduceList*/);
+        return new IntroduceResponse(introduce, questionList/*, introduceList*/);
     }
 
     @Transactional
-    public List<IntroduceListResDto> getIntroList(Member requestMember){
+    public List<IntroduceListResponse> getIntroList(Member requestMember){
         List<Introduce> introduces = introduceRepository.findAllByMemberId(requestMember.getId())
                 .orElseThrow(IntroOwnerMismatchException::new);
 
         return introduces.stream()
-                .map(IntroduceListResDto::new)
+                .map(IntroduceListResponse::new)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public IntroduceResDto updateIntro(Member requestMember, Long introId, IntroduceReqDto introduceReqDto) throws Exception{
+    public IntroduceResponse updateIntro(Member requestMember, Long introId, IntroduceReqDto introduceReqDto) throws Exception{
         Introduce introduce=introduceRepository.findById(introId)
                 .orElseThrow(()-> new ResourceNotFoundException("introduce ", introId));
 
@@ -135,7 +137,7 @@ public class IntroduceService {
                         .build())
                 .collect(Collectors.toList());
 
-        return IntroduceResDto.builder()
+        return IntroduceResponse.builder()
                 .introduce(introduce)
                 .questionList(responseQuestionList)
                 .build();
