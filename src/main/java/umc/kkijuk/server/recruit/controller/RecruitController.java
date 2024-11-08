@@ -35,10 +35,6 @@ public class RecruitController {
     private final ReviewService reviewService;
     private final MemberService memberService;
 
-//    private final Member requestMember = Member.builder()
-//            .id(LoginUser.get().getId())
-//            .build();
-
     @Operation(
             summary = "지원 공고 생성",
             description = "주어진 정보를 바탕으로 지원 공고 데이터를 생성합니다.")

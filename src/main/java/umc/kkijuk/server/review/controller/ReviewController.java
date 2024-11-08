@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.login.argumentresolver.Login;
@@ -28,10 +29,6 @@ public class ReviewController {
     private final RecruitService recruitService;
     private final MemberService memberService;
 
-//    private final Member requestMember = Member.builder()
-//            .id(LoginUser.get().getId())
-//            .build();
-
     @Operation(
             summary = "지원 공고 후기 추가",
             description = "주어진 지원 공고에 후기를 생성합니다")
@@ -47,7 +44,7 @@ public class ReviewController {
         Review review = reviewService.create(requestMember, recruit, reviewCreate);
 
         return ResponseEntity
-                .ok()
+                .status(HttpStatus.CREATED)
                 .body(ReviewIdResponse.from(review));
     }
 

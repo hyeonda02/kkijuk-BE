@@ -6,10 +6,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.AttributeConverter;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.util.List;
 
+@Component
 public class StringListToStringConverter implements AttributeConverter<List<String>, String> {
     private static final ObjectMapper mapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

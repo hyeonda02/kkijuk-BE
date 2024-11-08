@@ -23,4 +23,9 @@ public interface RecruitJpaRepository extends JpaRepository<RecruitEntity, Long>
     List<RecruitEntity> findAllByMemberIdAndActive(Long memberId, boolean active);
     @Query(value = "SELECT * FROM recruit as e WHERE e.member_id = :memberId AND e.active = true AND YEAR(e.end_time) = :year AND MONTH(e.end_time) = :month", nativeQuery = true)
     List<RecruitEntity> findAllByMemberIdAndMonth(@Param("memberId") Long memberId, @Param("year") Integer year, @Param("month") Integer month);
+
+    @Query(value = "SELECT * FROM recruit as r WHERE r.member_id = :memberId AND r.active = true AND" +
+            "(r.title LIKE %:keyword% OR r.tags LIKE %:keyword%) ORDER BY r.end_time DESC ", nativeQuery = true)
+    List<RecruitEntity> findRecruitByMemberIdAndTitleOrTagsContaining(@Param("memberId") Long memberId,
+                                                                      @Param("keyword") String keyword);
 }

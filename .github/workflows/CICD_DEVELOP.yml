@@ -156,7 +156,26 @@ jobs:
         with:
           webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
           content: |
-            Server successfully updated to Commit[${{ steps.slug.outputs.sha7 }}] on branch ${{ github.ref_name }}
-            Commit message: ${{ github.event.head_commit.message }}
+            :o: Server successfully updated!
+            Commit: [${{ github.sha }}]
+            Branch: ${{ github.ref_name }}
             Commit Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
             GitHub Action Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+  failure_notification:
+    name: Failure Notification
+    runs-on: ubuntu-latest
+    if: failure()
+
+    steps:
+      - name: Discord Webhook Action on Failure
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          content: |
+            :x: A job failed in the CI/CD pipeline!
+            Commit: [${{ github.sha }}]
+            Branch: ${{ github.ref_name }}
+            Commit Link: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            GitHub Action Link: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Please check the logs for more details.

@@ -14,10 +14,16 @@ public class ReviewEntity {
     private Long id;
 
     @Column(nullable = false)
+    private Long memberId;
+
+    @Column(nullable = false)
     private Long recruitId;
+
     @Column(nullable = false)
     private String title;
+
     private String content;
+
     @Column(nullable = false)
     private LocalDate date;
 
@@ -25,6 +31,7 @@ public class ReviewEntity {
     public static ReviewEntity from(Review review) {
         ReviewEntity reviewEntity = new ReviewEntity();
         reviewEntity.id = review.getId();
+        reviewEntity.memberId = review.getMemberId();
         reviewEntity.recruitId = review.getRecruitId();
         reviewEntity.title = review.getTitle();
         reviewEntity.content = review.getContent();
@@ -35,6 +42,7 @@ public class ReviewEntity {
     public Review toModel() {
         return Review.builder()
                 .id(id)
+                .memberId(memberId)
                 .recruitId(recruitId)
                 .title(title)
                 .content(content)

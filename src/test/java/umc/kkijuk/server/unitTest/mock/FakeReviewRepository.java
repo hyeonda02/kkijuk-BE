@@ -1,6 +1,7 @@
 package umc.kkijuk.server.unitTest.mock;
 
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.review.domain.RecruitReviewDto;
 import umc.kkijuk.server.review.domain.Review;
 import umc.kkijuk.server.review.service.port.ReviewRepository;
 
@@ -19,6 +20,7 @@ public class FakeReviewRepository implements ReviewRepository {
         if (review.getId() == null || review.getId() == 0) {
             Review newReview = Review.builder()
                     .id(authGeneratedId.incrementAndGet())
+                    .memberId(review.getMemberId())
                     .recruitId(review.getRecruitId())
                     .title(review.getTitle())
                     .content(review.getContent())
@@ -56,5 +58,10 @@ public class FakeReviewRepository implements ReviewRepository {
         return data.stream()
                 .filter(review -> review.getRecruitId().equals(id))
                 .toList();
+    }
+
+    @Override
+    public List<RecruitReviewDto> findReviewByKeyword(Long memberId, String keyword) {
+        return List.of();
     }
 }
