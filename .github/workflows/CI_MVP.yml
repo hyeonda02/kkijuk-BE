@@ -19,6 +19,7 @@ on:
       - fix/credential
       - feature/dashboard
       - feature/career-refactor
+      - feature/introduce
 
 jobs:
   CI:

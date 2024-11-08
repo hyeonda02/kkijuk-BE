@@ -1,11 +1,16 @@
 package umc.kkijuk.server.introduce.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import umc.kkijuk.server.common.domian.base.BaseEntity;
+import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "master_introduce")
@@ -17,52 +22,34 @@ public class MasterIntroduce extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    /*@OneToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    @NotNull
-    private Member member;*/
-
     @Column(nullable = false)
     private Long memberId;
 
-    @Size(max = 24)
-    private String oneLiner;
-    private String motiveTitle;
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String motive;
-    private String prosAndConsTitle;
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String prosAndCons;
-    private String jobSuitabilityTitle;
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String jobSuitability;
+    @NotNull
+    @OneToMany(mappedBy = "masterIntroduce", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MasterQuestion> masterQuestion;
 
+    @NotNull
+    private int state;
 
     @Builder
-    public MasterIntroduce(Long memberId, String oneLiner, String motiveTitle, String motive, String prosAndConsTitle, String prosAndCons
-    , String jobSuitabilityTitle, String jobSuitability) {
+    public MasterIntroduce(Long memberId, List<MasterQuestion> masterQuestion, int state) {
         this.memberId = memberId;
-        this.oneLiner = oneLiner;
-        this.motiveTitle = motiveTitle;
-        this.motive = motive;
-        this.prosAndConsTitle=prosAndConsTitle;
-        this.prosAndCons = prosAndCons;
-        this.jobSuitabilityTitle = jobSuitabilityTitle;
-        this.jobSuitability = jobSuitability;
+        this.masterQuestion = masterQuestion;
+        this.state = state;
+        setMasterQuestions(masterQuestion);
     }
 
-    public void update( String oneLiner, String motiveTitle, String motive, String prosAndConsTitle, String prosAndCons
-            , String jobSuitabilityTitle, String jobSuitability) {
-        this.oneLiner = oneLiner;
-        this.motiveTitle = motiveTitle;
-        this.motive = motive;
-        this.prosAndConsTitle=prosAndConsTitle;
-        this.prosAndCons = prosAndCons;
-        this.jobSuitabilityTitle = jobSuitabilityTitle;
-        this.jobSuitability = jobSuitability;
+    public void setMasterQuestions(List<MasterQuestion> masterQuestions) {
+        this.masterQuestion = masterQuestions;
+        for (MasterQuestion masterQuestion : masterQuestions) {
+            masterQuestion.setMasterIntroduce(this);
+        }
     }
+
+    public void update(int state) {
+        this.state=state;
+    }
+
 
 }
