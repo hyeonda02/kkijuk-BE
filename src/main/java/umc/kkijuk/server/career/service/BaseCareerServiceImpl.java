@@ -21,7 +21,6 @@ import umc.kkijuk.server.tag.repository.TagRepository;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -505,9 +504,27 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         return buildDetailResponse(detailList, sort);
     }
 
+    @Override
+    public List<FindCareerResponse> findCareerWithKeyword(Member requestMember, String keyword, String sort) {
+        List<BaseCareer> careers = new ArrayList<>();
+        careers.addAll(activityRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(eduCareerRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(employmentRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(circleRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(projectRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(competitionRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
 
+        if ("new".equalsIgnoreCase(sort)) {
+            careers.sort(Comparator.comparing(BaseCareer::getEnddate).reversed());
+        } else {
+            careers.sort(Comparator.comparing(BaseCareer::getEnddate));
+        }
 
+        return careers.stream().limit(2)
+                .map(career -> new FindCareerResponse(career, career.getClass().getSimpleName()))
+                .collect(Collectors.toList());
 
+    }
 
 
     private List<FindDetailResponse> buildDetailResponse(List<BaseCareerDetail> detailList, String sort) {

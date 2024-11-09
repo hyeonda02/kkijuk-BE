@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface EduCareerRepository extends JpaRepository<EduCareer,Long> {
     List<EduCareer> findByMemberId(Long memberId);
+    List<EduCareer> findByMemberIdAndNameContaining(Long memberId, String keyword);
 }

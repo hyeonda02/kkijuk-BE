@@ -305,5 +305,21 @@ public class BaseCareerController {
                 baseCareerService.findAllDetailByTag(requestMember, tagId, sort)
         );
     }
+    @GetMapping("/find")
+    @Operation(
+            summary = "활동 검색 - 활동",
+            description =  "활동을 주어진 조건에 맞추어 조회합니다. query 값으로 검색어(keyword)와 정렬 기준(new,old)을 주세요. " )
+    public CareerResponse<List<FindCareerResponse>> findCareerWithKeyword(
+            @Login LoginInfo loginInfo,
+            @RequestParam(name = "keyword") String keyword,
+            @RequestParam(name = "sort") String sort
+    ){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        return CareerResponse.success(
+                CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                baseCareerService.findCareerWithKeyword(requestMember, keyword, sort)
+        );
+
+    }
 
 }

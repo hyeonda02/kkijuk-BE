@@ -56,4 +56,6 @@ public interface BaseCareerService {
     List<FindTagResponse> findAllTag(Member requestMember, String keyword);
 
     List<FindDetailResponse> findAllDetailByTag(Member requestMember, Long tagId, String sort);
+
+    List<FindCareerResponse> findCareerWithKeyword(Member requestMember, String keyword, String sort);
 }
