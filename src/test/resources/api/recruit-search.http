@@ -1,0 +1,205 @@
+# @name 회원가입
+POST {{base_url}}/member
+Content-Type: application/json
+
+{
+"email": "test@gmail.com",
+"name": "string",
+"phoneNumber": "string",
+"birthDate": "2024-11-04",
+"password": "string",
+"passwordConfirm": "string",
+"marketingAgree": "BOTH",
+"userState": "ACTIVATE"
+}
+
+###
+# @name 로그인
+POST {{base_url}}/login
+Content-Type: application/json
+
+{
+  "email": "test@gmail.com",
+  "password": "string"
+}
+
+> {%
+    client.assert(response.status === 200, "Response status mismatch");
+%}
+
+###
+# @name 공고 생성_1
+POST {{base_url}}/recruit
+Content-Type: application/json
+
+{
+  "title": "recruit_1_title",
+  "startTime": "2022-09-18 10:11",
+  "endTime": "2022-09-18 10:11",
+  "status": "PLANNED",
+  "applyDate": "2024-11-04",
+  "tags": [
+    "recruit_1", "for_tag", "search_me"
+  ],
+  "link": "https://www.naver.com"
+}
+
+> {%
+    client.assert(response.status === 201, "Response status mismatch");
+%}
+
+###
+# @name 공고 생성_2
+POST {{base_url}}/recruit
+Content-Type: application/json
+
+{
+  "title": "recruit_2_title",
+  "startTime": "2022-09-18 10:11",
+  "endTime": "2022-09-18 10:12",
+  "status": "PLANNED",
+  "applyDate": "2024-11-04",
+  "tags": [
+    "recruit_2", "tag_2"
+  ],
+  "link": "https://www.naver.com"
+}
+
+> {%
+    client.assert(response.status === 201, "Response status mismatch");
+    client.global.set("recruit_2_id", response.body.id);
+%}
+
+###
+# @name 공고 생성_3
+POST {{base_url}}/recruit
+Content-Type: application/json
+
+{
+  "title": "recruit_3_title",
+  "startTime": "2022-09-18 10:11",
+  "endTime": "2022-09-18 10:13",
+  "status": "PLANNED",
+  "applyDate": "2024-11-04",
+  "tags": [
+    "recruit_3"
+  ],
+  "link": "https://www.naver.com"
+}
+
+> {%
+    client.assert(response.status === 201, "Response status mismatch");
+%}
+
+###
+# @name 공고 검색 keyword=1
+GET {{base_url}}/recruit?keyword=1
+
+> {%
+    client.assert(response.status === 200, "Response status mismatch");
+%}
+
+###
+# @name 공고 검색 keyword=recruit
+GET {{base_url}}/recruit?keyword=recruit
+
+> {%
+    client.assert(response.status === 200, "Response status mismatch");
+%}
+
+###
+# @name 공고 검색 keyword=title
+GET {{base_url}}/recruit?keyword=title
+
+> {%
+    client.assert(response.status === 200, "Response status mismatch");
+%}
+
+
+###
+# @name 공고 후기 작성 1
+POST {{base_url}}/recruit/{{recruit_2_id}}/review
+Content-Type: application/json
+
+{
+  "title": "공고 2 후기 1 제목",
+  "content": "공고 2 후기 1 내용",
+  "date": "2024-07-21"
+}
+
+> {%
+    client.assert(response.status === 201, "Response status mismatch");
+%}
+
+###
+# @name 공고 후기 작성 2
+POST {{base_url}}/recruit/{{recruit_2_id}}/review
+Content-Type: application/json
+
+{
+  "title": "공고 2 후기 2 제목",
+  "content": "공고 2 후기 2 내용",
+  "date": "2024-07-21"
+}
+
+> {%
+    client.assert(response.status === 201, "Response status mismatch");
+%}
+
+###
+# @name 공고 후기 작성 3
+POST {{base_url}}/recruit/{{recruit_2_id}}/review
+Content-Type: application/json
+
+{
+  "title": "공고 2 후기 3 제목",
+  "content": "공고 2 후기 3 내용",
+  "date": "2024-07-21"
+}
+
+> {%
+    client.assert(response.status === 201, "Response status mismatch");
+%}
+
+###
+# @name 공고 후기 작성 4
+POST {{base_url}}/recruit/{{recruit_2_id}}/review
+Content-Type: application/json
+
+{
+  "title": "공고 2 후기 4 제목",
+  "content": "공고 2 후기 4 내용 recruit",
+  "date": "2024-07-21"
+}
+
+###
+# @name 공고 후기 작성 5
+POST {{base_url}}/recruit/{{recruit_2_id}}/review
+Content-Type: application/json
+
+{
+  "title": "공고 2 후기 5 제목",
+  "content": "공고 2 후기 5 내용 recruit recruit",
+  "date": "2024-07-25"
+}
+
+> {%
+    client.assert(response.status === 201, "Response status mismatch");
+%}
+
+###
+# @name 공고 검색 keyword=후기
+GET {{base_url}}/recruit?keyword=후기
+
+> {%
+    client.assert(response.status === 200, "Response status mismatch");
+%}
+
+###
+# @name 공고 검색 keyword=recruit
+GET {{base_url}}/recruit?keyword=recruit
+
+> {%
+    client.assert(response.status === 200, "Response status mismatch");
+%}
+

@@ -2,24 +2,9 @@ name: CI FOR MVP
 
 on:
   push:
-    branches:
-      - mvp/apply
-      - mvp/member
-      - mvp/career
-      - mvp/portfolio
-      - feature/record
-      - feature/home
-      - feature/recruit-tag
-      - feature/login
-      - feature/login-memberTest
-      - refactor/career
-      - feature/login-recruit
-      - fix/record
-      - feature/errorFix
-      - fix/credential
-      - feature/dashboard
-      - feature/career-refactor
-      - feature/introduce
+    branches-ignore:
+      - main
+      - develop
 
 jobs:
   CI:

@@ -18,4 +18,5 @@ public interface RecruitRepository {
     List<Recruit> findAllActiveRecruitByMemberIdAndEndTimeAfter(Long memberId, LocalDateTime endTime);
     List<Recruit> findAllActiveRecruitByMemberId(Long memberId);
     List<Recruit> findAllActiveRecruitByMemberIdAndMonth(Long memberId, Integer year, Integer month);
+    List<Recruit> searchRecruitByKeyword(Long memberId, String searchQuery);
 }

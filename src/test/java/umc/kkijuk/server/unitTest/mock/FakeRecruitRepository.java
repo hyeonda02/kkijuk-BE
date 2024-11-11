@@ -110,4 +110,9 @@ public class FakeRecruitRepository implements RecruitRepository {
                         item.getEndTime().getYear() == year)
                 .toList();
     }
+
+    @Override
+    public List<Recruit> searchRecruitByKeyword(Long memberId, String searchQuery) {
+        return List.of();
+    }
 }

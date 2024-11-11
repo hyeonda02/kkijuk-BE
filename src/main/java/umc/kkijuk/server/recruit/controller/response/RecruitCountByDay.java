@@ -1,10 +1,8 @@
 package umc.kkijuk.server.recruit.controller.response;
 
-import lombok.Builder;
 import lombok.Getter;
 import umc.kkijuk.server.recruit.domain.RecruitListByMonthDto;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
-import umc.kkijuk.server.recruit.domain.ValidRecruitDto;
 
 import java.util.Map;
 import java.util.function.Consumer;

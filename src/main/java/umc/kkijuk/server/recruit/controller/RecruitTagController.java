@@ -5,14 +5,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
 import umc.kkijuk.server.recruit.controller.response.RecruitTagResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "recruitTag", description = "모집 공고 태그 API")
@@ -21,11 +19,6 @@ import java.util.List;
 @RequestMapping("/recruit/tag")
 public class RecruitTagController {
     private final MemberService memberService;
-
-//    private final Member requestMember = Member.builder()
-//            .id(LoginUser.get().getId())
-//            .recruitTags(new ArrayList<>(List.of("인턴", "정규직", "대외활동", "동아리")))
-//            .build();
 
     @Operation(
             summary = "지원 공고 태그",
