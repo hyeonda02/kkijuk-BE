@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CompetitionRepository extends JpaRepository<Competition, Long> {
     List<Competition> findByMemberId(Long memberId);
+    List<Competition> findByMemberIdAndNameContaining(Long memberId, String keyword);
 }
