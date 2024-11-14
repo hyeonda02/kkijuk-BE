@@ -526,6 +526,27 @@ public class BaseCareerServiceImpl implements BaseCareerService{
 
     }
 
+    @Override
+    public List<TimelineResponse> findCareerForTimeline(Member requestMember) {
+        Long memberId = requestMember.getId();
+        List<BaseCareer> careers = new ArrayList<>();
+
+
+        careers.addAll(activityRepository.findByMemberId(memberId));
+        careers.addAll(eduCareerRepository.findByMemberId(memberId));
+        careers.addAll(employmentRepository.findByMemberId(memberId));
+        careers.addAll(circleRepository.findByMemberId(memberId));
+        careers.addAll(projectRepository.findByMemberId(memberId));
+        careers.addAll(competitionRepository.findByMemberId(memberId));
+
+
+        careers.sort(Comparator.comparing(BaseCareer::getEnddate).reversed());
+
+        return careers.stream()
+                .map(career -> new TimelineResponse(career, career.getClass().getSimpleName()))
+                .collect(Collectors.toList());
+    }
+
 
     private List<FindDetailResponse> buildDetailResponse(List<BaseCareerDetail> detailList, String sort) {
         Map<String, Map<Long, List<BaseCareerDetail>>> groupedDetails = new HashMap<>();

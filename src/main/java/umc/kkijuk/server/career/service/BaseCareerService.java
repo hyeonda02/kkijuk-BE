@@ -58,4 +58,6 @@ public interface BaseCareerService {
     List<FindDetailResponse> findAllDetailByTag(Member requestMember, Long tagId, String sort);
 
     List<FindCareerResponse> findCareerWithKeyword(Member requestMember, String keyword, String sort);
+
+    List<TimelineResponse> findCareerForTimeline(Member requestMember);
 }
