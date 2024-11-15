@@ -321,5 +321,19 @@ public class BaseCareerController {
         );
 
     }
+    @GetMapping("/timeline")
+    @Operation(
+            summary = "활동 타임라인",
+            description = "타임라인에 필요한 활동 정보들을 조회합니다.")
+    public CareerResponse<List<TimelineResponse>> findCareerForTimeline(
+          @Login LoginInfo loginInfo
+    ){
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        return CareerResponse.success(
+                CareerResponseMessage.CAREER_FINDALL_SUCCESS,
+                baseCareerService.findCareerForTimeline(requestMember)
+        );
+
+    }
 
 }
