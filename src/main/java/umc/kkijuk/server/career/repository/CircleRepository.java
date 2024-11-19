@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface CircleRepository extends JpaRepository<Circle, Long> {
     List<Circle> findByMemberId(Long memberId);
+    List<Circle> findByMemberIdAndNameContaining(Long memberId, String keyword);
 }
