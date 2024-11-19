@@ -27,6 +27,10 @@ public class RecordResponse {
     private List<EmploymentResponse> employments;
     private List<BaseCareerResponse> projects;
     private List<EduCareerResponse> eduCareers;
+    private List<AwardResponse> awards;
+    private List<LicenseResponse> licenses;
+    private List<SkillResponse> skills;
+    private List<FileResponse> files;
     private String name;
     private LocalDate birthday;
     private String phone;
@@ -67,7 +71,9 @@ public class RecordResponse {
     @Builder
     public RecordResponse(Record record, Member member, List<EducationResponse> educationList,
                           List<EmploymentResponse> employments, List<BaseCareerResponse> activitiesAndExperiences,
-                          List<BaseCareerResponse> projects, List<EduCareerResponse> eduCareers) {
+                          List<BaseCareerResponse> projects, List<EduCareerResponse> eduCareers,
+                          List<AwardResponse> awards, List<LicenseResponse> licenses,
+                          List<SkillResponse> skills, List<FileResponse> files) {
         this.record_id=record.getId();
         this.address = record.getAddress();
         this.profileImageUrl=record.getProfileImageUrl();
@@ -76,6 +82,10 @@ public class RecordResponse {
         this.activitiesAndExperiences = activitiesAndExperiences;
         this.projects = projects;
         this.eduCareers = eduCareers;
+        this.awards = awards;
+        this.licenses = licenses;
+        this.skills = skills;
+        this.files = files;
         this.name = member.getName();
         this.birthday=member.getBirthDate();
         this.phone=member.getPhoneNumber();

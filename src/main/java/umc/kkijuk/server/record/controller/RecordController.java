@@ -43,8 +43,7 @@ public class RecordController {
     @GetMapping
     @Operation(summary = "이력서 전체 조회")
     public ResponseEntity<Object> get(@Login LoginInfo loginInfo){
-        Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResponse recordResponse = recordService.getRecord(requestMember);
+        RecordResponse recordResponse = recordService.getRecord(loginInfo.getMemberId());
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 전체 조회 완료", recordResponse));
@@ -54,9 +53,9 @@ public class RecordController {
     @Operation(summary = "이력서 정보 수정")
     public ResponseEntity<Object> update(
             @Login LoginInfo loginInfo,
-            Long recordId, @RequestBody RecordReqDto recordReqDto){
-        Member requestMember = memberService.getById(loginInfo.getMemberId());
-        RecordResponse recordResponse = recordService.updateRecord(requestMember, recordId, recordReqDto);
+             @RequestBody RecordReqDto recordReqDto){
+        RecordResponse recordResponse = recordService.updateRecord(loginInfo.getMemberId(),
+                recordService.findByMemberId(loginInfo.getMemberId()).getId(), recordReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 수정 완료", recordResponse));
@@ -66,9 +65,10 @@ public class RecordController {
     @Operation(summary = "학력 생성")
     public ResponseEntity<Object> saveEducation(
             @Login LoginInfo loginInfo,
-            Long recordId, @RequestBody EducationReqDto educationReqDto){
+             @RequestBody EducationReqDto educationReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        EducationResponse educationResponse = recordService.saveEducation(requestMember, recordId, educationReqDto);
+        EducationResponse educationResponse = recordService.saveEducation(requestMember,
+                recordService.findByMemberId(loginInfo.getMemberId()).getId(), educationReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "학력 생성 완료", educationResponse));
@@ -101,9 +101,10 @@ public class RecordController {
     @Operation(summary = "자격증 생성")
     public ResponseEntity<Object> saveLicense(
             @Login LoginInfo loginInfo,
-            Long recordId, @RequestBody LicenseReqDto licenseReqDto){
+            @RequestBody LicenseReqDto licenseReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        LicenseResponse licenseResponse = recordService.saveLicense(requestMember, recordId, licenseReqDto);
+        LicenseResponse licenseResponse = recordService.saveLicense(requestMember,
+                recordService.findByMemberId(loginInfo.getMemberId()).getId(), licenseReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "자격증 생성 완료", licenseResponse));
@@ -135,9 +136,10 @@ public class RecordController {
     @Operation(summary = "수상 생성")
     public ResponseEntity<Object> saveAward(
             @Login LoginInfo loginInfo,
-            Long recordId, @RequestBody AwardReqDto awardReqDto){
+            @RequestBody AwardReqDto awardReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        AwardResponse awardResponse = recordService.saveAward(requestMember, recordId, awardReqDto);
+        AwardResponse awardResponse = recordService.saveAward(requestMember,
+                recordService.findByMemberId(loginInfo.getMemberId()).getId(), awardReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "수상 생성 완료", awardResponse));
@@ -169,9 +171,10 @@ public class RecordController {
     @Operation(summary = "스킬 생성")
     public ResponseEntity<Object> saveSkill(
             @Login LoginInfo loginInfo,
-            Long recordId, @RequestBody SkillReqDto skillReqDto){
+            @RequestBody SkillReqDto skillReqDto){
         Member requestMember = memberService.getById(loginInfo.getMemberId());
-        SkillResponse skillResponse = recordService.saveSkill(requestMember, recordId, skillReqDto);
+        SkillResponse skillResponse = recordService.saveSkill(requestMember,
+                recordService.findByMemberId(loginInfo.getMemberId()).getId(), skillReqDto);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "스킬 생성 완료", skillResponse));

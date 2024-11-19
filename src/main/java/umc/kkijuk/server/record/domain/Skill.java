@@ -37,4 +37,8 @@ public class Skill extends BaseEntity {
         this.skillName = skillName;
         this.workmanship = workmanship;
     }
+
+    public Long getMemberId() {
+        return this.record.getMemberId();
+    }
 }
