@@ -3,15 +3,19 @@ package umc.kkijuk.server.record.service;
 import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.record.controller.response.*;
+import umc.kkijuk.server.record.domain.Record;
 import umc.kkijuk.server.record.dto.*;
 
+import java.util.Optional;
+
 public interface RecordService {
+    Record findByMemberId(Long memberId);
     RecordResponse saveRecord(Member requestMember, RecordReqDto recordReqDto);
     EducationResponse saveEducation(Member requestMember, Long recordId, EducationReqDto educationReqDto);
     Long deleteEducation(Member requestMember, Long educationId);
     EducationResponse updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto);
-    RecordResponse getRecord(Member requestMember);
-    RecordResponse updateRecord(Member requestMember, Long recordId, RecordReqDto recordReqDto);
+    RecordResponse getRecord(Long memberId);
+    RecordResponse updateRecord(Long memberId, Long recordId, RecordReqDto recordReqDto);
     LicenseResponse saveLicense(Member requestMember, Long recordId, LicenseReqDto licenseReqDto);
     LicenseResponse updateLicense(Member requestMember, Long licenseId, LicenseReqDto licenseReqDto);
     Long deleteLicense(Member requestMember, Long licenseId);

@@ -51,4 +51,8 @@ public class License extends BaseEntity {
         this.acquireDate = acquireDate;
     }
 
+    public Long getMemberId() {
+        return this.record.getMemberId();
+    }
+
 }

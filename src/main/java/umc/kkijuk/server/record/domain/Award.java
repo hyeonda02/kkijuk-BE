@@ -39,4 +39,8 @@ public class Award extends BaseEntity {
         this.awardName = awardName;
         this.acquireDate = acquireDate;
     }
+
+    public Long getMemberId() {
+        return this.record.getMemberId();
+    }
 }

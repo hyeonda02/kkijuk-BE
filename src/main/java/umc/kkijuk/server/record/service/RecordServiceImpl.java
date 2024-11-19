@@ -39,8 +39,15 @@ public class RecordServiceImpl implements RecordService {
     private final EduCareerRepository eduCareerRepository;
     private final EmploymentRepository employmentRepository;
     private final ProjectRepository projectRepository;
+    private final FileRepository fileRepository;
 
-
+    @Override
+    public Record findByMemberId(Long memberId) {
+        if (!recordRepository.existsByMemberId(memberId)) {
+            throw new ResourceNotFoundException("Record", memberId);
+        }
+        return recordRepository.findByMemberId(memberId);
+    }
     @Override
     @Transactional
     public RecordResponse saveRecord(Member requestMember, RecordReqDto recordReqDto) {
@@ -56,45 +63,67 @@ public class RecordServiceImpl implements RecordService {
 
         recordRepository.save(record);
 
-        return new RecordResponse(record, requestMember, null, null, null,null,null);
+        return new RecordResponse(record, requestMember, null, null, null,null,null, null, null, null, null);
     }
 
     @Override
     @Transactional
-    public RecordResponse getRecord(Member requestMember) {
-        Member member = memberRepository.findById(requestMember.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
+    public RecordResponse getRecord(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("member ", memberId));
 
-        Record record = recordRepository.findByMemberId(requestMember.getId());
+        Record record = recordRepository.findByMemberId(memberId);
 
 
         //경력
-        List<EmploymentResponse> employments = employmentRepository.findByMemberId(requestMember.getId()).stream()
+        List<EmploymentResponse> employments = employmentRepository.findByMemberId(memberId).stream()
                 .map(EmploymentResponse::new)
                 .sorted(Comparator.comparing(EmploymentResponse::getEndDate).reversed())
                 .toList();
 
         //활동 및 경험 ( 동아리, 대외활동)
-        List<BaseCareerResponse> activitiesAndExperiences = activityRepository.findByMemberId(requestMember.getId()).stream()
+        List<BaseCareerResponse> activitiesAndExperiences = activityRepository.findByMemberId(memberId).stream()
                 .map(ActivityResponse::new)
                 .collect(Collectors.toList());
-        activitiesAndExperiences.addAll(circleRepository.findByMemberId(requestMember.getId()).stream()
+        activitiesAndExperiences.addAll(circleRepository.findByMemberId(memberId).stream()
                 .map(CircleResponse::new).collect(Collectors.toList()));
         activitiesAndExperiences.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
         //프로젝트 ( 프로젝트, 공모전/대회)
-        List<BaseCareerResponse> projectsAndComp = projectRepository.findByMemberId(requestMember.getId()).stream()
+        List<BaseCareerResponse> projectsAndComp = projectRepository.findByMemberId(memberId).stream()
                 .map(ProjectResponse::new)
                 .collect(Collectors.toList());
-        projectsAndComp.addAll(competitionRepository.findByMemberId(requestMember.getId()).stream()
+        projectsAndComp.addAll(competitionRepository.findByMemberId(memberId).stream()
                 .map(CompetitionResponse::new).collect(Collectors.toList()));
         projectsAndComp.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
         //교육 ( 교육)
-        List<EduCareerResponse> eduCareers = eduCareerRepository.findByMemberId(requestMember.getId()).stream()
+        List<EduCareerResponse> eduCareers = eduCareerRepository.findByMemberId(memberId).stream()
                 .map(EduCareerResponse::new)
                 .sorted(Comparator.comparing(EduCareerResponse::getEndDate).reversed())
                 .toList();
+
+        // 수상
+        List<AwardResponse> awards = awardRepository.findByRecordId(record.getId()).stream()
+                .map(AwardResponse::new)
+                .sorted(Comparator.comparing(AwardResponse::getAcquireDate).reversed())
+                .toList();
+
+        // 자격증
+        List<LicenseResponse> licenses = licenseRepository.findByRecordId(record.getId()).stream()
+                .map(LicenseResponse::new)
+                .sorted(Comparator.comparing(LicenseResponse::getAcquireDate).reversed())
+                .toList();
+
+        // 스킬
+        List<SkillResponse> skills = skillRepository.findByRecordId(record.getId()).stream()
+                .map(SkillResponse::new)
+                .collect(Collectors.toList());
+
+        // 파일
+        List<FileResponse> files = fileRepository.findByRecordId(record.getId()).stream()
+                .map(FileResponse::new)
+                .collect(Collectors.toList());
 
         if (record != null) {
             // 학력
@@ -103,50 +132,73 @@ public class RecordServiceImpl implements RecordService {
                     .map(EducationResponse::new)
                     .collect(Collectors.toList());
 
-            return new RecordResponse(record, member, educationList, employments,activitiesAndExperiences, projectsAndComp,eduCareers);
+            return new RecordResponse(record, member, educationList, employments,
+                    activitiesAndExperiences, projectsAndComp,eduCareers, awards, licenses, skills, files);
         }
         return new RecordResponse(member, employments,activitiesAndExperiences, projectsAndComp,eduCareers);
     }
 
     @Override
     @Transactional
-    public RecordResponse updateRecord(Member requestMember, Long recordId, RecordReqDto recordReqDto) {
+    public RecordResponse updateRecord(Long memberId, Long recordId, RecordReqDto recordReqDto) {
         Record record = recordRepository.findById(recordId)
                 .orElseThrow(() -> new ResourceNotFoundException("record ", recordId));
-        if (!record.getMemberId().equals(requestMember.getId())) {
+        if (!record.getMemberId().equals(memberId)) {
             throw new IntroOwnerMismatchException();
         }
 
-        Member member = memberRepository.findById(requestMember.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("member ", requestMember.getId()));
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("member ", memberId));
 
         //경력
-        List<EmploymentResponse> employments = employmentRepository.findByMemberId(requestMember.getId()).stream()
+        List<EmploymentResponse> employments = employmentRepository.findByMemberId(memberId).stream()
                 .map(EmploymentResponse::new)
                 .sorted(Comparator.comparing(EmploymentResponse::getEndDate).reversed())
                 .toList();
 
         //활동 및 경험 ( 동아리, 대외활동)
-        List<BaseCareerResponse> activitiesAndExperiences = activityRepository.findByMemberId(requestMember.getId()).stream()
+        List<BaseCareerResponse> activitiesAndExperiences = activityRepository.findByMemberId(memberId).stream()
                 .map(ActivityResponse::new)
                 .collect(Collectors.toList());
-        activitiesAndExperiences.addAll(circleRepository.findByMemberId(requestMember.getId()).stream()
+        activitiesAndExperiences.addAll(circleRepository.findByMemberId(memberId).stream()
                 .map(CircleResponse::new).collect(Collectors.toList()));
         activitiesAndExperiences.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
         //프로젝트 ( 프로젝트, 공모전/대회)
-        List<BaseCareerResponse> projectsAndComp = projectRepository.findByMemberId(requestMember.getId()).stream()
+        List<BaseCareerResponse> projectsAndComp = projectRepository.findByMemberId(memberId).stream()
                 .map(ProjectResponse::new)
                 .collect(Collectors.toList());
-        projectsAndComp.addAll(competitionRepository.findByMemberId(requestMember.getId()).stream()
+        projectsAndComp.addAll(competitionRepository.findByMemberId(memberId).stream()
                 .map(CompetitionResponse::new).collect(Collectors.toList()));
         projectsAndComp.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
         //교육 ( 교육)
-        List<EduCareerResponse> eduCareers = eduCareerRepository.findByMemberId(requestMember.getId()).stream()
+        List<EduCareerResponse> eduCareers = eduCareerRepository.findByMemberId(memberId).stream()
                 .map(EduCareerResponse::new)
                 .sorted(Comparator.comparing(EduCareerResponse::getEndDate).reversed())
                 .toList();
+
+        // 수상
+        List<AwardResponse> awards = awardRepository.findByRecordId(record.getId()).stream()
+                .map(AwardResponse::new)
+                .sorted(Comparator.comparing(AwardResponse::getAcquireDate).reversed())
+                .toList();
+
+        // 자격증
+        List<LicenseResponse> licenses = licenseRepository.findByRecordId(record.getId()).stream()
+                .map(LicenseResponse::new)
+                .sorted(Comparator.comparing(LicenseResponse::getAcquireDate).reversed())
+                .toList();
+
+        // 스킬
+        List<SkillResponse> skills = skillRepository.findByRecordId(record.getId()).stream()
+                .map(SkillResponse::new)
+                .collect(Collectors.toList());
+
+        // 파일
+        List<FileResponse> files = fileRepository.findByRecordId(record.getId()).stream()
+                .map(FileResponse::new)
+                .collect(Collectors.toList());
 
         record.update(
                 recordReqDto.getAddress(),
@@ -157,7 +209,8 @@ public class RecordServiceImpl implements RecordService {
                 .map(EducationResponse::new)
                 .collect(Collectors.toList());
 
-        return new RecordResponse(record, member, educationList, employments,activitiesAndExperiences, projectsAndComp,eduCareers);
+        return new RecordResponse(record, member, educationList, employments,
+                activitiesAndExperiences, projectsAndComp,eduCareers , awards, licenses, skills, files);
     }
 
 
@@ -281,8 +334,6 @@ public class RecordServiceImpl implements RecordService {
 
         return license.getId();
     }
-
-
 
     @Override
     @Transactional

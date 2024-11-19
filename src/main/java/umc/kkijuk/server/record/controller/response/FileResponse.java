@@ -5,19 +5,26 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import umc.kkijuk.server.record.domain.File;
+import umc.kkijuk.server.record.domain.FileType;
 
 @Data
 @Getter
 @Builder
 @AllArgsConstructor
 public class FileResponse {
-    private Long memberId;
+    private Long fileId;
+    private FileType fileType;
     private String fileTitle;
     private String keyName;
+    private String urlTitle;
+    private String url;
 
     public FileResponse(File file){
-        this.memberId = file.getMemberId();
+        this.fileId = file.getId();
+        this.fileType = file.getFileType();
         this.fileTitle = file.getFileTitle();
         this.keyName = file.getKeyName();
+        this.urlTitle = file.getUrlTitle();
+        this.url = file.getUrl();
     }
 }
