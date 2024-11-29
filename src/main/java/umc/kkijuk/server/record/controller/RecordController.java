@@ -3,6 +3,7 @@ package umc.kkijuk.server.record.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.java.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,7 +20,7 @@ import umc.kkijuk.server.record.service.RecordService;
 @Tag(name = "record", description = "이력서 API")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/history/resume/")
+@RequestMapping("/history/resume")
 public class RecordController {
     private final RecordService recordService;
     private final MemberService memberService;
@@ -60,6 +61,21 @@ public class RecordController {
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "이력서 수정 완료", recordResponse));
     }
+
+    @GetMapping("/download")
+    @Operation(
+            summary = "이력서 내보내기",
+            description = "이력서 내보내기에 필요한 정보들을 조회합니다."
+    )
+    public ResponseEntity<Object> downloadResume(
+            @Login LoginInfo loginInfo ){
+        Long memberId = loginInfo.getMemberId();
+        RecordDownResponse response = recordService.downloadResume(recordService.findByMemberId(memberId).getId(),memberId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new BaseResponse<>(HttpStatus.OK.value(),"이력서 내보내기 정보 조회 완료",response));
+
+    }
+
 
     @PostMapping("/education")
     @Operation(summary = "학력 생성")

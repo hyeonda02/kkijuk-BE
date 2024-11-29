@@ -25,4 +25,5 @@ public interface RecordService {
     SkillResponse saveSkill(Member requestMember, Long recordId, SkillReqDto skillReqDto);
     SkillResponse updateSkill(Member requestMember, Long skillId, SkillReqDto skillReqDto);
     Long deleteSkill(Member requestMember, Long skillId);
+    RecordDownResponse downloadResume(Long recordId, Long memberId);
 }

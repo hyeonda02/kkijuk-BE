@@ -213,6 +213,79 @@ public class RecordServiceImpl implements RecordService {
                 activitiesAndExperiences, projectsAndComp,eduCareers , awards, licenses, skills, files);
     }
 
+    @Override
+    public RecordDownResponse downloadResume(Long recordId, Long memberId) {
+
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("member ", memberId));
+        Record record = recordRepository.findByMemberId(memberId);
+
+        List<ResumeResponse> employments = employmentRepository.findByMemberId(memberId).stream()
+                .map(employment -> new ResumeResponse(employment.getId(),"경력",employment.getName(),
+                        employment.getAlias(),employment.getSummary(),employment.getStartdate(),
+                        employment.getEnddate())).collect(Collectors.toList());
+
+        List<ResumeResponse> activitiesAndExperiences = activityRepository.findByMemberId(memberId).stream()
+                .map(activity -> new ResumeResponse(activity.getId(), "대외활동",activity.getName(),
+                        activity.getAlias(),activity.getSummary(),activity.getStartdate(),
+                        activity.getEnddate())).collect(Collectors.toList());
+
+        activitiesAndExperiences.addAll(circleRepository.findByMemberId(memberId).stream()
+                .map(circle->new ResumeResponse(circle.getId(),"동아리",circle.getName(),
+                        circle.getAlias(),circle.getSummary(),circle.getStartdate(),
+                        circle.getEnddate())).collect(Collectors.toList()));
+
+        //프로젝트 ( 프로젝트, 공모전/대회)
+        List<ResumeResponse> projectsAndComp = projectRepository.findByMemberId(memberId).stream()
+                .map(project->new ResumeResponse(project.getId(),"프로젝트",project.getName(),
+                        project.getAlias(),project.getSummary(),project.getStartdate(),
+                        project.getEnddate())).collect(Collectors.toList());
+
+        projectsAndComp.addAll(competitionRepository.findByMemberId(memberId).stream()
+                .map(comp -> new ResumeResponse(comp.getId(),"공모전/대회", comp.getName(),
+                        comp.getAlias(),comp.getSummary(),comp.getStartdate(),
+                        comp.getEnddate())).collect(Collectors.toList()));
+
+        List<ResumeResponse> eduCareers = eduCareerRepository.findByMemberId(memberId).stream()
+                .map(edu-> new ResumeResponse(edu.getId(),"교육",edu.getName(),
+                        edu.getAlias(),edu.getSummary(),edu.getStartdate(),
+                        edu.getEnddate())).collect(Collectors.toList());
+
+
+
+        List<EducationResponse> educationList = record.getEducations()
+                .stream()
+                .map(EducationResponse::new)
+                .collect(Collectors.toList());
+
+        // 수상
+        List<AwardResponse> awards = awardRepository.findByRecordId(record.getId()).stream()
+                .map(AwardResponse::new)
+                .sorted(Comparator.comparing(AwardResponse::getAcquireDate).reversed())
+                .toList();
+
+        // 자격증
+        List<LicenseResponse> licenses = licenseRepository.findByRecordId(record.getId()).stream()
+                .map(LicenseResponse::new)
+                .sorted(Comparator.comparing(LicenseResponse::getAcquireDate).reversed())
+                .toList();
+
+        // 스킬
+        List<SkillResponse> skills = skillRepository.findByRecordId(record.getId()).stream()
+                .map(SkillResponse::new)
+                .collect(Collectors.toList());
+
+        // 파일
+        List<FileResponse> files = fileRepository.findByRecordId(record.getId()).stream()
+                .map(FileResponse::new)
+                .collect(Collectors.toList());
+
+
+        return new RecordDownResponse(record, member, educationList, employments,
+                activitiesAndExperiences, projectsAndComp, eduCareers, awards, licenses, skills, files);
+
+    }
+
 
 
 
