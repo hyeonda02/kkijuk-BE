@@ -6,10 +6,12 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class FileReqDto {
     @NotBlank(message = "첨부파일 제목은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
     @Size(max = 20)

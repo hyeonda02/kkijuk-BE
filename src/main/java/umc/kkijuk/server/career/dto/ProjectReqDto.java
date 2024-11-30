@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import umc.kkijuk.server.career.domain.ProjectType;
 
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @Builder
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProjectReqDto {
     @NotBlank(message = "활동명은 필수 입력 항목입니다. 최대 20자 까지 입력 가능")
     @Size(max = 20)

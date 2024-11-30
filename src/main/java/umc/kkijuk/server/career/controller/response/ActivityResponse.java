@@ -1,5 +1,6 @@
 package umc.kkijuk.server.career.controller.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import umc.kkijuk.server.career.domain.Activity;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
@@ -22,8 +23,12 @@ public class ActivityResponse implements BaseCareerResponse{
     private String alias;
     private Boolean unknown;
     private String summary;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate startdate;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate enddate;
+
     private String organizer;
     private String role;
     private int teamSize;
