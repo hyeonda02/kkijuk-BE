@@ -11,7 +11,7 @@ import java.time.YearMonth;
 @Getter
 @Builder
 public class LicenseResponse {
-    private Long licenseId;
+    private Long id;
     private LicenseTag licenseTag;
     private String licenseName;
     private String administer;
@@ -20,7 +20,7 @@ public class LicenseResponse {
     private YearMonth acquireDate;
 
     public LicenseResponse(License license) {
-        this.licenseId = license.getId();
+        this.id = license.getId();
         this.licenseTag = license.getLicenseTag();
         this.licenseName = license.getLicenseName();
         this.administer = license.getAdminister();
