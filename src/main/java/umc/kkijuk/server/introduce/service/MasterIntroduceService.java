@@ -10,6 +10,8 @@ import umc.kkijuk.server.introduce.controller.response.MasterIntroduceResponse;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.IntroduceReqDto;
 import umc.kkijuk.server.introduce.dto.QuestionDto;
+import umc.kkijuk.server.introduce.repository.MasterIntroduceRepository;
+import umc.kkijuk.server.introduce.repository.MasterQuestionRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,5 +125,6 @@ public class MasterIntroduceService{
                 .questionList(responseQuestionList)
                 .build();
     }
+
 
 }

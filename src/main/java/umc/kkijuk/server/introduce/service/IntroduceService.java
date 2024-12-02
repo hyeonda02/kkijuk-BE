@@ -5,17 +5,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
-import umc.kkijuk.server.common.domian.exception.RecruitOwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
+import umc.kkijuk.server.introduce.controller.response.FindIntroduceResponse;
+import umc.kkijuk.server.introduce.controller.response.FindMasterIntroduceResponse;
 import umc.kkijuk.server.introduce.controller.response.IntroduceListResponse;
 import umc.kkijuk.server.introduce.controller.response.IntroduceResponse;
 import umc.kkijuk.server.introduce.domain.*;
 import umc.kkijuk.server.introduce.dto.*;
+import umc.kkijuk.server.introduce.repository.IntroduceRepository;
+import umc.kkijuk.server.introduce.repository.MasterIntroduceRepository;
+import umc.kkijuk.server.introduce.repository.QuestionRepository;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.infrastructure.RecruitEntity;
 import umc.kkijuk.server.recruit.infrastructure.RecruitJpaRepository;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -26,6 +29,7 @@ public class IntroduceService {
     private final IntroduceRepository introduceRepository;
     private final RecruitJpaRepository recruitJpaRepository;
     private final QuestionRepository questionRepository;
+    private final MasterIntroduceRepository masterIntroduceRepository;
 
     @Transactional
     public IntroduceResponse saveIntro(Member requestMember, Long recruitId, IntroduceReqDto introduceReqDto){
@@ -169,4 +173,41 @@ public class IntroduceService {
                 .map(opt -> opt.get().toModel().getTitle()) // Get the title of the Recruit
                 .collect(Collectors.toList()); // Collect titles into a List
     }*/
+
+    public List<Object> searchIntroduceAndMasterByKeyword(String keyword) {
+        // 자기소개서 검색
+        List<FindIntroduceResponse> introduceList = introduceRepository.searchIntroduceByKeyword(keyword)
+                .stream()
+                .flatMap(introduce -> introduce.getQuestions().stream()  // 각 Question을 개별 항목으로 처리
+                        .filter(q -> q.getContent().contains(keyword))  // 키워드가 포함된 문단만 필터링
+                        .map(q -> FindIntroduceResponse.builder()
+                                .introId(introduce.getId())
+                                .title(q.getTitle())  // 해당 문단의 제목
+                                .content(q.getContent())  // 해당 문단의 내용
+                                .createdDate(introduce.getCreatedAt())  // 생성일
+                                .build()))
+                .collect(Collectors.toList());
+
+        // 마스터 자기소개서 검색
+        List<FindMasterIntroduceResponse> masterIntroduceList = masterIntroduceRepository.searchMasterIntroduceByKeyword(keyword)
+                .stream()
+                .flatMap(masterIntroduce -> masterIntroduce.getMasterQuestion().stream()  // 각 MasterQuestion을 개별 항목으로 처리
+                        .filter(mq -> mq.getContent().contains(keyword))  // 키워드가 포함된 문단만 필터링
+                        .map(mq -> FindMasterIntroduceResponse.builder()
+                                .masterIntroId(masterIntroduce.getId())
+                                .title(mq.getTitle())  // 해당 문단의 제목
+                                .content(mq.getContent())  // 해당 문단의 내용
+                                .createdDate(masterIntroduce.getCreatedAt())  // 생성일
+                                .build()))
+                .collect(Collectors.toList());
+
+        // 두 리스트를 합쳐서 반환
+        List<Object> result = new ArrayList<>();
+        result.addAll(introduceList);
+        result.addAll(masterIntroduceList);
+
+        return result;
+    }
+
+
 }
