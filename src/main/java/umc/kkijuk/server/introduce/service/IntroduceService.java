@@ -178,30 +178,29 @@ public class IntroduceService {
         // 자기소개서 검색
         List<FindIntroduceResponse> introduceList = introduceRepository.searchIntroduceByKeyword(keyword)
                 .stream()
-                .flatMap(introduce -> introduce.getQuestions().stream()  // 각 Question을 개별 항목으로 처리
-                        .filter(q -> q.getContent().contains(keyword))  // 키워드가 포함된 문단만 필터링
+                .flatMap(introduce -> introduce.getQuestions().stream()
+                        .filter(q -> q.getContent().contains(keyword))
                         .map(q -> FindIntroduceResponse.builder()
                                 .introId(introduce.getId())
-                                .title(q.getTitle())  // 해당 문단의 제목
-                                .content(q.getContent())  // 해당 문단의 내용
-                                .createdDate(introduce.getCreatedAt())  // 생성일
+                                .title(introduce.getRecruit().getTitle())
+                                .content(q.getContent())
+                                .createdDate(introduce.getCreatedAt())
                                 .build()))
                 .collect(Collectors.toList());
 
         // 마스터 자기소개서 검색
         List<FindMasterIntroduceResponse> masterIntroduceList = masterIntroduceRepository.searchMasterIntroduceByKeyword(keyword)
                 .stream()
-                .flatMap(masterIntroduce -> masterIntroduce.getMasterQuestion().stream()  // 각 MasterQuestion을 개별 항목으로 처리
-                        .filter(mq -> mq.getContent().contains(keyword))  // 키워드가 포함된 문단만 필터링
+                .flatMap(masterIntroduce -> masterIntroduce.getMasterQuestion().stream()
+                        .filter(mq -> mq.getContent().contains(keyword))
                         .map(mq -> FindMasterIntroduceResponse.builder()
                                 .masterIntroId(masterIntroduce.getId())
-                                .title(mq.getTitle())  // 해당 문단의 제목
-                                .content(mq.getContent())  // 해당 문단의 내용
-                                .createdDate(masterIntroduce.getCreatedAt())  // 생성일
+                                .title("Master")
+                                .content(mq.getContent())
+                                .createdDate(masterIntroduce.getCreatedAt())
                                 .build()))
                 .collect(Collectors.toList());
 
-        // 두 리스트를 합쳐서 반환
         List<Object> result = new ArrayList<>();
         result.addAll(introduceList);
         result.addAll(masterIntroduceList);
