@@ -13,5 +13,5 @@ public class FindIntroduceResponse {
     private Long introId;
     private String title;
     private String content;
-    private LocalDateTime createdDate;
+    private LocalDate createdDate;
 }

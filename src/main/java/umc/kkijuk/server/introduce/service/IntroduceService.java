@@ -174,9 +174,9 @@ public class IntroduceService {
                 .collect(Collectors.toList()); // Collect titles into a List
     }*/
 
-    public List<Object> searchIntroduceAndMasterByKeyword(String keyword) {
+    public Map<String, Object> searchIntroduceAndMasterByKeyword(String keyword, Member requestMember) {
         // 자기소개서 검색
-        List<FindIntroduceResponse> introduceList = introduceRepository.searchIntroduceByKeyword(keyword)
+        List<FindIntroduceResponse> introduceList = introduceRepository.searchIntroduceByKeywordForMember(keyword, requestMember.getId())
                 .stream()
                 .flatMap(introduce -> introduce.getQuestions().stream()
                         .filter(q -> q.getContent().contains(keyword))
@@ -184,12 +184,12 @@ public class IntroduceService {
                                 .introId(introduce.getId())
                                 .title(introduce.getRecruit().getTitle())
                                 .content(q.getContent())
-                                .createdDate(introduce.getCreatedAt())
+                                .createdDate(introduce.getCreatedAt().toLocalDate())
                                 .build()))
                 .collect(Collectors.toList());
 
         // 마스터 자기소개서 검색
-        List<FindMasterIntroduceResponse> masterIntroduceList = masterIntroduceRepository.searchMasterIntroduceByKeyword(keyword)
+        List<FindMasterIntroduceResponse> masterIntroduceList = masterIntroduceRepository.searchMasterIntroduceByKeywordForMember(keyword, requestMember.getId())
                 .stream()
                 .flatMap(masterIntroduce -> masterIntroduce.getMasterQuestion().stream()
                         .filter(mq -> mq.getContent().contains(keyword))
@@ -197,16 +197,24 @@ public class IntroduceService {
                                 .masterIntroId(masterIntroduce.getId())
                                 .title("Master")
                                 .content(mq.getContent())
-                                .createdDate(masterIntroduce.getCreatedAt())
+                                .createdDate(masterIntroduce.getCreatedAt().toLocalDate())
                                 .build()))
                 .collect(Collectors.toList());
 
         List<Object> result = new ArrayList<>();
-        result.addAll(introduceList);
         result.addAll(masterIntroduceList);
+        result.addAll(introduceList);
 
-        return result;
+        int count = result.size();
+
+        Map<String, Object> response = new LinkedHashMap<>();
+        response.put("count", count);
+        response.put("data", result);
+
+        return response;
     }
+
+
 
 
 }

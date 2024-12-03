@@ -12,6 +12,7 @@ public interface MasterIntroduceRepository extends JpaRepository<MasterIntroduce
     Optional<MasterIntroduce> findByMemberId(Long memberId);
     @Query("SELECT m FROM MasterIntroduce m " +
             "JOIN m.masterQuestion mq " +
-            "WHERE mq.content LIKE %:keyword%")
-    List<MasterIntroduce> searchMasterIntroduceByKeyword(String keyword);
+            "WHERE m.memberId = :memberId AND mq.content LIKE %:keyword%")
+    List<MasterIntroduce> searchMasterIntroduceByKeywordForMember(String keyword, Long memberId);
+
 }

@@ -22,6 +22,7 @@ import umc.kkijuk.server.member.service.MemberService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "introduce", description = "자기소개서 API")
 @RestController
@@ -96,9 +97,12 @@ public class IntroduceController {
 
     @GetMapping("/search")
     @Operation(summary = "키워드로 자기소개서 문단 검색")
-    public ResponseEntity<List<Object>> searchIntroduceByKeyword(@RequestParam String keyword) {
-        List<Object> response = introduceService.searchIntroduceAndMasterByKeyword(keyword);
+    public ResponseEntity<Map<String, Object>> searchIntroduceByKeyword(@Login LoginInfo loginInfo, @RequestParam String keyword) {
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Map<String, Object> response = introduceService.searchIntroduceAndMasterByKeyword(keyword, requestMember);
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
+
+
 
 }

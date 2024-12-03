@@ -20,8 +20,8 @@ public interface IntroduceRepository extends JpaRepository<Introduce, Long> {
 
     @Query("SELECT i FROM Introduce i " +
             "JOIN i.questions q " +
-            "WHERE q.content LIKE %:keyword%")
-    List<Introduce> searchIntroduceByKeyword(String keyword);
+            "WHERE i.memberId = :memberId AND q.content LIKE %:keyword%")
+    List<Introduce> searchIntroduceByKeywordForMember(String keyword, Long memberId);
 
 
 }
