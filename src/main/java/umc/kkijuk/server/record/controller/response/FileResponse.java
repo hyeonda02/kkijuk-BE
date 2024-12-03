@@ -12,7 +12,7 @@ import umc.kkijuk.server.record.domain.FileType;
 @Builder
 @AllArgsConstructor
 public class FileResponse {
-    private Long fileId;
+    private Long id;
     private FileType fileType;
     private String fileTitle;
     private String keyName;
@@ -20,7 +20,7 @@ public class FileResponse {
     private String url;
 
     public FileResponse(File file){
-        this.fileId = file.getId();
+        this.id = file.getId();
         this.fileType = file.getFileType();
         this.fileTitle = file.getFileTitle();
         this.keyName = file.getKeyName();

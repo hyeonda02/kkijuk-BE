@@ -13,14 +13,14 @@ import java.time.YearMonth;
 @Getter
 @Builder
 public class AwardResponse {
-    private Long awardId;
+    private Long id;
     private String competitionName;
     private String administer;
     private String awardName;
     private YearMonth acquireDate;
 
     public AwardResponse(Award award) {
-        this.awardId = award.getId();
+        this.id = award.getId();
         this.competitionName = award.getCompetitionName();
         this.administer = award.getAdminister();
         this.awardName = award.getAwardName();

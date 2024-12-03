@@ -11,7 +11,7 @@ import umc.kkijuk.server.dashboard.controller.response.DashBoardUserInfoResponse
 import umc.kkijuk.server.dashboard.controller.response.IntroduceRemindResponse;
 import umc.kkijuk.server.dashboard.controller.response.RecruitRemindResponse;
 import umc.kkijuk.server.introduce.domain.Introduce;
-import umc.kkijuk.server.introduce.domain.IntroduceRepository;
+import umc.kkijuk.server.introduce.repository.IntroduceRepository;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.Recruit;
