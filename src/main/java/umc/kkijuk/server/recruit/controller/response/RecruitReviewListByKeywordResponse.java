@@ -9,6 +9,7 @@ import umc.kkijuk.server.review.controller.response.ReviewByKeyword;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Builder
@@ -22,7 +23,7 @@ public class RecruitReviewListByKeywordResponse {
     @Schema(description = "검색 키워드가 review에 포함된 공고 목록")
     private final List<ReviewByKeyword> reviewResult;
 
-    public static RecruitReviewListByKeywordResponse from(String keyword, List<Recruit> recruits, List<RecruitReviewDto> reviews) {
+    public static RecruitReviewListByKeywordResponse from(String keyword, Map<Recruit, String> recruitMap, List<RecruitReviewDto> reviews) {
         List<ReviewByKeyword> reviewResult = new ArrayList<>();
 
         for (RecruitReviewDto recruitReviewDto : reviews) {
@@ -35,10 +36,10 @@ public class RecruitReviewListByKeywordResponse {
             else existingReview.addReview(recruitReviewDto);
         }
 
-
         return RecruitReviewListByKeywordResponse.builder()
                 .keyword(keyword)
-                .recruitResult(recruits.stream().map(RecruitByKeyword::from).toList())
+                .recruitResult(recruitMap.entrySet().stream().map(entry ->
+                    RecruitByKeyword.from(entry.getKey(), entry.getValue())).toList())
                 .reviewResult(reviewResult)
                 .build();
     }

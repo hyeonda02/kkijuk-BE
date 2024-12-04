@@ -9,9 +9,11 @@ import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.domain.State;
 import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.*;
+import umc.kkijuk.server.review.service.port.ReviewRepository;
 import umc.kkijuk.server.unitTest.mock.FakeRecruitRepository;
 import umc.kkijuk.server.recruit.service.RecruitServiceImpl;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
+import umc.kkijuk.server.unitTest.mock.FakeReviewRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,8 +53,11 @@ class RecruitServiceTest {
 
 
         RecruitRepository recruitRepository = new FakeRecruitRepository();
+        ReviewRepository reviewRepository = new FakeReviewRepository();
+
         this.recruitService = RecruitServiceImpl.builder()
                 .recruitRepository(recruitRepository)
+                .reviewRepository(reviewRepository)
                 .build();
 
         Recruit recruit = Recruit.builder()
