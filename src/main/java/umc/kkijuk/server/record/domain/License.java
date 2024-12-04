@@ -23,9 +23,8 @@ public class License extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "record_id", nullable = false)
-    private Record record;
+    @Column(nullable = false)
+    private Long memberId;
 
     @NotNull
     private LicenseTag licenseTag;
@@ -51,8 +50,5 @@ public class License extends BaseEntity {
         this.acquireDate = acquireDate;
     }
 
-    public Long getMemberId() {
-        return this.record.getMemberId();
-    }
 
 }

@@ -8,6 +8,7 @@ import umc.kkijuk.server.career.domain.*;
 import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
+import umc.kkijuk.server.common.domian.exception.RecordNotFoundException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
@@ -74,14 +75,17 @@ public class RecordServiceImpl implements RecordService {
 
         Record record = recordRepository.findByMemberId(memberId);
 
+        if (record == null) {
+            throw new RecordNotFoundException();
+        }
 
-        //경력
+        // 경력
         List<EmploymentResponse> employments = employmentRepository.findByMemberId(memberId).stream()
                 .map(EmploymentResponse::new)
                 .sorted(Comparator.comparing(EmploymentResponse::getEndDate).reversed())
                 .toList();
 
-        //활동 및 경험 ( 동아리, 대외활동)
+        // 활동 및 경험 ( 동아리, 대외활동)
         List<BaseCareerResponse> activitiesAndExperiences = activityRepository.findByMemberId(memberId).stream()
                 .map(ActivityResponse::new)
                 .collect(Collectors.toList());
@@ -89,7 +93,7 @@ public class RecordServiceImpl implements RecordService {
                 .map(CircleResponse::new).collect(Collectors.toList()));
         activitiesAndExperiences.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
-        //프로젝트 ( 프로젝트, 공모전/대회)
+        // 프로젝트 ( 프로젝트, 공모전/대회)
         List<BaseCareerResponse> projectsAndComp = projectRepository.findByMemberId(memberId).stream()
                 .map(ProjectResponse::new)
                 .collect(Collectors.toList());
@@ -97,46 +101,44 @@ public class RecordServiceImpl implements RecordService {
                 .map(CompetitionResponse::new).collect(Collectors.toList()));
         projectsAndComp.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
-        //교육 ( 교육)
+        // 교육 ( 교육)
         List<EduCareerResponse> eduCareers = eduCareerRepository.findByMemberId(memberId).stream()
                 .map(EduCareerResponse::new)
                 .sorted(Comparator.comparing(EduCareerResponse::getEndDate).reversed())
                 .toList();
 
         // 수상
-        List<AwardResponse> awards = awardRepository.findByRecordId(record.getId()).stream()
+        List<AwardResponse> awards = awardRepository.findByMemberId(memberId).stream()
                 .map(AwardResponse::new)
                 .sorted(Comparator.comparing(AwardResponse::getAcquireDate).reversed())
                 .toList();
 
         // 자격증
-        List<LicenseResponse> licenses = licenseRepository.findByRecordId(record.getId()).stream()
+        List<LicenseResponse> licenses = licenseRepository.findByMemberId(memberId).stream()
                 .map(LicenseResponse::new)
                 .sorted(Comparator.comparing(LicenseResponse::getAcquireDate).reversed())
                 .toList();
 
         // 스킬
-        List<SkillResponse> skills = skillRepository.findByRecordId(record.getId()).stream()
+        List<SkillResponse> skills = skillRepository.findByMemberId(memberId).stream()
                 .map(SkillResponse::new)
                 .collect(Collectors.toList());
 
         // 파일
-        List<FileResponse> files = fileRepository.findByRecordId(record.getId()).stream()
+        List<FileResponse> files = fileRepository.findByMemberId(memberId).stream()
                 .map(FileResponse::new)
                 .collect(Collectors.toList());
 
-        if (record != null) {
-            // 학력
-            List<EducationResponse> educationList = record.getEducations()
-                    .stream()
-                    .map(EducationResponse::new)
-                    .collect(Collectors.toList());
+        // 학력
+        List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
+                .stream()
+                .map(EducationResponse::new)
+                .collect(Collectors.toList());
 
-            return new RecordResponse(record, member, educationList, employments,
-                    activitiesAndExperiences, projectsAndComp,eduCareers, awards, licenses, skills, files);
-        }
-        return new RecordResponse(member, employments,activitiesAndExperiences, projectsAndComp,eduCareers);
+        return new RecordResponse(record, member, educationList, employments,
+                activitiesAndExperiences, projectsAndComp, eduCareers, awards, licenses, skills, files);
     }
+
 
     @Override
     @Transactional
@@ -179,24 +181,24 @@ public class RecordServiceImpl implements RecordService {
                 .toList();
 
         // 수상
-        List<AwardResponse> awards = awardRepository.findByRecordId(record.getId()).stream()
+        List<AwardResponse> awards = awardRepository.findByMemberId(memberId).stream()
                 .map(AwardResponse::new)
                 .sorted(Comparator.comparing(AwardResponse::getAcquireDate).reversed())
                 .toList();
 
         // 자격증
-        List<LicenseResponse> licenses = licenseRepository.findByRecordId(record.getId()).stream()
+        List<LicenseResponse> licenses = licenseRepository.findByMemberId(memberId).stream()
                 .map(LicenseResponse::new)
                 .sorted(Comparator.comparing(LicenseResponse::getAcquireDate).reversed())
                 .toList();
 
         // 스킬
-        List<SkillResponse> skills = skillRepository.findByRecordId(record.getId()).stream()
+        List<SkillResponse> skills = skillRepository.findByMemberId(memberId).stream()
                 .map(SkillResponse::new)
                 .collect(Collectors.toList());
 
         // 파일
-        List<FileResponse> files = fileRepository.findByRecordId(record.getId()).stream()
+        List<FileResponse> files = fileRepository.findByMemberId(memberId).stream()
                 .map(FileResponse::new)
                 .collect(Collectors.toList());
 
@@ -204,7 +206,8 @@ public class RecordServiceImpl implements RecordService {
                 recordReqDto.getAddress(),
                 recordReqDto.getProfileImageUrl());
 
-        List<EducationResponse> educationList = record.getEducations()
+        //학력
+        List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
                 .stream()
                 .map(EducationResponse::new)
                 .collect(Collectors.toList());
@@ -251,43 +254,38 @@ public class RecordServiceImpl implements RecordService {
                         edu.getAlias(),edu.getSummary(),edu.getStartdate(),
                         edu.getEnddate())).collect(Collectors.toList());
 
-
-
-        List<EducationResponse> educationList = record.getEducations()
+        // 학력
+        List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
                 .stream()
                 .map(EducationResponse::new)
                 .collect(Collectors.toList());
 
         // 수상
-        List<AwardResponse> awards = awardRepository.findByRecordId(record.getId()).stream()
+        List<AwardResponse> awards = awardRepository.findByMemberId(memberId).stream()
                 .map(AwardResponse::new)
                 .sorted(Comparator.comparing(AwardResponse::getAcquireDate).reversed())
                 .toList();
 
         // 자격증
-        List<LicenseResponse> licenses = licenseRepository.findByRecordId(record.getId()).stream()
+        List<LicenseResponse> licenses = licenseRepository.findByMemberId(memberId).stream()
                 .map(LicenseResponse::new)
                 .sorted(Comparator.comparing(LicenseResponse::getAcquireDate).reversed())
                 .toList();
 
         // 스킬
-        List<SkillResponse> skills = skillRepository.findByRecordId(record.getId()).stream()
+        List<SkillResponse> skills = skillRepository.findByMemberId(memberId).stream()
                 .map(SkillResponse::new)
                 .collect(Collectors.toList());
 
         // 파일
-        List<FileResponse> files = fileRepository.findByRecordId(record.getId()).stream()
+        List<FileResponse> files = fileRepository.findByMemberId(memberId).stream()
                 .map(FileResponse::new)
                 .collect(Collectors.toList());
 
 
         return new RecordDownResponse(record, member, educationList, employments,
                 activitiesAndExperiences, projectsAndComp, eduCareers, awards, licenses, skills, files);
-
     }
-
-
-
 
     @Override
     @Transactional
@@ -299,7 +297,7 @@ public class RecordServiceImpl implements RecordService {
         }
 
         Education education = Education.builder()
-                .record(record)
+                .memberId(requestMember.getId())
                 .category(educationReqDto.getCategory())
                 .schoolName(educationReqDto.getSchoolName())
                 .major(educationReqDto.getMajor())
@@ -318,7 +316,7 @@ public class RecordServiceImpl implements RecordService {
     public EducationResponse updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
         Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
-        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!education.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
         education.changeEducationInfo(
@@ -336,7 +334,7 @@ public class RecordServiceImpl implements RecordService {
     public Long deleteEducation(Member requestMember, Long educationId) {
         Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
-        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!education.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -356,7 +354,7 @@ public class RecordServiceImpl implements RecordService {
         }
 
         License license = License.builder()
-                .record(record)
+                .memberId(requestMember.getId())
                 .licenseTag((licenseReqDto.getLicenseTag()))
                 .licenseName(licenseReqDto.getLicenseName())
                 .administer(licenseReqDto.getAdminister())
@@ -377,7 +375,7 @@ public class RecordServiceImpl implements RecordService {
         License license = licenseRepository.findById(licenseId)
                 .orElseThrow(() -> new ResourceNotFoundException("License", licenseId));
 
-        if (!license.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!license.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -399,7 +397,7 @@ public class RecordServiceImpl implements RecordService {
         License license = licenseRepository.findById(licenseId)
                 .orElseThrow(() -> new ResourceNotFoundException("License", licenseId));
 
-        if (!license.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!license.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -420,7 +418,7 @@ public class RecordServiceImpl implements RecordService {
         }
 
         Award award = Award.builder()
-                .record(record)
+                .memberId(requestMember.getId())
                 .competitionName(awardReqDto.getCompetitionName())
                 .administer(awardReqDto.getAdminister())
                 .awardName(awardReqDto.getAwardName())
@@ -439,7 +437,7 @@ public class RecordServiceImpl implements RecordService {
         Award award = awardRepository.findById(awardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Award", awardId));
 
-        if (!award.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!award.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -460,7 +458,7 @@ public class RecordServiceImpl implements RecordService {
         Award award = awardRepository.findById(awardId)
                 .orElseThrow(() -> new ResourceNotFoundException("Award", awardId));
 
-        if (!award.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!award.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -481,7 +479,7 @@ public class RecordServiceImpl implements RecordService {
         }
 
         Skill skill = Skill.builder()
-                .record(record)
+                .memberId(requestMember.getId())
                 .skillTag(skillReqDto.getSkillTag())
                 .skillName(skillReqDto.getSkillName())
                 .workmanship(skillReqDto.getWorkmanship())
@@ -499,7 +497,7 @@ public class RecordServiceImpl implements RecordService {
         Skill skill = skillRepository.findById(skillId)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill", skillId));
 
-        if (!skill.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!skill.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
@@ -519,7 +517,7 @@ public class RecordServiceImpl implements RecordService {
         Skill skill = skillRepository.findById(skillId)
                 .orElseThrow(() -> new ResourceNotFoundException("Skill", skillId));
 
-        if (!skill.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!skill.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 

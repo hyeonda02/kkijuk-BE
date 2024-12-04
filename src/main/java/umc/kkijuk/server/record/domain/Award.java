@@ -22,9 +22,9 @@ public class Award extends BaseEntity {
     @Column(name = "award_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "record_id", nullable = false)
-    private Record record;
+    @Column(nullable = false)
+    private Long memberId;
+
     @Size(max = 30)
     private String competitionName;
     @Size(max = 15)
@@ -40,7 +40,4 @@ public class Award extends BaseEntity {
         this.acquireDate = acquireDate;
     }
 
-    public Long getMemberId() {
-        return this.record.getMemberId();
-    }
 }

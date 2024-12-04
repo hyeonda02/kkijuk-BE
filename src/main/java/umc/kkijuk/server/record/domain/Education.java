@@ -19,9 +19,8 @@ public class Education extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "record_id", nullable = false)
-    private Record record;
+    @Column(nullable = false)
+    private Long memberId;
 
     private String category;
     private String schoolName;
