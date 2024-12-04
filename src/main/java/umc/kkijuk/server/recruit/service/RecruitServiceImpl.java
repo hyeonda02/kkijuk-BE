@@ -11,9 +11,12 @@ import umc.kkijuk.server.recruit.controller.port.RecruitService;
 import umc.kkijuk.server.recruit.domain.RecruitApplyDateUpdate;
 import umc.kkijuk.server.recruit.domain.*;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
+import umc.kkijuk.server.review.domain.Review;
+import umc.kkijuk.server.review.service.port.ReviewRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -23,6 +26,8 @@ import java.util.List;
 public class RecruitServiceImpl implements RecruitService {
 
     private final RecruitRepository recruitRepository;
+    private final ReviewRepository reviewRepository;
+
 
     @Override
     public Recruit getById(long id) {
@@ -84,14 +89,15 @@ public class RecruitServiceImpl implements RecruitService {
     public List<Recruit> findAllByEndTimeAfter(Member requestMember, LocalDateTime endTime) {
         return recruitRepository.findAllActiveRecruitByMemberIdAndEndTimeAfter(requestMember.getId(), endTime);
     }
-
     @Override
     public List<ValidRecruitDto> findAllValidRecruitByMember(Member requestMember, LocalDateTime endTime) {
         List<Recruit> recruits = recruitRepository.findAllActiveRecruitByMemberId(requestMember.getId());
         return recruits.stream()
                 .filter(item -> !isUnappliedOrPlanned(item) || item.getEndTime().isAfter(endTime))
-                .map(ValidRecruitDto::from)
-                .toList();
+                .map(recruit -> {
+                    List<Review> reviews = reviewRepository.findAllByRecruitId(recruit.getId());
+                    return ValidRecruitDto.from(reviews!=null?reviews: Collections.emptyList(),recruit);
+                }).toList();
     }
 
     @Override

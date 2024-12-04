@@ -9,9 +9,14 @@ import umc.kkijuk.server.recruit.controller.response.RecruitReviewListByKeywordR
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.review.domain.RecruitReviewDto;
 import umc.kkijuk.server.recruit.service.port.RecruitRepository;
+import umc.kkijuk.server.review.domain.Review;
 import umc.kkijuk.server.review.service.port.ReviewRepository;
 
+import java.lang.management.ManagementPermission;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -24,10 +29,19 @@ public class RecruitSearchServiceImpl implements RecruitSearchService {
         List<Recruit> recruits = recruitRepository.searchRecruitByKeyword(requestMember.getId(), keyword);
         List<RecruitReviewDto> reviews = reviewRepository.findReviewByKeyword(requestMember.getId(), keyword);
 
+        Map<Recruit, String> reviewMap = new HashMap<>();
+        for (Recruit recruit : recruits) {
+            String reviewTitle = reviewRepository.findAllByRecruitId(recruit.getId())
+                    .stream().max(Comparator.comparing(Review::getDate))
+                    .map(Review::getTitle).orElse("");
+            reviewMap.put(recruit, reviewTitle);
+        }
+
         for (RecruitReviewDto review : reviews) {
             log.info("keyword: {}, result: {}", keyword, review.getReviewContent());
         }
 
-        return RecruitReviewListByKeywordResponse.from(keyword, recruits, reviews);
+
+        return RecruitReviewListByKeywordResponse.from(keyword, reviewMap, reviews);
     }
 }
