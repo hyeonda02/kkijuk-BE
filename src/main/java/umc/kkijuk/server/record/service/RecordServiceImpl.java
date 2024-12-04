@@ -127,7 +127,7 @@ public class RecordServiceImpl implements RecordService {
 
         if (record != null) {
             // 학력
-            List<EducationResponse> educationList = record.getEducations()
+            List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
                     .stream()
                     .map(EducationResponse::new)
                     .collect(Collectors.toList());
@@ -204,7 +204,7 @@ public class RecordServiceImpl implements RecordService {
                 recordReqDto.getAddress(),
                 recordReqDto.getProfileImageUrl());
 
-        List<EducationResponse> educationList = record.getEducations()
+        List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
                 .stream()
                 .map(EducationResponse::new)
                 .collect(Collectors.toList());
@@ -253,7 +253,7 @@ public class RecordServiceImpl implements RecordService {
 
 
 
-        List<EducationResponse> educationList = record.getEducations()
+        List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
                 .stream()
                 .map(EducationResponse::new)
                 .collect(Collectors.toList());
@@ -295,7 +295,7 @@ public class RecordServiceImpl implements RecordService {
         }
 
         Education education = Education.builder()
-                .record(record)
+                .memberId(requestMember.getId())
                 .category(educationReqDto.getCategory())
                 .schoolName(educationReqDto.getSchoolName())
                 .major(educationReqDto.getMajor())
@@ -314,7 +314,7 @@ public class RecordServiceImpl implements RecordService {
     public EducationResponse updateEducation(Member requestMember, Long educationId, EducationReqDto educationReqDto) {
         Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
-        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!education.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
         education.changeEducationInfo(
@@ -332,7 +332,7 @@ public class RecordServiceImpl implements RecordService {
     public Long deleteEducation(Member requestMember, Long educationId) {
         Education education = educationRepository.findById(educationId)
                 .orElseThrow(() -> new ResourceNotFoundException("education ", educationId));
-        if (!education.getRecord().getMemberId().equals(requestMember.getId())) {
+        if (!education.getMemberId().equals(requestMember.getId())) {
             throw new IntroOwnerMismatchException();
         }
 
