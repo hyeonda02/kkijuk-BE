@@ -11,14 +11,18 @@ import umc.kkijuk.server.common.LoginUser;
 import umc.kkijuk.server.introduce.common.BaseResponse;
 import umc.kkijuk.server.introduce.controller.response.IntroduceListResponse;
 import umc.kkijuk.server.introduce.controller.response.IntroduceResponse;
+import umc.kkijuk.server.introduce.controller.response.MasterIntroduceResponse;
 import umc.kkijuk.server.introduce.dto.*;
 import umc.kkijuk.server.introduce.service.IntroduceService;
+import umc.kkijuk.server.introduce.service.MasterIntroduceService;
 import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.service.MemberService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Tag(name = "introduce", description = "자기소개서 API")
 @RestController
@@ -26,6 +30,7 @@ import java.util.List;
 @RequestMapping("/history/intro/")
 public class IntroduceController {
     private final IntroduceService introduceService;
+    private final MasterIntroduceService masterIntroduceService;
     private final MemberService memberService;
 
     private final Member requestMember = Member.builder()
@@ -89,5 +94,15 @@ public class IntroduceController {
                 .status(HttpStatus.OK)
                 .body(new BaseResponse<>(HttpStatus.OK.value(), "자기소개서 삭제 완료", intro_Id));
     }
+
+    @GetMapping("/search")
+    @Operation(summary = "키워드로 자기소개서 문단 검색")
+    public ResponseEntity<Map<String, Object>> searchIntroduceByKeyword(@Login LoginInfo loginInfo, @RequestParam String keyword) {
+        Member requestMember = memberService.getById(loginInfo.getMemberId());
+        Map<String, Object> response = introduceService.searchIntroduceAndMasterByKeyword(keyword, requestMember);
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
+
 
 }

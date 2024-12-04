@@ -1,6 +1,7 @@
 package umc.kkijuk.server.recruit.infrastructure;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import umc.kkijuk.server.common.converter.StringListToStringConverter;
 import umc.kkijuk.server.recruit.domain.Recruit;
 import umc.kkijuk.server.recruit.domain.RecruitStatus;
@@ -10,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
+@Getter
 @Table(name = "recruit")
 public class RecruitEntity {
 

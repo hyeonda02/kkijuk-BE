@@ -13,13 +13,13 @@ import umc.kkijuk.server.record.domain.Workmanship;
 @Getter
 @Builder
 public class SkillResponse {
-    private Long skillId;
+    private Long id;
     private SkillTag skillTag;
     private String skillName;
     private Workmanship workmanship;
 
     public SkillResponse(Skill skill) {
-        this.skillId = skill.getId();
+        this.id = skill.getId();
         this.skillTag = skill.getSkillTag();
         this.skillName = skill.getSkillName();
         this.workmanship = skill.getWorkmanship();
