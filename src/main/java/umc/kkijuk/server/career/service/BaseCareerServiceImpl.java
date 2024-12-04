@@ -350,7 +350,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
                 .map(EmploymentResponse::new).collect(Collectors.toList()));
 
 
-        baseCareers.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
+//        baseCareers.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
         baseCareers = baseCareers.stream()
                 .sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed())
@@ -372,6 +372,35 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         }
         return result;
     }
+
+
+    @Override
+    public List<BaseCareerResponse> findAllCareer(Long memberId) {
+        List<BaseCareerResponse> baseCareers = projectRepository.findByMemberId(memberId).stream()
+                .map(project-> new ProjectResponse(project,detailRepository.findByProject(project)))
+                .collect(Collectors.toList());
+        baseCareers.addAll(competitionRepository.findByMemberId(memberId).stream()
+                .map(comp-> new CompetitionResponse(comp, detailRepository.findByCompetition(comp)))
+                .collect(Collectors.toList()));
+        baseCareers.addAll(activityRepository.findByMemberId(memberId).stream()
+                .map(activity->new ActivityResponse(activity, detailRepository.findByActivity(activity)))
+                .collect(Collectors.toList()));
+        baseCareers.addAll(circleRepository.findByMemberId(memberId).stream()
+                .map(circle-> new CircleResponse(circle, detailRepository.findByCircle(circle)))
+                .collect(Collectors.toList()));
+        baseCareers.addAll(eduCareerRepository.findByMemberId(memberId).stream()
+                .map(eduCareer -> new EduCareerResponse(eduCareer, detailRepository.findByEduCareer(eduCareer)))
+                .collect(Collectors.toList()));
+        baseCareers.addAll(employmentRepository.findByMemberId(memberId).stream()
+                .map(employment -> new EmploymentResponse(employment, detailRepository.findByEmployment(employment)))
+                .collect(Collectors.toList()));
+
+        baseCareers = baseCareers.stream()
+                .sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed())
+                .collect(Collectors.toList());
+        return baseCareers;
+    }
+
     @Override
     public BaseCareerResponse findCareer(Member requestMember, Long careerId, String type) {
         switch (type.toLowerCase()) {
@@ -655,17 +684,24 @@ public class BaseCareerServiceImpl implements BaseCareerService{
     private <T extends BaseCareer, R extends BaseCareerResponse> R getResponse(T career,  BiFunction<T, List<BaseCareerDetail>, R> responseConstructor) {
         List<BaseCareerDetail> details;
         if (career instanceof Activity) {
-            details = detailRepository.findByActivity((Activity) career);
+            details = Optional.ofNullable(detailRepository.findByActivity((Activity) career))
+                    .orElseGet(Collections::emptyList);
         } else if (career instanceof Circle) {
-            details = detailRepository.findByCircle((Circle) career);
+            details = Optional.ofNullable(detailRepository.findByCircle((Circle) career))
+                    .orElseGet(Collections::emptyList);
         } else if (career instanceof Competition) {
-            details = detailRepository.findByCompetition((Competition) career);
+            details = Optional.ofNullable(detailRepository.findByCompetition((Competition) career))
+                    .orElseGet(Collections::emptyList);
         } else if (career instanceof EduCareer) {
-            details = detailRepository.findByEduCareer((EduCareer) career);
+            details =Optional.ofNullable(detailRepository.findByEduCareer((EduCareer) career))
+                    .orElseGet(Collections::emptyList);
         } else if (career instanceof Employment) {
-            details = detailRepository.findByEmployment((Employment) career);
+            details = Optional.ofNullable( detailRepository.findByEmployment((Employment) career))
+                    .orElseGet(Collections::emptyList);
+
         } else if (career instanceof Project) {
-            details = detailRepository.findByProject((Project) career);
+            details = Optional.ofNullable( detailRepository.findByProject((Project) career))
+                    .orElseGet(Collections::emptyList);
         } else {
             throw new IllegalArgumentException("지원하지 않는 타입입니다.");
         }
