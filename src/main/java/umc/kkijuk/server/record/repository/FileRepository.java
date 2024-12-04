@@ -12,5 +12,5 @@ public interface FileRepository extends JpaRepository<File,Long> {
     boolean existsByMemberIdAndFileTitle(Long memberId, String fileTitle);
     boolean existsByMemberIdAndUrlTitle(Long memberId, String urlTitle);
     Optional<File> findByMemberIdAndUrlTitle(Long memberId, String urlTitle);
-    List<File> findByRecordId(Long recordId);
+    List<File> findByMemberId(Long memberId);
 }

@@ -7,5 +7,5 @@ import java.util.List;
 
 
 public interface AwardRepository extends JpaRepository<Award, Long> {
-    List<Award> findByRecordId(Long recordId);
+    List<Award> findByMemberId(Long memberId);
 }

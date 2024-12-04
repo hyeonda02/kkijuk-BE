@@ -77,11 +77,10 @@ public class FileServiceImpl implements FileService{
             throw new IllegalArgumentException("이미 존재하는 파일 이름입니다: " + request.getTitle());
         }
 
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+//        Record record = recordRepository.findById(recordId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
         File file = File.builder()
                 .memberId(memberId)
-                .record(record)
                 .fileType(FileType.File)
                 .fileTitle(request.getTitle())
                 .keyName(request.getKeyName())
@@ -133,12 +132,11 @@ public class FileServiceImpl implements FileService{
         if (fileRepository.existsByMemberIdAndUrlTitle(memberId, urlReqDto.getUrlTitle())) {
             throw new IllegalArgumentException("이미 존재하는 URL 제목입니다: " + urlReqDto.getUrlTitle());
         }
-        Record record = recordRepository.findById(recordId)
-                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
+//        Record record = recordRepository.findById(recordId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Record", recordId));
 
         File file = File.builder()
                 .memberId(memberId)
-                .record(record)
                 .fileType(FileType.URL)
                 .urlTitle(urlReqDto.getUrlTitle())
                 .url(urlReqDto.getUrl())

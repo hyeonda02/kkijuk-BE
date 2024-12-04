@@ -17,10 +17,6 @@ public class File extends BaseEntity {
     @Column(nullable = false)
     private Long memberId;
 
-    @ManyToOne
-    @JoinColumn(name = "record_id", nullable = false)
-    private Record record;
-
     private FileType fileType;
 
     @Column(length = 20)
@@ -32,7 +28,4 @@ public class File extends BaseEntity {
 
     private String url;
 
-    public Long getMemberId() {
-        return this.record.getMemberId();
-    }
 }

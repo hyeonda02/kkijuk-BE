@@ -7,5 +7,5 @@ import umc.kkijuk.server.record.domain.Skill;
 import java.util.List;
 
 public interface SkillRepository extends JpaRepository<Skill, Long> {
-    List<Skill> findByRecordId(Long recordId);
+    List<Skill> findByMemberId(Long memberId);
 }
