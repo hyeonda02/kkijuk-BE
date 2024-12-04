@@ -132,4 +132,10 @@ public class ExceptionControllerAdvice {
     public ErrorResponse EmailAlreadyExistsException(EmailAlreadyExistsException e) {
         return new ErrorResponse(e.getMessage());
     }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(RecordNotFoundException.class)
+    public ErrorResponse RecordNotFoundException(RecordNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
 }

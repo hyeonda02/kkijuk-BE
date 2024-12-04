@@ -8,6 +8,7 @@ import umc.kkijuk.server.career.domain.*;
 import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.common.domian.exception.IntroFoundException;
 import umc.kkijuk.server.common.domian.exception.IntroOwnerMismatchException;
+import umc.kkijuk.server.common.domian.exception.RecordNotFoundException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.member.repository.MemberRepository;
@@ -74,14 +75,17 @@ public class RecordServiceImpl implements RecordService {
 
         Record record = recordRepository.findByMemberId(memberId);
 
+        if (record == null) {
+            throw new RecordNotFoundException();
+        }
 
-        //경력
+        // 경력
         List<EmploymentResponse> employments = employmentRepository.findByMemberId(memberId).stream()
                 .map(EmploymentResponse::new)
                 .sorted(Comparator.comparing(EmploymentResponse::getEndDate).reversed())
                 .toList();
 
-        //활동 및 경험 ( 동아리, 대외활동)
+        // 활동 및 경험 ( 동아리, 대외활동)
         List<BaseCareerResponse> activitiesAndExperiences = activityRepository.findByMemberId(memberId).stream()
                 .map(ActivityResponse::new)
                 .collect(Collectors.toList());
@@ -89,7 +93,7 @@ public class RecordServiceImpl implements RecordService {
                 .map(CircleResponse::new).collect(Collectors.toList()));
         activitiesAndExperiences.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
-        //프로젝트 ( 프로젝트, 공모전/대회)
+        // 프로젝트 ( 프로젝트, 공모전/대회)
         List<BaseCareerResponse> projectsAndComp = projectRepository.findByMemberId(memberId).stream()
                 .map(ProjectResponse::new)
                 .collect(Collectors.toList());
@@ -97,7 +101,7 @@ public class RecordServiceImpl implements RecordService {
                 .map(CompetitionResponse::new).collect(Collectors.toList()));
         projectsAndComp.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
 
-        //교육 ( 교육)
+        // 교육 ( 교육)
         List<EduCareerResponse> eduCareers = eduCareerRepository.findByMemberId(memberId).stream()
                 .map(EduCareerResponse::new)
                 .sorted(Comparator.comparing(EduCareerResponse::getEndDate).reversed())
@@ -125,18 +129,16 @@ public class RecordServiceImpl implements RecordService {
                 .map(FileResponse::new)
                 .collect(Collectors.toList());
 
-        if (record != null) {
-            // 학력
-            List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
-                    .stream()
-                    .map(EducationResponse::new)
-                    .collect(Collectors.toList());
+        // 학력
+        List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
+                .stream()
+                .map(EducationResponse::new)
+                .collect(Collectors.toList());
 
-            return new RecordResponse(record, member, educationList, employments,
-                    activitiesAndExperiences, projectsAndComp,eduCareers, awards, licenses, skills, files);
-        }
-        return new RecordResponse(member, employments,activitiesAndExperiences, projectsAndComp,eduCareers);
+        return new RecordResponse(record, member, educationList, employments,
+                activitiesAndExperiences, projectsAndComp, eduCareers, awards, licenses, skills, files);
     }
+
 
     @Override
     @Transactional
@@ -204,6 +206,7 @@ public class RecordServiceImpl implements RecordService {
                 recordReqDto.getAddress(),
                 recordReqDto.getProfileImageUrl());
 
+        //학력
         List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
                 .stream()
                 .map(EducationResponse::new)
@@ -251,8 +254,7 @@ public class RecordServiceImpl implements RecordService {
                         edu.getAlias(),edu.getSummary(),edu.getStartdate(),
                         edu.getEnddate())).collect(Collectors.toList());
 
-
-
+        // 학력
         List<EducationResponse> educationList = educationRepository.findByMemberId(memberId)
                 .stream()
                 .map(EducationResponse::new)
