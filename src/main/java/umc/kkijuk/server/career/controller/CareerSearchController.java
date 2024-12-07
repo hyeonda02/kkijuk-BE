@@ -6,7 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.career.controller.response.*;
-import umc.kkijuk.server.career.service.BaseCareerService;
+import umc.kkijuk.server.career.service.CareerSearchService;
+import umc.kkijuk.server.career.service.CareerService;
 import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
@@ -19,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/career")
 public class CareerSearchController {
-    private final BaseCareerService baseCareerService;
+    private final CareerSearchService careerSearchService;
     private final MemberService memberService;
     @GetMapping("")
     @Operation(
@@ -33,17 +34,17 @@ public class CareerSearchController {
         if(value.equals("category")){
             return CareerResponse.success(
                     CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                    baseCareerService.findAllCareerGroupedCategory(requestMember.getId())
+                    careerSearchService.findAllCareerGroupedCategory(requestMember.getId())
             );
         }else if (value.equals("all")){
             return CareerResponse.success(
                     CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                    baseCareerService.findAllCareer(requestMember.getId())
+                    careerSearchService.findAllCareer(requestMember.getId())
             );
         }
         return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                baseCareerService.findAllCareerGroupedYear(requestMember.getId())
+                careerSearchService.findAllCareerGroupedYear(requestMember.getId())
         );
     }
     @GetMapping("/{type}/{careerId}")
@@ -57,7 +58,7 @@ public class CareerSearchController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                baseCareerService.findCareer(requestMember, careerId, type)
+                careerSearchService.findCareer(requestMember, careerId, type)
         );
     }
     @GetMapping("/find/detail")
@@ -72,7 +73,7 @@ public class CareerSearchController {
         Member reqeustMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                baseCareerService.findAllDetail(reqeustMember,keyword,sort)
+                careerSearchService.findAllDetail(reqeustMember,keyword,sort)
         );
     }
 
@@ -88,7 +89,7 @@ public class CareerSearchController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
                 CareerResponseMessage.CAREER_SEARCH_SUCCESS,
-                baseCareerService.findAllTag(requestMember, keyword)
+                careerSearchService.findAllTag(requestMember, keyword)
         );
     }
 
@@ -105,7 +106,7 @@ public class CareerSearchController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                baseCareerService.findAllDetailByTag(requestMember, tagId, sort)
+                careerSearchService.findAllDetailByTag(requestMember, tagId, sort)
         );
     }
     @GetMapping("/find")
@@ -120,7 +121,7 @@ public class CareerSearchController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                baseCareerService.findCareerWithKeyword(requestMember, keyword, sort)
+                careerSearchService.findCareerWithKeyword(requestMember, keyword, sort)
         );
 
     }
@@ -134,7 +135,7 @@ public class CareerSearchController {
         Member requestMember = memberService.getById(loginInfo.getMemberId());
         return CareerResponse.success(
                 CareerResponseMessage.CAREER_FINDALL_SUCCESS,
-                baseCareerService.findCareerForTimeline(requestMember)
+                careerSearchService.findCareerForTimeline(requestMember)
         );
 
     }

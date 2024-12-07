@@ -39,6 +39,13 @@ public interface BaseCareerDetailRepository extends JpaRepository<BaseCareerDeta
             "LEFT JOIN FETCH ct.tag t " +
             "WHERE bcd.employment = :emp")
     List<BaseCareerDetail> findByEmployment(Employment emp);
+
+    @Query("SELECT DISTINCT bcd FROM BaseCareerDetail bcd " +
+            "LEFT JOIN FETCH bcd.careerTagList ct " +
+            "LEFT JOIN FETCH ct.tag t " +
+            "WHERE bcd.etc = :etc")
+    List<BaseCareerDetail> findByEtc(CareerEtc etc);
+
     @Query("SELECT DISTINCT bcd FROM BaseCareerDetail bcd " +
             "LEFT JOIN FETCH bcd.careerTagList ct " +
             "LEFT JOIN FETCH ct.tag t " +
@@ -51,6 +58,7 @@ public interface BaseCareerDetailRepository extends JpaRepository<BaseCareerDeta
             "JOIN FETCH ct.tag t " +
             "WHERE EXISTS (SELECT 1 FROM CareerDetailTag ct2 WHERE ct2.baseCareerDetail=bcd AND ct2.tag.id=:tagId)" )
     List<BaseCareerDetail> findByTag(@Param("tagId") Long tagId);
+
 
 
 }

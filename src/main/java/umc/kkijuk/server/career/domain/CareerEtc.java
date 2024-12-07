@@ -1,12 +1,12 @@
 package umc.kkijuk.server.career.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import umc.kkijuk.server.detail.domain.BaseCareerDetail;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -16,6 +16,10 @@ public class CareerEtc extends BaseCareer{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToMany(mappedBy = "etc", cascade = CascadeType.ALL)
+    private List<BaseCareerDetail> detailList = new ArrayList<>();
+
     @Override
     public Long getId() {
         return id;

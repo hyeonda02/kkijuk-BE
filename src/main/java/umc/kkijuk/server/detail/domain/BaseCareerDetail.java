@@ -62,6 +62,10 @@ public class BaseCareerDetail extends BaseEntity {
     @JoinColumn(name="project_id")
     private Project project;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="etc_id")
+    private CareerEtc etc;
+
 
 
 

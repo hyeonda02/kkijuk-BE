@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.career.controller.response.*;
 import umc.kkijuk.server.career.dto.*;
-import umc.kkijuk.server.career.service.BaseCareerService;
+import umc.kkijuk.server.career.service.CareerService;
 import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
@@ -22,7 +22,7 @@ import umc.kkijuk.server.member.service.MemberService;
 @RequiredArgsConstructor
 @RequestMapping("/career")
 public class BaseCareerController {
-    private final BaseCareerService baseCareerService;
+    private final CareerService baseCareerService;
     private final MemberService memberService;
 
     @PostMapping("/activity")
