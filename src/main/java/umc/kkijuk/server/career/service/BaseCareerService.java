@@ -19,6 +19,7 @@ public interface BaseCareerService {
     EmploymentResponse createEmployment(Member requestMember, EmploymentReqDto employmentReqDto);
 
     ProjectResponse createProject(Member requestMember, ProjectReqDto projectReqDto);
+    EtcResponse createEtc(Member requestMember, EtcReqDto etcReqDto);
 
     void deleteActivity(Member requestMember, Long activityId);
 
@@ -31,6 +32,7 @@ public interface BaseCareerService {
     void deleteEmp(Member requestMember, Long employmentId);
 
     void deleteProject(Member requestMember, Long projectId);
+    void deleteEtc(Member requestMember, Long etcId);
 
     ActivityResponse updateActivity(Member requestMember, Long activityId, ActivityReqDto request);
 
@@ -41,6 +43,7 @@ public interface BaseCareerService {
     EduCareerResponse updateEdu(Member requestMember, Long educareerId, EduCareerReqDto eduCareerReqDto);
 
     EmploymentResponse updateEmp(Member requestMember, Long employmentId, EmploymentReqDto employmentReqDto);
+    EtcResponse updateEtc(Member requestMember, Long etcId, EtcReqDto etcReqDto);
 
     ProjectResponse updateProject(Member requestMember, Long projectId, ProjectReqDto projectReqDto);
 

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class BaseCareerServiceImpl implements BaseCareerService{
     private final ActivityRepository activityRepository;
     private final CircleRepository circleRepository;
@@ -35,6 +34,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
     private final EmploymentRepository employmentRepository;
     private final BaseCareerDetailRepository detailRepository;
     private final TagRepository tagRepository;
+    private final CareerEtcRepository etcRepository;
 
     @Override
     @Transactional
@@ -84,6 +84,13 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         setCommonFields(project);
         return new ProjectResponse(projectRepository.save(project));
     }
+    @Override
+    @Transactional
+    public EtcResponse createEtc(Member requestMember, EtcReqDto etcReqDto){
+        CareerEtc etc = BaseCareerConverter.toEtc(requestMember, etcReqDto);
+        setCommonFields(etc);
+        return new EtcResponse(etcRepository.save(etc));
+    }
 
     @Override
     @Transactional
@@ -95,6 +102,7 @@ public class BaseCareerServiceImpl implements BaseCareerService{
             case "edu" -> deleteEdu(requestMember, careerId);
             case "competition" -> deleteComp(requestMember, careerId);
             case "employment" -> deleteEmp(requestMember, careerId);
+            case "etc" -> deleteEtc(requestMember, careerId);
             default -> throw new IllegalArgumentException("지원하지 않는 활동 유형입니다 : " + type);
         }
     }
@@ -169,6 +177,17 @@ public class BaseCareerServiceImpl implements BaseCareerService{
             throw new OwnerMismatchException();
         }
         projectRepository.delete(project);
+    }
+    @Override
+    @Transactional
+    public void deleteEtc(Member requestMember, Long etcId){
+        CareerEtc etc = etcRepository.findById(etcId).orElseThrow(
+                () -> new ResourceNotFoundException("Etc", etcId)
+        );
+        if(!etc.getMemberId().equals(requestMember.getId())){
+            throw new OwnerMismatchException();
+        }
+        etcRepository.delete(etc);
     }
     @Override
     @Transactional
@@ -281,6 +300,25 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         );
         return new EmploymentResponse(updateEmployment);
 
+    }
+
+    @Override
+    @Transactional
+    public EtcResponse updateEtc(Member requestMember, Long etcId, EtcReqDto request) {
+        CareerEtc updateEtc = etcRepository.findById(etcId).orElseThrow(
+                () -> new ResourceNotFoundException("Etc",etcId)
+        );
+        if(!updateEtc.getMemberId().equals(requestMember.getId())){
+            throw new OwnerMismatchException();
+        }
+        updateEtc.updateCareerEtc(
+                request.getName(),
+                request.getAlias(),
+                request.getUnknown(),
+                request.getStartdate(),
+                request.getEnddate()
+        );
+        return new EtcResponse(updateEtc);
     }
 
     @Override
@@ -572,8 +610,26 @@ public class BaseCareerServiceImpl implements BaseCareerService{
         careers.sort(Comparator.comparing(BaseCareer::getEnddate).reversed());
 
         return careers.stream()
-                .map(career -> new TimelineResponse(career, career.getClass().getSimpleName()))
+                .map(career -> new TimelineResponse(career, resolveCareerType(career)))
                 .collect(Collectors.toList());
+    }
+
+    private CareerType resolveCareerType(BaseCareer career) {
+        if (career instanceof Activity) {
+            return CareerType.ACTIVITY;
+        } else if (career instanceof Project) {
+            return CareerType.PROJECT;
+        } else if (career instanceof Employment) {
+            return CareerType.EMP;
+        } else if (career instanceof EduCareer) {
+            return CareerType.EDU;
+        } else if (career instanceof Circle) {
+            return CareerType.CIRCLE;
+        } else if (career instanceof Competition) {
+            return CareerType.COM;
+        } else {
+            return CareerType.ETC;
+        }
     }
 
 

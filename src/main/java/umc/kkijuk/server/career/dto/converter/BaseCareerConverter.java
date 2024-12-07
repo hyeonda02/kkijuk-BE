@@ -89,4 +89,14 @@ public class BaseCareerConverter {
                 .role(circleReqDto.getRole()).build();
     }
 
+    public static CareerEtc toEtc(Member requestMember, EtcReqDto etcReqDto) {
+        return CareerEtc.builder()
+                .memberId(requestMember.getId())
+                .name(etcReqDto.getName())
+                .alias(etcReqDto.getAlias())
+                .unknown(etcReqDto.getUnknown())
+                .startdate(etcReqDto.getStartdate())
+                .enddate(etcReqDto.getEnddate())
+                .build();
+    }
 }

@@ -34,8 +34,7 @@ public class Activity extends BaseCareer {
     }
     @Builder
     public Activity(Long memberId, String name, String alias, Boolean unknown,
-                    String summary, LocalDate startdate,
-                    LocalDate enddate, String organizer,
+                    LocalDate startdate, LocalDate enddate, String organizer,
                     String role, int teamSize, int contribution,
                     Boolean isTeam) {
         super(memberId, name, alias, unknown,startdate, enddate);
