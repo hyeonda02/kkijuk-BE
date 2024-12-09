@@ -103,8 +103,6 @@ public class CareerSearchServiceImpl implements CareerSearchService{
                 .map(EtcResponse::new).collect(Collectors.toList()));
 
 
-//        baseCareers.stream().sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed());
-
         baseCareers = baseCareers.stream()
                 .sorted(Comparator.comparing(BaseCareerResponse::getEndDate).reversed())
                 .collect(Collectors.toList());
@@ -129,26 +127,26 @@ public class CareerSearchServiceImpl implements CareerSearchService{
     @Override
     public List<BaseCareerResponse> findAllCareer(Long memberId) {
         List<BaseCareerResponse> baseCareers = projectRepository.findByMemberId(memberId).stream()
-                .map(project-> new ProjectResponse(project,detailRepository.findByProject(project)))
+                .map(project-> new ProjectResponse(project,detailRepository.findByCareerIdAndCareerType(CareerType.PROJECT,project.getId())))
                 .collect(Collectors.toList());
         baseCareers.addAll(competitionRepository.findByMemberId(memberId).stream()
-                .map(comp-> new CompetitionResponse(comp, detailRepository.findByCompetition(comp)))
+                .map(comp-> new CompetitionResponse(comp, detailRepository.findByCareerIdAndCareerType(CareerType.COM,comp.getId())))
                 .collect(Collectors.toList()));
         baseCareers.addAll(activityRepository.findByMemberId(memberId).stream()
-                .map(activity->new ActivityResponse(activity, detailRepository.findByActivity(activity)))
+                .map(activity->new ActivityResponse(activity, detailRepository.findByCareerIdAndCareerType(CareerType.ACTIVITY,activity.getId())))
                 .collect(Collectors.toList()));
         baseCareers.addAll(circleRepository.findByMemberId(memberId).stream()
-                .map(circle-> new CircleResponse(circle, detailRepository.findByCircle(circle)))
+                .map(circle-> new CircleResponse(circle, detailRepository.findByCareerIdAndCareerType(CareerType.CIRCLE,circle.getId())))
                 .collect(Collectors.toList()));
         baseCareers.addAll(eduCareerRepository.findByMemberId(memberId).stream()
-                .map(eduCareer -> new EduCareerResponse(eduCareer, detailRepository.findByEduCareer(eduCareer)))
+                .map(eduCareer -> new EduCareerResponse(eduCareer, detailRepository.findByCareerIdAndCareerType(CareerType.EDU,eduCareer.getId())))
                 .collect(Collectors.toList()));
         baseCareers.addAll(employmentRepository.findByMemberId(memberId).stream()
-                .map(employment -> new EmploymentResponse(employment, detailRepository.findByEmployment(employment)))
+                .map(employment -> new EmploymentResponse(employment, detailRepository.findByCareerIdAndCareerType(CareerType.EMP,employment.getId())))
                 .collect(Collectors.toList()));
 
         baseCareers.addAll(etcRepository.findByMemberId(memberId).stream()
-                .map(etc -> new EtcResponse(etc, detailRepository.findByEtc(etc)))
+                .map(etc -> new EtcResponse(etc, detailRepository.findByCareerIdAndCareerType(CareerType.ETC,etc.getId())))
                 .collect(Collectors.toList()));
 
         baseCareers = baseCareers.stream()
@@ -252,7 +250,8 @@ public class CareerSearchServiceImpl implements CareerSearchService{
         }
 
         return careers.stream().limit(2)
-                .map(career -> new FindCareerResponse(career, career.getClass().getSimpleName()))
+                .map(career -> new FindCareerResponse(career.getId(), career.getName(), career.getAlias(),
+                        career.getStartdate(), career.getEnddate(), CareerType.fromClass(career)))
                 .collect(Collectors.toList());
 
     }
@@ -282,25 +281,25 @@ public class CareerSearchServiceImpl implements CareerSearchService{
     private <T extends BaseCareer, R extends BaseCareerResponse> R getResponse(T career,  BiFunction<T, List<BaseCareerDetail>, R> responseConstructor) {
         List<BaseCareerDetail> details;
         if (career instanceof Activity) {
-            details = Optional.ofNullable(detailRepository.findByActivity((Activity) career))
+            details = Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.ACTIVITY, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof Circle) {
-            details = Optional.ofNullable(detailRepository.findByCircle((Circle) career))
+            details = Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.CIRCLE, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof Competition) {
-            details = Optional.ofNullable(detailRepository.findByCompetition((Competition) career))
+            details = Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.COM, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof EduCareer) {
-            details =Optional.ofNullable(detailRepository.findByEduCareer((EduCareer) career))
+            details =Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.EDU, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof Employment) {
-            details = Optional.ofNullable( detailRepository.findByEmployment((Employment) career))
+            details = Optional.ofNullable( detailRepository.findByCareerIdAndCareerType(CareerType.EMP, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof Project) {
-            details = Optional.ofNullable( detailRepository.findByProject((Project) career))
+            details = Optional.ofNullable( detailRepository.findByCareerIdAndCareerType(CareerType.PROJECT, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof CareerEtc) {
-            details = Optional.ofNullable( detailRepository.findByEtc((CareerEtc) career))
+            details = Optional.ofNullable( detailRepository.findByCareerIdAndCareerType(CareerType.ETC, career.getId()))
                     .orElseGet(Collections::emptyList);
         }
         else {
@@ -309,10 +308,10 @@ public class CareerSearchServiceImpl implements CareerSearchService{
         return responseConstructor.apply(career,details);
     }
     private List<FindDetailResponse> buildDetailResponse(List<BaseCareerDetail> detailList, String sort) {
-        Map<String, Map<Long, List<BaseCareerDetail>>> groupedDetails = new HashMap<>();
+        Map<CareerType, Map<Long, List<BaseCareerDetail>>> groupedDetails = new HashMap<>();
         for (BaseCareerDetail detail : detailList) {
-            String careerType = getCareerType(detail);
-            Long careerId = getCareerId(detail);
+            CareerType careerType = getCareerType(detail);
+            Long careerId = detail.getCareerId();
             groupedDetails
                     .computeIfAbsent(careerType, k -> new HashMap<>())
                     .computeIfAbsent(careerId, k -> new ArrayList<>())
@@ -321,8 +320,8 @@ public class CareerSearchServiceImpl implements CareerSearchService{
 
         List<FindDetailResponse> result = new ArrayList<>();
 
-        for(Map.Entry<String, Map<Long, List<BaseCareerDetail>>> entry : groupedDetails.entrySet()) {
-            String type = entry.getKey();
+        for(Map.Entry<CareerType, Map<Long, List<BaseCareerDetail>>> entry : groupedDetails.entrySet()) {
+            CareerType type = entry.getKey();
             Map<Long, List<BaseCareerDetail>> careerMap = entry.getValue();
 
             for(Map.Entry<Long,List<BaseCareerDetail>> careerEntry : careerMap.entrySet()){
@@ -335,7 +334,9 @@ public class CareerSearchServiceImpl implements CareerSearchService{
                     detailResponses.add(new BaseCareerDetailResponse(detail));
                 }
 
-                result.add(new FindDetailResponse(careerId,type,detailInfo.title,detailInfo.alias,detailInfo.startDate,detailInfo.endDate,detailResponses));
+                result.add(new FindDetailResponse(careerId, detailInfo.title,detailInfo.alias,
+                        detailInfo.startDate,detailInfo.endDate,
+                        detailResponses,type));
             }
         }
         if (sort.equals("new")) {
@@ -347,30 +348,30 @@ public class CareerSearchServiceImpl implements CareerSearchService{
 
     }
 
-    private String getCareerType(BaseCareerDetail detail) {
+    private CareerType getCareerType(BaseCareerDetail detail) {
         switch (detail.getCareerType()) {
-            case ACTIVITY: return CareerType.ACTIVITY.getDescription();
-            case PROJECT: return CareerType.PROJECT.getDescription();
-            case EMP: return CareerType.EMP.getDescription();
-            case EDU: return CareerType.EDU.getDescription();
-            case COM: return CareerType.COM.getDescription();
-            case CIRCLE: return CareerType.CIRCLE.getDescription();
-            case ETC:return CareerType.ETC.getDescription();
+            case ACTIVITY: return CareerType.ACTIVITY;
+            case PROJECT: return CareerType.PROJECT;
+            case EMP: return CareerType.EMP;
+            case EDU: return CareerType.EDU;
+            case COM: return CareerType.COM;
+            case CIRCLE: return CareerType.CIRCLE;
+            case ETC:return CareerType.ETC;
             default: return null;
         }
     }
-    private Long getCareerId(BaseCareerDetail detail) {
-        switch (detail.getCareerType()) {
-            case ACTIVITY: return detail.getActivity().getId();
-            case PROJECT: return detail.getProject().getId();
-            case EMP: return detail.getEmployment().getId();
-            case EDU: return detail.getEduCareer().getId();
-            case COM: return detail.getCompetition().getId();
-            case CIRCLE: return detail.getCircle().getId();
-            case ETC: return detail.getEtc().getId();
-            default: return null;
-        }
-    }
+//    private Long getCareerId(BaseCareerDetail detail) {
+//        switch (detail.getCareerType()) {
+//            case ACTIVITY: return detail.getActivity().getId();
+//            case PROJECT: return detail.getProject().getId();
+//            case EMP: return detail.getEmployment().getId();
+//            case EDU: return detail.getEduCareer().getId();
+//            case COM: return detail.getCompetition().getId();
+//            case CIRCLE: return detail.getCircle().getId();
+//            case ETC: return detail.getEtc().getId();
+//            default: return null;
+//        }
+//    }
     private CareerSearchServiceImpl.FindDetailInfo extractDetailInfo(List<BaseCareerDetail> details) {
         if (details.isEmpty()) {
             return new CareerSearchServiceImpl.FindDetailInfo(null, null, null, null);
@@ -384,32 +385,39 @@ public class CareerSearchServiceImpl implements CareerSearchService{
 
         switch (firstDetail.getCareerType()) {
             case ACTIVITY -> {
-                title = firstDetail.getActivity().getName();
-                alias = firstDetail.getActivity().getAlias();
+                Activity activity = activityRepository.findById(firstDetail.getCareerId()).get();
+                title = activity.getName();
+                alias = activity.getAlias();
             }
             case PROJECT -> {
-                title = firstDetail.getProject().getName();
-                alias = firstDetail.getProject().getAlias();
+                Project project = projectRepository.findById(firstDetail.getCareerId()).get();
+                title = project.getName();
+                alias = project.getAlias();
             }
             case EMP -> {
-                title = firstDetail.getEmployment().getName();
-                alias = firstDetail.getEmployment().getAlias();
+                Employment emp = employmentRepository.findById(firstDetail.getCareerId()).get();
+                title = emp.getName();
+                alias = emp.getAlias();
             }
             case EDU -> {
-                title = firstDetail.getEduCareer().getName();
-                alias = firstDetail.getEduCareer().getAlias();
+                EduCareer edu = eduCareerRepository.findById(firstDetail.getCareerId()).get();
+                title = edu.getName();
+                alias = edu.getAlias();
             }
             case COM -> {
-                title = firstDetail.getCompetition().getName();
-                alias = firstDetail.getCompetition().getAlias();
+                Competition competition = competitionRepository.findById(firstDetail.getCareerId()).get();
+                title = competition.getName();
+                alias = competition.getAlias();
             }
             case CIRCLE -> {
-                title = firstDetail.getCircle().getName();
-                alias = firstDetail.getCircle().getAlias();
+                Circle circle = circleRepository.findById(firstDetail.getCareerId()).get();
+                title = circle.getName();
+                alias = circle.getAlias();
             }
             case ETC -> {
-                title = firstDetail.getEtc().getName();
-                alias = firstDetail.getEtc().getAlias();
+                CareerEtc etc = etcRepository.findById(firstDetail.getCareerId()).get();
+                title = etc.getName();
+                alias = etc.getAlias();
             }
         }
 

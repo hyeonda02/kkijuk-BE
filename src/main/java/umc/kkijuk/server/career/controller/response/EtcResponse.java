@@ -46,6 +46,6 @@ public class EtcResponse implements BaseCareerResponse{
 
     @Override
     public LocalDate getEndDate() {
-        return null;
+        return enddate;
     }
 }

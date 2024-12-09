@@ -11,6 +11,7 @@ import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
+import umc.kkijuk.server.detail.domain.CareerType;
 import umc.kkijuk.server.detail.repository.BaseCareerDetailRepository;
 import umc.kkijuk.server.member.domain.Member;
 
@@ -406,25 +407,28 @@ public class CareerServiceImpl implements CareerService{
     private <T extends BaseCareer, R extends BaseCareerResponse> R getResponse(T career,  BiFunction<T, List<BaseCareerDetail>, R> responseConstructor) {
         List<BaseCareerDetail> details;
         if (career instanceof Activity) {
-            details = Optional.ofNullable(detailRepository.findByActivity((Activity) career))
+            details = Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.ACTIVITY, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof Circle) {
-            details = Optional.ofNullable(detailRepository.findByCircle((Circle) career))
+            details = Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.CIRCLE, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof Competition) {
-            details = Optional.ofNullable(detailRepository.findByCompetition((Competition) career))
+            details = Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.COM, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof EduCareer) {
-            details =Optional.ofNullable(detailRepository.findByEduCareer((EduCareer) career))
+            details =Optional.ofNullable(detailRepository.findByCareerIdAndCareerType(CareerType.EDU, career.getId()))
                     .orElseGet(Collections::emptyList);
         } else if (career instanceof Employment) {
-            details = Optional.ofNullable( detailRepository.findByEmployment((Employment) career))
+            details = Optional.ofNullable( detailRepository.findByCareerIdAndCareerType(CareerType.EMP, career.getId()))
                     .orElseGet(Collections::emptyList);
-
         } else if (career instanceof Project) {
-            details = Optional.ofNullable( detailRepository.findByProject((Project) career))
+            details = Optional.ofNullable( detailRepository.findByCareerIdAndCareerType(CareerType.PROJECT, career.getId()))
                     .orElseGet(Collections::emptyList);
-        } else {
+        } else if (career instanceof CareerEtc) {
+            details = Optional.ofNullable( detailRepository.findByCareerIdAndCareerType(CareerType.ETC, career.getId()))
+                    .orElseGet(Collections::emptyList);
+        }
+        else {
             throw new IllegalArgumentException("지원하지 않는 타입입니다.");
         }
         return responseConstructor.apply(career,details);

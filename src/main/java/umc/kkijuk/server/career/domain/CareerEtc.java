@@ -17,8 +17,8 @@ public class CareerEtc extends BaseCareer{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "etc", cascade = CascadeType.ALL)
-    private List<BaseCareerDetail> detailList = new ArrayList<>();
+//    @OneToMany(mappedBy = "etc", cascade = CascadeType.ALL)
+//    private List<BaseCareerDetail> detailList = new ArrayList<>();
 
     @Override
     public Long getId() {
