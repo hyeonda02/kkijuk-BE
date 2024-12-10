@@ -32,6 +32,7 @@ public class DashBoardServiceImpl implements DashBoardService {
     private final EduCareerRepository eduCareerRepository;
     private final EmploymentRepository employmentRepository;
     private final ProjectRepository projectRepository;
+    private final CareerEtcRepository etcRepository;
 
     @Override
     public DashBoardUserInfoResponse getUserInfo(Member requestMember) {
@@ -62,7 +63,9 @@ public class DashBoardServiceImpl implements DashBoardService {
                         competitionRepository.findByMemberId(memberId),
                         eduCareerRepository.findByMemberId(memberId),
                         employmentRepository.findByMemberId(memberId),
-                        projectRepository.findByMemberId(memberId)
+                        projectRepository.findByMemberId(memberId),
+                        etcRepository.findByMemberId(memberId)
+
                 )
                 .mapToLong(List::size)
                 .sum();

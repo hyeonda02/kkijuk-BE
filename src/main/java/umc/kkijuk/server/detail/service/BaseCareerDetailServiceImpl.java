@@ -43,11 +43,10 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
         validateOwner(career, requestMember);
 
         List<CareerDetailTag> detailTagList = returnCareerTagList(request.getTagList());
-        BaseCareerDetail newBaseCareerDetail = BaseCareerDetailConverter.toBaseCareerDetail(requestMember, request, career);
+        BaseCareerDetail newBaseCareerDetail = BaseCareerDetailConverter.toBaseCareerDetail(requestMember, request, careerId);
 
-        addDetailToCareer(career, newBaseCareerDetail);
+//        addDetailToCareer(career, newBaseCareerDetail);
         detailTagList.forEach(tag -> tag.setBaseCareerDetail(newBaseCareerDetail));
-
         return new BaseCareerDetailResponse(baseCareerDetailRepository.save(newBaseCareerDetail));
     }
 
@@ -95,24 +94,23 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
         }
     }
 
-    private void addDetailToCareer(BaseCareer career, BaseCareerDetail detail) {
-        if (career instanceof Competition) {
-            ((Competition) career).getDetailList().add(detail);
-        } else if (career instanceof Activity) {
-            ((Activity) career).getDetailList().add(detail);
-        } else if (career instanceof EduCareer) {
-            ((EduCareer) career).getDetailList().add(detail);
-        } else if (career instanceof Employment) {
-            ((Employment) career).getDetailList().add(detail);
-        } else if (career instanceof Circle) {
-            ((Circle) career).getDetailList().add(detail);
-        } else if (career instanceof Project) {
-            ((Project) career).getDetailList().add(detail);
-        } else {
-            throw new IllegalArgumentException("지원하지 않는 활동 유형입니다.");
-        }
-    }
-
+//    private void addDetailToCareer(BaseCareer career, BaseCareerDetail detail) {
+//        if (career instanceof Competition) {
+//            ((Competition) career).getDetailList().add(detail);
+//        } else if (career instanceof Activity) {
+//            ((Activity) career).getDetailList().add(detail);
+//        } else if (career instanceof EduCareer) {
+//            ((EduCareer) career).getDetailList().add(detail);
+//        } else if (career instanceof Employment) {
+//            ((Employment) career).getDetailList().add(detail);
+//        } else if (career instanceof Circle) {
+//            ((Circle) career).getDetailList().add(detail);
+//        } else if (career instanceof Project) {
+//            ((Project) career).getDetailList().add(detail);
+//        } else {
+//            throw new IllegalArgumentException("지원하지 않는 활동 유형입니다.");
+//        }
+//    }
     private BaseCareer findBaseCareerByType(CareerType careerType, Long careerId) {
         return switch (careerType) {
             case ACTIVITY -> activityRepository.findById(careerId)

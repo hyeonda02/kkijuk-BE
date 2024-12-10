@@ -11,7 +11,7 @@ import umc.kkijuk.server.career.controller.BaseCareerController;
 import umc.kkijuk.server.career.controller.response.*;
 import umc.kkijuk.server.career.domain.*;
 import umc.kkijuk.server.career.dto.*;
-import umc.kkijuk.server.career.service.BaseCareerServiceImpl;
+import umc.kkijuk.server.career.service.CareerServiceImpl;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.detail.domain.CareerType;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
@@ -28,7 +28,7 @@ public class CareerControllerTest {
     @InjectMocks
     private BaseCareerController careerController;
     @Mock
-    private BaseCareerServiceImpl baseCareerService;
+    private CareerServiceImpl baseCareerService;
     @Mock
     private MemberServiceImpl memberService;
     public final Long requestMemberId = 1L;
