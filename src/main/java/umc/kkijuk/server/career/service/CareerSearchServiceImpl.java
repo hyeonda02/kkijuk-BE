@@ -249,7 +249,7 @@ public class CareerSearchServiceImpl implements CareerSearchService{
             careers.sort(Comparator.comparing(BaseCareer::getEnddate));
         }
 
-        return careers.stream().limit(2)
+        return careers.stream()
                 .map(career -> new FindCareerResponse(career.getId(), career.getName(), career.getAlias(),
                         career.getStartdate(), career.getEnddate(), CareerType.fromClass(career)))
                 .collect(Collectors.toList());
