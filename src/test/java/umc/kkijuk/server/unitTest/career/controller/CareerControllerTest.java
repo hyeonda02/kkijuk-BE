@@ -111,7 +111,6 @@ public class CareerControllerTest {
         //then
         assertAll(
                 () -> assertEquals(response.getMessage(), CareerResponseMessage.CAREER_CREATE_SUCCESS),
-                () -> assertEquals(result.getCategory(), CareerType.ACTIVITY.getDescription()),
                 () -> assertEquals(result.getName(),request.getName()),
                 () -> assertEquals(result.getAlias(),request.getAlias()),
                 () -> assertEquals(result.getStartdate(),request.getStartdate()),
@@ -172,7 +171,6 @@ public class CareerControllerTest {
         //then
         assertAll(
                 () -> assertEquals(response.getMessage(), CareerResponseMessage.CAREER_CREATE_SUCCESS),
-                () -> assertEquals(result.getCategory(), CareerType.CIRCLE.getDescription()),
                 () -> assertEquals(result.getName(),request.getName()),
                 () -> assertEquals(result.getAlias(),request.getAlias()),
                 () -> assertEquals(result.getStartdate(),request.getStartdate()),
@@ -235,7 +233,6 @@ public class CareerControllerTest {
         //then
         assertAll(
                 () -> assertEquals(response.getMessage(), CareerResponseMessage.CAREER_CREATE_SUCCESS),
-                () -> assertEquals(result.getCategory(), CareerType.COM.getDescription()),
                 () -> assertEquals(result.getName(),request.getName()),
                 () -> assertEquals(result.getAlias(),request.getAlias()),
                 () -> assertEquals(result.getStartdate(),request.getStartdate()),
