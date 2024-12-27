@@ -3,13 +3,12 @@ package umc.kkijuk.server.detail.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import umc.kkijuk.server.career.domain.*;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
 import umc.kkijuk.server.detail.domain.CareerType;
 
 import java.util.List;
 
-public interface BaseCareerDetailRepository extends JpaRepository<BaseCareerDetail,Long> {
+public interface CareerDetailJpaRepository extends JpaRepository<BaseCareerDetail,Long> {
 //    @Query("SELECT DISTINCT bcd FROM BaseCareerDetail bcd " +
 //            "LEFT JOIN FETCH bcd.careerTagList ct " +
 //            "LEFT JOIN FETCH  ct.tag t " +

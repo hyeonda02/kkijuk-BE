@@ -1,5 +1,6 @@
 package umc.kkijuk.server.career.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import umc.kkijuk.server.career.controller.response.*;
@@ -9,7 +10,7 @@ import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
 import umc.kkijuk.server.detail.domain.CareerType;
-import umc.kkijuk.server.detail.repository.BaseCareerDetailRepository;
+import umc.kkijuk.server.detail.repository.CareerDetailRepository;
 import umc.kkijuk.server.member.domain.Member;
 import umc.kkijuk.server.tag.domain.Tag;
 import umc.kkijuk.server.tag.repository.TagRepository;
@@ -20,16 +21,17 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 @Service
+@Builder
 @RequiredArgsConstructor
 public class CareerSearchServiceImpl implements CareerSearchService{
     private final ActivityRepository activityRepository;
     private final CircleRepository circleRepository;
-    private final CompetitionRepository competitionRepository;
-    private final EduCareerRepository eduCareerRepository;
-    private final ProjectRepository projectRepository;
-    private final EmploymentRepository employmentRepository;
+    private final CompetitionRepository competitionJpaRepository;
+    private final EduCareerRepository eduCareerJpaRepository;
+    private final ProjectRepository projectJpaRepository;
+    private final EmploymentRepository employmentJpaRepository;
     private final CareerEtcRepository etcRepository;
-    private final BaseCareerDetailRepository detailRepository;
+    private final CareerDetailRepository detailRepository;
     private final TagRepository tagRepository;
 
     @Override
@@ -39,11 +41,11 @@ public class CareerSearchServiceImpl implements CareerSearchService{
 
 
         careers.addAll(activityRepository.findByMemberId(memberId));
-        careers.addAll(eduCareerRepository.findByMemberId(memberId));
-        careers.addAll(employmentRepository.findByMemberId(memberId));
+        careers.addAll(eduCareerJpaRepository.findByMemberId(memberId));
+        careers.addAll(employmentJpaRepository.findByMemberId(memberId));
         careers.addAll(circleRepository.findByMemberId(memberId));
-        careers.addAll(projectRepository.findByMemberId(memberId));
-        careers.addAll(competitionRepository.findByMemberId(memberId));
+        careers.addAll(projectJpaRepository.findByMemberId(memberId));
+        careers.addAll(competitionJpaRepository.findByMemberId(memberId));
         careers.addAll(etcRepository.findByMemberId(memberId));
 
 
@@ -56,17 +58,17 @@ public class CareerSearchServiceImpl implements CareerSearchService{
 
     @Override
     public Map<String, List<?>> findAllCareerGroupedCategory(Long memberId) {
-        List<EduCareerResponse> eduCareers = eduCareerRepository.findByMemberId(memberId)
+        List<EduCareerResponse> eduCareers = eduCareerJpaRepository.findByMemberId(memberId)
                 .stream().map(EduCareerResponse::new).collect(Collectors.toList());
-        List<EmploymentResponse> employments = employmentRepository.findByMemberId(memberId)
+        List<EmploymentResponse> employments = employmentJpaRepository.findByMemberId(memberId)
                 .stream().map(EmploymentResponse::new).collect(Collectors.toList());
-        List<ProjectResponse> projects = projectRepository.findByMemberId(memberId)
+        List<ProjectResponse> projects = projectJpaRepository.findByMemberId(memberId)
                 .stream().map(ProjectResponse::new).collect(Collectors.toList());
         List<ActivityResponse> activities = activityRepository.findByMemberId(memberId)
                 .stream().map(ActivityResponse::new).collect(Collectors.toList());
         List<CircleResponse> circles = circleRepository.findByMemberId(memberId)
                 .stream().map(CircleResponse::new).collect(Collectors.toList());
-        List<CompetitionResponse> competitions = competitionRepository.findByMemberId(memberId)
+        List<CompetitionResponse> competitions = competitionJpaRepository.findByMemberId(memberId)
                 .stream().map(CompetitionResponse::new).collect(Collectors.toList());
         List<EtcResponse> etcs = etcRepository.findByMemberId(memberId)
                 .stream().map(EtcResponse::new).collect(Collectors.toList());
@@ -86,18 +88,18 @@ public class CareerSearchServiceImpl implements CareerSearchService{
 
     @Override
     public Map<String, List<?>> findAllCareerGroupedYear(Long memberId) {
-        List<BaseCareerResponse> baseCareers = projectRepository.findByMemberId(memberId).stream()
+        List<BaseCareerResponse> baseCareers = projectJpaRepository.findByMemberId(memberId).stream()
                 .map(ProjectResponse::new)
                 .collect(Collectors.toList());
-        baseCareers.addAll(competitionRepository.findByMemberId(memberId).stream()
+        baseCareers.addAll(competitionJpaRepository.findByMemberId(memberId).stream()
                 .map(CompetitionResponse::new).collect(Collectors.toList()));
         baseCareers.addAll(activityRepository.findByMemberId(memberId).stream()
                 .map(ActivityResponse::new).collect(Collectors.toList()));
         baseCareers.addAll(circleRepository.findByMemberId(memberId).stream()
                 .map(CircleResponse::new).collect(Collectors.toList()));
-        baseCareers.addAll(eduCareerRepository.findByMemberId(memberId).stream()
+        baseCareers.addAll(eduCareerJpaRepository.findByMemberId(memberId).stream()
                 .map(EduCareerResponse::new).collect(Collectors.toList()));
-        baseCareers.addAll(employmentRepository.findByMemberId(memberId).stream()
+        baseCareers.addAll(employmentJpaRepository.findByMemberId(memberId).stream()
                 .map(EmploymentResponse::new).collect(Collectors.toList()));
         baseCareers.addAll(etcRepository.findByMemberId(memberId).stream()
                 .map(EtcResponse::new).collect(Collectors.toList()));
@@ -126,10 +128,10 @@ public class CareerSearchServiceImpl implements CareerSearchService{
 
     @Override
     public List<BaseCareerResponse> findAllCareer(Long memberId) {
-        List<BaseCareerResponse> baseCareers = projectRepository.findByMemberId(memberId).stream()
+        List<BaseCareerResponse> baseCareers = projectJpaRepository.findByMemberId(memberId).stream()
                 .map(project-> new ProjectResponse(project,detailRepository.findByCareerIdAndCareerType(CareerType.PROJECT,project.getId())))
                 .collect(Collectors.toList());
-        baseCareers.addAll(competitionRepository.findByMemberId(memberId).stream()
+        baseCareers.addAll(competitionJpaRepository.findByMemberId(memberId).stream()
                 .map(comp-> new CompetitionResponse(comp, detailRepository.findByCareerIdAndCareerType(CareerType.COM,comp.getId())))
                 .collect(Collectors.toList()));
         baseCareers.addAll(activityRepository.findByMemberId(memberId).stream()
@@ -138,10 +140,10 @@ public class CareerSearchServiceImpl implements CareerSearchService{
         baseCareers.addAll(circleRepository.findByMemberId(memberId).stream()
                 .map(circle-> new CircleResponse(circle, detailRepository.findByCareerIdAndCareerType(CareerType.CIRCLE,circle.getId())))
                 .collect(Collectors.toList()));
-        baseCareers.addAll(eduCareerRepository.findByMemberId(memberId).stream()
+        baseCareers.addAll(eduCareerJpaRepository.findByMemberId(memberId).stream()
                 .map(eduCareer -> new EduCareerResponse(eduCareer, detailRepository.findByCareerIdAndCareerType(CareerType.EDU,eduCareer.getId())))
                 .collect(Collectors.toList()));
-        baseCareers.addAll(employmentRepository.findByMemberId(memberId).stream()
+        baseCareers.addAll(employmentJpaRepository.findByMemberId(memberId).stream()
                 .map(employment -> new EmploymentResponse(employment, detailRepository.findByCareerIdAndCareerType(CareerType.EMP,employment.getId())))
                 .collect(Collectors.toList()));
 
@@ -173,28 +175,28 @@ public class CareerSearchServiceImpl implements CareerSearchService{
                 return getResponse(circle, CircleResponse::new);
             }
             case "project"  -> {
-                Project project = projectRepository.findById(careerId).get();
+                Project project = projectJpaRepository.findById(careerId).get();
                 if(!project.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
                 return getResponse(project, ProjectResponse::new);
             }
             case "edu"  -> {
-                EduCareer eduCareer = eduCareerRepository.findById(careerId).get();
+                EduCareer eduCareer = eduCareerJpaRepository.findById(careerId).get();
                 if(!eduCareer.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
                 return getResponse(eduCareer, EduCareerResponse::new);
             }
             case "competition"  -> {
-                Competition competition = competitionRepository.findById(careerId).get();
+                Competition competition = competitionJpaRepository.findById(careerId).get();
                 if(!competition.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
                 return getResponse(competition, CompetitionResponse::new);
             }
             case "employment"  -> {
-                Employment employment = employmentRepository.findById(careerId).get();
+                Employment employment = employmentJpaRepository.findById(careerId).get();
                 if(!employment.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
                 }
@@ -236,11 +238,11 @@ public class CareerSearchServiceImpl implements CareerSearchService{
     public List<FindCareerResponse> findCareerWithKeyword(Member requestMember, String keyword, String sort) {
         List<BaseCareer> careers = new ArrayList<>();
         careers.addAll(activityRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
-        careers.addAll(eduCareerRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
-        careers.addAll(employmentRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(eduCareerJpaRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(employmentJpaRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
         careers.addAll(circleRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
-        careers.addAll(projectRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
-        careers.addAll(competitionRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(projectJpaRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
+        careers.addAll(competitionJpaRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
         careers.addAll(etcRepository.findByMemberIdAndNameContaining(requestMember.getId(),keyword));
 
         if ("new".equalsIgnoreCase(sort)) {
@@ -390,22 +392,22 @@ public class CareerSearchServiceImpl implements CareerSearchService{
                 alias = activity.getAlias();
             }
             case PROJECT -> {
-                Project project = projectRepository.findById(firstDetail.getCareerId()).get();
+                Project project = projectJpaRepository.findById(firstDetail.getCareerId()).get();
                 title = project.getName();
                 alias = project.getAlias();
             }
             case EMP -> {
-                Employment emp = employmentRepository.findById(firstDetail.getCareerId()).get();
+                Employment emp = employmentJpaRepository.findById(firstDetail.getCareerId()).get();
                 title = emp.getName();
                 alias = emp.getAlias();
             }
             case EDU -> {
-                EduCareer edu = eduCareerRepository.findById(firstDetail.getCareerId()).get();
+                EduCareer edu = eduCareerJpaRepository.findById(firstDetail.getCareerId()).get();
                 title = edu.getName();
                 alias = edu.getAlias();
             }
             case COM -> {
-                Competition competition = competitionRepository.findById(firstDetail.getCareerId()).get();
+                Competition competition = competitionJpaRepository.findById(firstDetail.getCareerId()).get();
                 title = competition.getName();
                 alias = competition.getAlias();
             }

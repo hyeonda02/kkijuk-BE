@@ -1,5 +1,6 @@
 package umc.kkijuk.server.career.service;
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,7 @@ import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.common.domian.exception.ResourceNotFoundException;
 import umc.kkijuk.server.detail.domain.BaseCareerDetail;
 import umc.kkijuk.server.detail.domain.CareerType;
-import umc.kkijuk.server.detail.repository.BaseCareerDetailRepository;
+import umc.kkijuk.server.detail.repository.CareerDetailRepository;
 import umc.kkijuk.server.member.domain.Member;
 
 import java.time.LocalDate;
@@ -20,15 +21,16 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 @Service
+@Builder
 @RequiredArgsConstructor
 public class CareerServiceImpl implements CareerService{
     private final ActivityRepository activityRepository;
     private final CircleRepository circleRepository;
     private final CompetitionRepository competitionRepository;
     private final EduCareerRepository eduCareerRepository;
-    private final ProjectRepository projectRepository;
+    private final ProjectRepository projectJpaRepository;
     private final EmploymentRepository employmentRepository;
-    private final BaseCareerDetailRepository detailRepository;
+    private final CareerDetailRepository detailRepository;
     private final CareerEtcRepository etcRepository;
 
     @Override
@@ -77,7 +79,7 @@ public class CareerServiceImpl implements CareerService{
     public ProjectResponse createProject(Member requestMember, ProjectReqDto projectReqDto) {
         Project project = BaseCareerConverter.toProject(requestMember, projectReqDto);
         setCommonFields(project);
-        return new ProjectResponse(projectRepository.save(project));
+        return new ProjectResponse(projectJpaRepository.save(project));
     }
     @Override
     @Transactional
@@ -165,13 +167,13 @@ public class CareerServiceImpl implements CareerService{
     @Override
     @Transactional
     public void deleteProject(Member requestMember, Long projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow(
+        Project project = projectJpaRepository.findById(projectId).orElseThrow(
                 () -> new ResourceNotFoundException("Project",projectId)
         );
         if(!project.getMemberId().equals(requestMember.getId())){
             throw new OwnerMismatchException();
         }
-        projectRepository.delete(project);
+        projectJpaRepository.delete(project);
     }
     @Override
     @Transactional
@@ -319,7 +321,7 @@ public class CareerServiceImpl implements CareerService{
     @Override
     @Transactional
     public ProjectResponse updateProject(Member requestMember, Long projectId, ProjectReqDto request) {
-        Project updateProject = projectRepository.findById(projectId).orElseThrow(
+        Project updateProject = projectJpaRepository.findById(projectId).orElseThrow(
                 () -> new ResourceNotFoundException("Project",projectId)
         );
         if(!updateProject.getMemberId().equals(requestMember.getId())){
@@ -354,7 +356,7 @@ public class CareerServiceImpl implements CareerService{
                 return getResponse(activity, ActivityResponse::new);
             }
             case PROJECT -> {
-                Project project = projectRepository.findById(careerId)
+                Project project = projectJpaRepository.findById(careerId)
                         .orElseThrow(() -> new ResourceNotFoundException("Project", careerId));
                 if(!project.getMemberId().equals(requestMember.getId())){
                     throw new OwnerMismatchException();
