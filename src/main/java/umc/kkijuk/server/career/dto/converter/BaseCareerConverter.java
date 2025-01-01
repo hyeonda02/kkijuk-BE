@@ -1,8 +1,13 @@
 package umc.kkijuk.server.career.dto.converter;
 
+import umc.kkijuk.server.career.controller.response.FindTagResponse;
 import umc.kkijuk.server.career.domain.*;
 import umc.kkijuk.server.career.dto.*;
 import umc.kkijuk.server.member.domain.Member;
+import umc.kkijuk.server.tag.domain.Tag;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BaseCareerConverter {
     public static EduCareer toEduCareer(Member requestMember, EduCareerReqDto eduCareerReqDto) {
@@ -97,6 +102,16 @@ public class BaseCareerConverter {
                 .unknown(etcReqDto.getUnknown())
                 .startdate(etcReqDto.getStartdate())
                 .enddate(etcReqDto.getEnddate())
+                .build();
+    }
+
+    public static FindTagResponse.SearchTagResponse toSearchTagResponse(List<Tag> tags, int detailCount) {
+        List<FindTagResponse.TagResponse> tagList = tags.stream().map(tag-> FindTagResponse.TagResponse.builder()
+                        .tagId(tag.getId())
+                        .tagName(tag.getName()).build()).collect(Collectors.toList());
+        return FindTagResponse.SearchTagResponse.builder()
+                .detailCount(detailCount)
+                .tagList(tagList)
                 .build();
     }
 }

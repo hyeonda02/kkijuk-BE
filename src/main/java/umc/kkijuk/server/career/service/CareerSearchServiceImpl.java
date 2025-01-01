@@ -3,8 +3,10 @@ package umc.kkijuk.server.career.service;
 import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import umc.kkijuk.server.career.controller.response.*;
 import umc.kkijuk.server.career.domain.*;
+import umc.kkijuk.server.career.dto.converter.BaseCareerConverter;
 import umc.kkijuk.server.career.repository.*;
 import umc.kkijuk.server.common.domian.exception.OwnerMismatchException;
 import umc.kkijuk.server.detail.controller.response.BaseCareerDetailResponse;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Builder
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CareerSearchServiceImpl implements CareerSearchService{
     private final ActivityRepository activityRepository;
@@ -214,9 +217,27 @@ public class CareerSearchServiceImpl implements CareerSearchService{
     }
 
     @Override
-    public List<FindTagResponse> findAllTag(Member requestMember, String keyword) {
+    public FindTagResponse.SearchTagResponse findAllTag(Member requestMember, String keyword) {
         List<Tag> tags = tagRepository.findByKeywordAndMemberId(keyword, requestMember.getId());
-        return tags.stream().map(FindTagResponse::new).collect(Collectors.toList());
+        int detailCount = 0;
+        Set<BaseCareerDetail> details = new HashSet<>();
+
+        //1. 중복 고려 안하고 count
+//        for (int i = 0; i < tags.size(); i++) {
+//            Tag target = tags.get(i);
+//            detailCount += detailRepository.findByTag(target.getId()).size();
+//        }
+
+        //2. 중복 제거하고 count
+        for (int i = 0; i < tags.size(); i++) {
+            Tag target = tags.get(i);
+            detailRepository.findByTag(target.getId())
+                    .stream()
+                    .forEach(details::add);
+        }
+        detailCount = details.size();
+
+        return BaseCareerConverter.toSearchTagResponse(tags,detailCount);
     }
     @Override
     public List<FindDetailResponse> findAllDetail(Member requestMember, String keyword, String sort) {

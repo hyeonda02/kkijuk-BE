@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import umc.kkijuk.server.career.controller.response.*;
 import umc.kkijuk.server.career.service.CareerSearchService;
-import umc.kkijuk.server.career.service.CareerService;
 import umc.kkijuk.server.login.argumentresolver.Login;
 import umc.kkijuk.server.login.controller.dto.LoginInfo;
 import umc.kkijuk.server.member.domain.Member;
@@ -82,7 +81,7 @@ public class CareerSearchController {
             summary = "활동 검색 - 태그 ( 검색 태그 조회 )",
             description = "검색어를 포함하는 활동 태그들을 가나다 순으로 조회합니다.  " +
                     "query 값으로 검색어(keyword)를 요청해주세요. " )
-    public CareerResponse<List<FindTagResponse>> findTag(
+    public CareerResponse<FindTagResponse.SearchTagResponse> findTag(
             @Login LoginInfo loginInfo,
             @RequestParam(name="keyword")String keyword
     ) {
