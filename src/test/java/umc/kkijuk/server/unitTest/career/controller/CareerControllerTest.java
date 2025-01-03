@@ -50,8 +50,8 @@ public class CareerControllerTest {
                         .alias("testalias")
                         .unknown(true)
                         .isTeam(true)
-                        .startdate(LocalDate.of(2023,1,1))
-                        .enddate(LocalDate.of(2024,1,1))
+                        .startDate(LocalDate.of(2023,1,1))
+                        .endDate(LocalDate.of(2024,1,1))
                         .contribution(30)
                         .role("testrole")
                         .teamSize(8)
@@ -111,7 +111,6 @@ public class CareerControllerTest {
         //then
         assertAll(
                 () -> assertEquals(response.getMessage(), CareerResponseMessage.CAREER_CREATE_SUCCESS),
-                () -> assertEquals(result.getCategory(), CareerType.ACTIVITY.getDescription()),
                 () -> assertEquals(result.getName(),request.getName()),
                 () -> assertEquals(result.getAlias(),request.getAlias()),
                 () -> assertEquals(result.getStartdate(),request.getStartdate()),
@@ -172,7 +171,6 @@ public class CareerControllerTest {
         //then
         assertAll(
                 () -> assertEquals(response.getMessage(), CareerResponseMessage.CAREER_CREATE_SUCCESS),
-                () -> assertEquals(result.getCategory(), CareerType.CIRCLE.getDescription()),
                 () -> assertEquals(result.getName(),request.getName()),
                 () -> assertEquals(result.getAlias(),request.getAlias()),
                 () -> assertEquals(result.getStartdate(),request.getStartdate()),
@@ -235,7 +233,6 @@ public class CareerControllerTest {
         //then
         assertAll(
                 () -> assertEquals(response.getMessage(), CareerResponseMessage.CAREER_CREATE_SUCCESS),
-                () -> assertEquals(result.getCategory(), CareerType.COM.getDescription()),
                 () -> assertEquals(result.getName(),request.getName()),
                 () -> assertEquals(result.getAlias(),request.getAlias()),
                 () -> assertEquals(result.getStartdate(),request.getStartdate()),

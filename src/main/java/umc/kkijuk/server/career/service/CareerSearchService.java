@@ -14,7 +14,7 @@ public interface CareerSearchService {
     BaseCareerResponse findCareer(Member requestMember, Long careerId, String type);
     List<FindDetailResponse> findAllDetail(Member requestMember, String keyword, String sort);
 
-    List<FindTagResponse> findAllTag(Member requestMember, String keyword);
+    FindTagResponse.SearchTagResponse findAllTag(Member requestMember, String keyword);
 
     List<FindDetailResponse> findAllDetailByTag(Member requestMember, Long tagId, String sort);
 

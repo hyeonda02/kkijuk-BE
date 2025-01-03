@@ -1,6 +1,7 @@
 package umc.kkijuk.server.detail.service;
 
 
+import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,17 +24,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Builder
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
-    private final BaseCareerDetailRepository baseCareerDetailRepository;
+    private final CareerDetailRepository careerDetailRepository;
     private final CareerDetailTagRepository careerDetailTagRepository;
     private final ActivityRepository activityRepository;
-    private final EduCareerRepository eduCareerRepository;
-    private final ProjectRepository projectRepository;
+    private final EduCareerRepository eduCareerJpaRepository;
+    private final ProjectRepository projectJpaRepository;
     private final CircleRepository circleRepository;
-    private final EmploymentRepository employmentRepository;
-    private final CompetitionRepository competitionRepository;
+    private final EmploymentRepository employmentJpaRepository;
+    private final CompetitionRepository competitionJpaRepository;
     private final TagRepository tagRepository;
 
     @Override
@@ -47,25 +49,25 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
 
 //        addDetailToCareer(career, newBaseCareerDetail);
         detailTagList.forEach(tag -> tag.setBaseCareerDetail(newBaseCareerDetail));
-        return new BaseCareerDetailResponse(baseCareerDetailRepository.save(newBaseCareerDetail));
+        return new BaseCareerDetailResponse(careerDetailRepository.save(newBaseCareerDetail));
     }
 
     @Override
     @Transactional
     public void deleteDetail(Member requestMember, Long careerId, Long detailId) {
-        BaseCareerDetail baseCareerDetail = baseCareerDetailRepository.findById(detailId).orElseThrow(
+        BaseCareerDetail baseCareerDetail = careerDetailRepository.findById(detailId).orElseThrow(
                 () -> new ResourceNotFoundException("BaseCareerDetail", detailId));
 
         BaseCareer baseCareer = findBaseCareerByType(baseCareerDetail.getCareerType(), careerId);
         validateOwner(baseCareer,requestMember);
 
-        baseCareerDetailRepository.delete(baseCareerDetail);
+        careerDetailRepository.delete(baseCareerDetail);
     }
 
     @Override
     @Transactional
     public BaseCareerDetailResponse updateDetail(Member requestMember, CareerDetailUpdateReqDto request, Long careerId, Long detailId) {
-        BaseCareerDetail baseCareerDetail = baseCareerDetailRepository.findById(detailId).orElseThrow(
+        BaseCareerDetail baseCareerDetail = careerDetailRepository.findById(detailId).orElseThrow(
                 () -> new ResourceNotFoundException("BaseCareerDetail", detailId));
 
         if(!baseCareerDetail.getMemberId().equals(requestMember.getId())){
@@ -85,7 +87,7 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
 
         List<CareerDetailTag> careerDetailTags = returnCareerTagList(request.getTagList());
         careerDetailTags.forEach(careerDetailTag -> careerDetailTag.setBaseCareerDetail(baseCareerDetail));
-        return new BaseCareerDetailResponse(baseCareerDetailRepository.save(baseCareerDetail));
+        return new BaseCareerDetailResponse(careerDetailRepository.save(baseCareerDetail));
     }
 
     private void validateOwner(BaseCareer career, Member requestMember) {
@@ -117,13 +119,13 @@ public class BaseCareerDetailServiceImpl implements BaseCareerDetailService{
                     .orElseThrow(() -> new ResourceNotFoundException("대외활동 : ", careerId));
             case CIRCLE -> circleRepository.findById(careerId)
                     .orElseThrow(() -> new ResourceNotFoundException("동아리 : ", careerId));
-            case PROJECT -> projectRepository.findById(careerId)
+            case PROJECT -> projectJpaRepository.findById(careerId)
                     .orElseThrow(() -> new ResourceNotFoundException("프로젝트 : ", careerId));
-            case EDU -> eduCareerRepository.findById(careerId)
+            case EDU -> eduCareerJpaRepository.findById(careerId)
                     .orElseThrow(() -> new ResourceNotFoundException("교육 : ", careerId));
-            case COM -> competitionRepository.findById(careerId)
+            case COM -> competitionJpaRepository.findById(careerId)
                     .orElseThrow(() -> new ResourceNotFoundException("대회 : ", careerId));
-            case EMP -> employmentRepository.findById(careerId)
+            case EMP -> employmentJpaRepository.findById(careerId)
                     .orElseThrow(() -> new ResourceNotFoundException("경력 : ", careerId));
             default -> throw new IllegalArgumentException("지원하지 않는 활동 유형입니다");
         };
